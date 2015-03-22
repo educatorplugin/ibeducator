@@ -3,7 +3,7 @@ Contributors: dmytro.d
 Donate link: http://educatorplugin.com
 Tags: learning management system, lms, learning, online courses
 Requires at least: 4.0
-Tested up to: 4.1
+Tested up to: 4.1.1
 Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -14,9 +14,11 @@ Educator is a simple learning management system plugin for WordPress.
 
 You can use this plugin to offer online courses on your WordPress website.
 
-Documentation: http://educatorplugin.com/
+Links:
 
-Learn how this plugin works: http://educatorplugin.com/how-educator-works/
+* Documentation: http://educatorplugin.com/
+* Learn how this plugin works: http://educatorplugin.com/how-educator-works/
+* Official github repository: https://github.com/dmytro-d/ibeducator
 
 Features:
 
