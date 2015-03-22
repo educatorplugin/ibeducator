@@ -1,0 +1,230 @@
+#ib-edu-breadcrumbs {
+	margin-bottom: 12px;
+}
+
+/* Pagination links */
+.ib-edu-pagination {
+	margin-bottom: 2em;
+	text-align: center;
+}
+
+.ib-edu-pagination a,
+.ib-edu-pagination span {
+	margin: 0 4px;
+}
+
+.ib-edu-lesson-nav > div {
+	display: inline-block;
+}
+
+.ib-edu-lesson-nav .nav-previous {
+	margin-right: 1em;
+}
+
+/* Course */
+.ib-edu-course-price,
+.ib-edu-price-widget {
+	font-weight: bold;
+	margin-bottom: 24px;
+}
+
+.ib-edu-course-price .ib-edu-button,
+.ib-edu-price-widget .ib-edu-button {
+	vertical-align: middle;
+}
+
+.ib-edu-course-price .price,
+.ib-edu-price-widget .price {
+	margin-right: 20px;
+	vertical-align: middle;
+}
+
+.ib-edu-lesson-meta {
+	font-style: italic;
+}
+
+/* Quiz */
+.ib-edu-question {
+	margin-bottom: 20px;
+}
+
+.ib-edu-answers {
+	list-style: none;
+	margin-bottom: 0;
+	margin-left: 0;
+}
+
+.ib-edu-answers .correct {
+	font-weight: bold;
+}
+
+.ib-edu-answers .wrong {
+	text-decoration: line-through;
+}
+
+.ib-edu-answers input[type="radio"] {
+	margin-right: 5px;
+}
+
+.ib-edu-quiz-grade {
+	margin-bottom: 24px;
+}
+
+/* Messages and notifications */
+.ib-edu-message {
+	margin-bottom: 24px;
+}
+
+.ib-edu-message.success {
+	color: green;
+}
+
+.ib-edu-message.error {
+	color: red;
+}
+
+/* Forms */
+.ib-edu-form {
+	margin-bottom: 24px;
+}
+
+.ib-edu-form legend {
+	font-weight: bold;
+}
+
+.ib-edu-form-field {
+	margin-bottom: 20px;
+}
+
+.ib-edu-form-field:after {
+	clear: both;
+	content: '\00a0';
+	display: block;
+	height: 0;
+	overflow: hidden;
+}
+
+.ib-edu-form-field > label {
+	display: block;
+	float: left;
+	max-width: 120px;
+}
+
+.ib-edu-form-control {
+	margin-left: 140px;
+}
+
+.ib-edu-payment-method {
+	list-style: none;
+	margin-left: 0;
+}
+
+.ib-edu-payment-method li + li {
+	margin-top: 5px;
+}
+
+.ib-edu-payment-method input[type="radio"] {
+	margin-right: 5px;
+}
+
+/* Shortcode: student's courses */
+.ib-edu-courses-pending td {
+	vertical-align: middle;
+}
+
+.ib-edu-courses .payment-description .text {
+	display: none;
+}
+
+.ib-edu-courses .payment-description.open .text {
+	display: block;
+}
+
+.ib-edu-courses .payment-description p {
+	margin: 1em 0 0;
+}
+
+/* Shortcode: courses */
+.ib-edu-courses-list:after,
+.ib-edu-courses-list .course:after {
+	clear: both;
+	content: '';
+	display: block;
+}
+
+.ib-edu-courses-list .course {
+	float: left;
+	margin: 0 4% 0 0;
+}
+
+.ib-edu-courses-list .course-image {
+	margin-bottom: 1em;
+}
+
+.ib-edu-courses-list h2 {
+	font-size: 16px;
+	line-height: 22px;
+}
+
+.ib-edu-courses-list-2 .course {
+	width: 48%;
+}
+
+.ib-edu-courses-list-3 .course {
+	width: 30.66%;
+}
+
+.ib-edu-courses-list-4 .course {
+	width: 22%;
+}
+
+.ib-edu-courses-list-2 .course:nth-child(2n),
+.ib-edu-courses-list-3 .course:nth-child(3n),
+.ib-edu-courses-list-4 .course:nth-child(4n) {
+	margin-right: 0;
+}
+
+.ib-edu-courses-list-2 .course:nth-child(2n+1),
+.ib-edu-courses-list-3 .course:nth-child(3n+1),
+.ib-edu-courses-list-4 .course:nth-child(4n+1) {
+	clear: left;
+}
+
+.ib-edu-courses-list-1 .course-header,
+.ib-edu-courses-list-1 .course-summary {
+	overflow: hidden;
+}
+
+.ib-edu-courses-list-1 .course {
+	margin-right: 0;
+}
+
+.ib-edu-courses-list-1 .course .course-image {
+	float: left;
+	margin: 0 20px 2em 0;
+}
+
+@media all and (max-width: 768px) {
+	.ib-edu-courses-list-3 .course,
+	.ib-edu-courses-list-4 .course {
+		width: 48%;
+	}
+
+	.ib-edu-courses-list-3 .course:nth-child(3n),
+	.ib-edu-courses-list-4 .course:nth-child(4n) {
+		margin-right: 4%;
+	}
+
+	.ib-edu-courses-list-3 .course:nth-child(3n+1),
+	.ib-edu-courses-list-4 .course:nth-child(4n+1) {
+		clear: none;
+	}
+
+	.ib-edu-courses-list .course:nth-child(2n) {
+		margin-right: 0;
+	}
+
+	.ib-edu-courses-list-3 .course:nth-child(2n+1) {
+		clear: left;
+	}
+}
