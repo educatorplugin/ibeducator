@@ -30,7 +30,9 @@ class IB_Educator_Actions {
 	 * Submit quiz.
 	 */
 	public static function submit_quiz() {
-		if ( empty( $_POST ) ) return;
+		if ( empty( $_POST ) ) {
+			return;
+		}
 
 		$lesson_id = get_the_ID();
 		$user_id = get_current_user_id();
@@ -39,44 +41,55 @@ class IB_Educator_Actions {
 		// Verify nonce.
 		check_admin_referer( 'ibedu_submit_quiz_' . $lesson_id );
 
+		// Get questions.
 		$questions = $api->get_questions( array( 'lesson_id' => $lesson_id ) );
+		
+		if ( ! $questions ) {
+			return;
+		}
+
 		$num_questions = count( $questions );
 		$num_answers = 0;
 
-		// The student has to submit the answers to all questions.
 		if ( ! isset( $_POST['answers'] ) ) {
+			// The student has to submit the answers to all questions.
 			ib_edu_message( 'quiz', 'empty-answers' );
 			return;
 		} elseif ( is_array( $_POST['answers'] ) ) {
+			// Count answers.
 			foreach ( $_POST['answers'] as $answer ) {
-				if ( ! empty( $answer ) ) ++$num_answers;
+				if ( ! empty( $answer ) ) {
+					++$num_answers;
+				}
 			}
 
 			if ( $num_answers != $num_questions ) {
+				// Not all questions were answered.
 				ib_edu_message( 'quiz', 'empty-answers' );
 				return;
 			}
 		}
-
-		if ( ! $questions ) return;
-
-		$user_answer = '';
-		$answer = null;
-		$question_meta = null;
+		
+		// Get entry.
 		$entry = $api->get_entry( array(
 			'user_id'      => $user_id,
 			'course_id'    => ib_edu_get_course_id( $lesson_id ),
 			'entry_status' => 'inprogress'
 		) );
-		$automatic_grade = true;
 
-		if ( ! $entry ) return;
+		if ( ! $entry ) {
+			return;
+		}
 
-		// Process answers only if the quiz wasn't yet submitted.
-		if ( $api->is_quiz_submitted( $lesson_id, $entry->ID ) ) return;
+		if ( $api->is_quiz_submitted( $lesson_id, $entry->ID ) ) {
+			// Quiz has been submitted already.
+			return;
+		}
 
+		$user_answer = '';
 		$answered = 0;
 		$correct = 0;
+		$automatic_grade = true;
 		$choices = $api->get_choices( $lesson_id, true );
 
 		// Check answers to the quiz questions.
@@ -103,8 +116,13 @@ class IB_Educator_Actions {
 							'choice_id'   => $choice->ID
 						) );
 
-						if ( 1 == $added ) ++$answered;
-						if ( 1 == $choice->correct ) ++$correct;
+						if ( 1 == $added ) {
+							++$answered;
+						}
+
+						if ( 1 == $choice->correct ) {
+							++$correct;
+						}
 					}
 
 					break;
@@ -112,7 +130,9 @@ class IB_Educator_Actions {
 				// Written Answer Question.
 				case 'writtenanswer':
 					// We cannot check written answers automatically.
-					if ( $automatic_grade ) $automatic_grade = false;
+					if ( $automatic_grade ) {
+						$automatic_grade = false;
+					}
 
 					$user_answer = stripslashes( $_POST['answers'][ $question->ID ] );
 
@@ -128,7 +148,9 @@ class IB_Educator_Actions {
 						'answer_text' => $user_answer
 					) );
 
-					if ( 1 == $added ) ++$answered;
+					if ( 1 == $added ) {
+						++$answered;
+					}
 					
 					break;
 			}
