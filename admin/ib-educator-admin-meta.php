@@ -141,6 +141,17 @@ class IB_Educator_Admin_Meta {
 			return;
 		}
 
+		// Lesson access.
+		$access_options = array( 'registered', 'logged_in', 'public' );
+		$access = 'registered';
+
+		if ( isset( $_POST['_ib_educator_access'] ) && in_array( $_POST['_ib_educator_access'], $access_options ) ) {
+			$access = $_POST['_ib_educator_access'];
+		}
+
+		update_post_meta( $post_id, '_ib_educator_access', $access );
+
+		// Course.
 		$value = ( isset( $_POST['_ibedu_course'] ) && is_numeric( $_POST['_ibedu_course'] ) ) ? $_POST['_ibedu_course'] : '';
 		update_post_meta( $post_id, '_ibedu_course', $value );
 	}

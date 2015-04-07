@@ -349,7 +349,9 @@ function ib_edu_get_access_status_message( $access_status ) {
  */
 function ib_edu_get_course_id( $lesson_id = null ) {
 	// Is this function called inside the loop?
-	if ( ! $lesson_id ) $lesson_id = get_the_ID();
+	if ( ! $lesson_id ) {
+		$lesson_id = get_the_ID();
+	}
 
 	$course_id = get_post_meta( $lesson_id, '_ibedu_course', true );
 	
@@ -363,17 +365,24 @@ function ib_edu_get_course_id( $lesson_id = null ) {
  * @return bool
  */
 function ib_edu_student_can_study( $lesson_id ) {
-	if ( ! is_user_logged_in() ) {
-		return false;
-	}
+	// Get lesson's access option.
+	$access = get_post_meta( $lesson_id, '_ib_educator_access', true );
 
-	$course_id = ib_edu_get_course_id( $lesson_id );
-
-	if ( $course_id ) {
-		$access_status = IB_Educator::get_instance()->get_access_status( $course_id, get_current_user_id() );
-
-		if ( in_array( $access_status, array( 'inprogress', 'course_complete' ) ) ) {
+	if ( 'public' == $access ) {
+		return true;
+	} elseif ( is_user_logged_in() ) {
+		if ( 'logged_in' == $access ) {
 			return true;
+		}
+
+		$course_id = ib_edu_get_course_id( $lesson_id );
+
+		if ( $course_id ) {
+			$access_status = IB_Educator::get_instance()->get_access_status( $course_id, get_current_user_id() );
+
+			if ( in_array( $access_status, array( 'inprogress', 'course_complete' ) ) ) {
+				return true;
+			}
 		}
 	}
 

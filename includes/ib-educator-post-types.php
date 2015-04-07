@@ -145,10 +145,19 @@ class IB_Educator_Post_Types {
 	 * @return string
 	 */
 	public static function lock_lessons( $content ) {
-		global $wpdb, $post;
+		global $wpdb;
 
 		if ( 'ib_educator_lesson' == get_post_type() ) {
+			$post = get_post();
+			$lesson_id = ! empty( $post ) ? $post->ID : 0;
 			$user_id = get_current_user_id();
+
+			// Get lesson's access option.
+			$access = get_post_meta( $lesson_id, '_ib_educator_access', true );
+
+			if ( 'public' == $access || ( 'logged_in' == $access && $user_id ) ) {
+				return $content;
+			}
 
 			if ( $user_id && null === self::$current_user_courses ) {
 				$tables = ib_edu_table_names();
@@ -158,7 +167,7 @@ class IB_Educator_Post_Types {
 				) );
 			}
 
-			if ( ! self::$current_user_courses || ! in_array( ib_edu_get_course_id(), self::$current_user_courses ) ) {
+			if ( ! self::$current_user_courses || ! in_array( ib_edu_get_course_id( $lesson_id ), self::$current_user_courses ) ) {
 				$more_index = strpos( $content, '<span id="more-' );
 
 				if ( false !== $more_index ) {
