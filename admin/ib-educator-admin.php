@@ -199,8 +199,15 @@ class IB_Educator_Admin {
 
 		$screen = get_current_screen();
 
-		if ( $screen && 'educator_page_ib_educator_payments' == $screen->id ) {
-			wp_enqueue_script( 'ib-educator-edit-payment', IBEDUCATOR_PLUGIN_URL . 'admin/js/edit-payment.js', array( 'jquery' ), '1.0.0', true );
+		if ( $screen ) {
+			if ( 'educator_page_ib_educator_payments' == $screen->id ) {
+				wp_enqueue_script( 'ib-educator-edit-payment', IBEDUCATOR_PLUGIN_URL . 'admin/js/edit-payment.js', array( 'jquery' ), '1.0.0', true );
+				wp_enqueue_script( 'postbox' );
+			} elseif ( 'educator_page_ib_educator_entries' == $screen->id ) {
+				wp_enqueue_script( 'postbox' );
+			} elseif ( 'educator_page_ib_educator_members' == $screen->id ) {
+				wp_enqueue_script( 'postbox' );
+			}
 		}
 	}
 

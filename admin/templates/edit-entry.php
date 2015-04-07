@@ -53,9 +53,9 @@
 	?></h2>
 
 	<?php if ( isset( $_GET['edu-message'] ) && 'saved' == $_GET['edu-message'] ) : ?>
-	<div id="message" class="updated below-h2">
-		<p><?php _e( 'Entry saved.', 'ibeducator' ); ?></p>
-	</div>
+		<div id="message" class="updated below-h2">
+			<p><?php _e( 'Entry saved.', 'ibeducator' ); ?></p>
+		</div>
 	<?php endif; ?>
 
 	<?php
@@ -75,132 +75,191 @@
 		<?php wp_nonce_field( 'ib_educator_edit_entry_' . $entry->ID ); ?>
 		<input type="hidden" id="autocomplete-nonce" value="<?php echo wp_create_nonce( 'ib_educator_autocomplete' ); ?>">
 
-		<?php if ( 'admin' == $who ) : ?>
-		<div class="ib-edu-field" data-origin="payment"<?php if ( 'payment' != $input['entry_origin'] ) echo ' style="display:none;"'; ?>>
-			<div class="ib-edu-label"><label for="ib-edu-payment-id"><?php _e( 'Payment ID', 'ibeducator' ); ?></label></div>
-			<div class="ib-edu-control">
-				<input type="text" id="ib-edu-payment-id" class="regular-text" maxlength="20" size="6" name="payment_id" value="<?php echo intval( $input['payment_id'] ); ?>">
-				<div class="description">
-					<?php
-						printf( __( 'Please find payment ID on %s page.', 'ibeducator' ), '<a href="'
-							. admin_url( 'admin.php?page=ib_educator_payments' ) . '" target="_blank">'
-							. __( 'Payments', 'ibeducator' ) . '</a>' );
-					?>
+		<div id="poststuff">
+			<div id="post-body" class="metabox-holder columns-<?php echo 1 == get_current_screen()->get_columns() ? '1' : '2'; ?>">
+				<div id="postbox-container-1" class="postbox-container">
+					<div id="side-sortables" class="meta-box-sortables">
+						<div id="entry-settings" class="postbox">
+							<div class="handlediv"><br></div>
+							<h3 class="hndle"><span><?php _e( 'Entry', 'ibeducator' ); ?></span></h3>
+							<div class="inside">
+								<!-- Status -->
+								<div class="ib-edu-field edu-block">
+									<div class="ib-edu-label">
+										<label for="entry-status"><?php _e( 'Status', 'ibeducator' ); ?></label>
+									</div>
+									<div class="ib-edu-control">
+										<select name="entry_status" id="entry-status">
+											<?php foreach ( $statuses as $key => $label ) : ?>
+												<option value="<?php echo esc_attr( $key ); ?>"<?php if ( $key == $input['entry_status'] ) echo ' selected="selected"'; ?>>
+													<?php echo esc_html( $label ); ?>
+												</option>
+											<?php endforeach; ?>
+										</select>
+									</div>
+								</div>
+
+								<!-- Date -->
+								<div class="ib-edu-field edu-block">
+									<div class="ib-edu-label">
+										<label for="ib-edu-entry-date"><?php _e( 'Date', 'ibeducator' ); ?></label>
+									</div>
+									<div class="ib-edu-control">
+										<input type="text" id="ib-edu-entry-date" class="regular-text" maxlength="19" size="19" name="entry_date" value="<?php echo esc_attr( $input['entry_date'] ); ?>">
+										<div class="description"><?php _e( 'Date format: yyyy-mm-dd hh:mm:ss', 'ibeducator' ); ?></div>
+									</div>
+								</div>
+							</div>
+							<div class="edu-actions-box">
+								<div id="major-publishing-actions">
+									<div id="publishing-action">
+										<?php submit_button( null, 'primary', 'submit', false ); ?>
+									</div>
+									<div class="clear"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="postbox-container-2" class="postbox-container">
+					<div id="normal-sortables" class="meta-box-sortables">
+						<div id="entry-settings" class="postbox">
+							<div class="handlediv"><br></div>
+							<h3 class="hndle"><span><?php _e( 'Entry Data', 'ibeducator' ); ?></span></h3>
+							<div class="inside">
+								<?php if ( 'admin' == $who ) : ?>
+									<!-- Membership -->
+									<?php
+										$ms = IB_Educator_Memberships::get_instance();
+										$memberships = $ms->get_memberships();
+									?>
+									<div class="ib-edu-field" data-origin="membership"<?php if ( 'membership' != $input['entry_origin'] ) echo ' style="display:none;"'; ?>>
+										<div class="ib-edu-label">
+											<label for="ib-edu-membership-id"><?php _e( 'Membership', 'ibeducator' ); ?></label>
+										</div>
+										<div class="ib-edu-control">
+											<select name="membership_id" id="ib-edu-membership-id">
+												<option value=""><?php _e( 'Select Membership', 'ibeducator' ); ?></option>
+												<?php
+													if ( $memberships ) {
+														foreach ( $memberships as $membership ) {
+															$selected = ( $input['membership_id'] == $membership->ID ) ? ' selected="selected"' : '';
+															echo '<option value="' . esc_attr( $membership->ID ) . '"' . $selected . '>' . esc_html( $membership->post_title ) . '</option>';
+														}
+													}
+												?>
+											</select>
+										</div>
+									</div>
+
+									<!-- Payment ID -->
+									<div class="ib-edu-field" data-origin="payment"<?php if ( 'payment' != $input['entry_origin'] ) echo ' style="display:none;"'; ?>>
+										<div class="ib-edu-label">
+											<label for="ib-edu-payment-id"><?php _e( 'Payment ID', 'ibeducator' ); ?></label>
+										</div>
+										<div class="ib-edu-control">
+											<input type="text" id="ib-edu-payment-id" class="small-text" maxlength="20" size="6" name="payment_id" value="<?php echo intval( $input['payment_id'] ); ?>">
+											<div class="description">
+												<?php
+													printf( __( 'Please find payment ID on %s page.', 'ibeducator' ), '<a href="'
+														. admin_url( 'admin.php?page=ib_educator_payments' ) . '" target="_blank">'
+														. __( 'Payments', 'ibeducator' ) . '</a>' );
+												?>
+											</div>
+										</div>
+									</div>
+
+									<!-- Origin -->
+									<div class="ib-edu-field">
+										<div class="ib-edu-label">
+											<label for="entry-origin"><?php _e( 'Origin', 'ibeducator' ); ?></label>
+										</div>
+										<div class="ib-edu-control">
+											<select name="entry_origin" id="entry-origin">
+												<?php foreach ( $origins as $key => $label ) : ?>
+													<option value="<?php echo esc_attr( $key ); ?>"<?php if ( $key == $input['entry_origin'] ) echo ' selected="selected"'; ?>>
+														<?php echo esc_html( $label ); ?>
+													</option>
+												<?php endforeach; ?>
+											</select>
+										</div>
+									</div>
+								<?php endif; ?>
+
+								<!-- Student -->
+								<div class="ib-edu-field">
+									<div class="ib-edu-label">
+										<label><?php _e( 'Student', 'ibeducator' ); ?></label>
+									</div>
+									<div class="ib-edu-control">
+										<div class="ib-edu-autocomplete">
+											<input
+												type="text"
+												name="student_id"
+												id="entry-student-id"
+												class="regular-text"
+												autocomplete="off"
+												value="<?php if ( $student ) echo intval( $student->ID ); ?>"
+												data-label="<?php if ( $student ) echo esc_attr( $student->display_name ); ?>"<?php if ( 'admin' != $who ) echo ' disabled="disabled"'; ?>>
+										</div>
+									</div>
+								</div>
+
+								<!-- Course -->
+								<div class="ib-edu-field">
+									<div class="ib-edu-label">
+										<label><?php _e( 'Course', 'ibeducator' ); ?></label>
+									</div>
+									<div class="ib-edu-control">
+										<div class="ib-edu-autocomplete">
+											<input
+												type="text"
+												name="course_id"
+												id="entry-course-id"
+												class="regular-text"
+												autocomplete="off"
+												value="<?php if ( $course ) echo intval( $course->ID ); ?>"
+												data-label="<?php if ( $course ) echo esc_attr( $course->post_title ); ?>"<?php if ( 'admin' != $who ) echo ' disabled="disabled"'; ?>>
+										</div>
+									</div>
+								</div>
+
+								<!-- Grade -->
+								<div class="ib-edu-field">
+									<div class="ib-edu-label">
+										<label for="ib-edu-grade"><?php _e( 'Grade', 'ibeducator' ); ?></label>
+									</div>
+									<div class="ib-edu-control">
+										<input type="text" id="ib-edu-grade" class="small-text" maxlength="6" size="6" name="grade" value="<?php echo esc_attr( $input['grade'] ); ?>">
+										<div class="description"><?php _e( 'A number between 0 and 100.', 'ibeducator' ); ?></div>
+									</div>
+								</div>
+
+								<!-- Prerequisites -->
+								<?php if ( 'admin' == $who ) : ?>
+									<div class="ib-edu-field" data-origin="payment"<?php if ( 'payment' != $input['entry_origin'] ) echo ' style="display:none;"'; ?>>
+										<div class="ib-edu-label">
+											<label><?php _e( 'Prerequisites', 'ibeducator' ); ?></label>
+										</div>
+										<div class="ib-edu-control">
+											<label><input type="checkbox" name="ignore_prerequisites"> <?php _e( 'Ignore prerequisites', 'ibeducator' ); ?></label>
+										</div>
+									</div>
+								<?php endif; ?>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
+			<br class="clear">
 		</div>
-
-		<?php
-			$ms = IB_Educator_Memberships::get_instance();
-			$memberships = $ms->get_memberships();
-		?>
-		<div class="ib-edu-field" data-origin="membership"<?php if ( 'membership' != $input['entry_origin'] ) echo ' style="display:none;"'; ?>>
-			<div class="ib-edu-label"><label for="ib-edu-membership-id"><?php _e( 'Membership', 'ibeducator' ); ?></label></div>
-			<div class="ib-edu-control">
-				<select name="membership_id" id="ib-edu-membership-id">
-					<option value=""><?php _e( 'Select Membership', 'ibeducator' ); ?></option>
-					<?php
-						if ( $memberships ) {
-							foreach ( $memberships as $membership ) {
-								$selected = ( $input['membership_id'] == $membership->ID ) ? ' selected="selected"' : '';
-								echo '<option value="' . esc_attr( $membership->ID ) . '"' . $selected . '>' . esc_html( $membership->post_title ) . '</option>';
-							}
-						}
-					?>
-				</select>
-			</div>
-		</div>
-		<?php endif; ?>
-		
-		<div class="ib-edu-field">
-			<div class="ib-edu-label"><label><?php _e( 'Student', 'ibeducator' ); ?></label></div>
-			<div class="ib-edu-control">
-				<div class="ib-edu-autocomplete">
-					<input
-						type="text"
-						name="student_id"
-						id="entry-student-id"
-						class="regular-text"
-						autocomplete="off"
-						value="<?php if ( $student ) echo intval( $student->ID ); ?>"
-						data-label="<?php if ( $student ) echo esc_attr( $student->display_name ); ?>"<?php if ( 'admin' != $who ) echo ' disabled="disabled"'; ?>>
-				</div>
-			</div>
-		</div>
-
-		<div class="ib-edu-field">
-			<div class="ib-edu-label"><label><?php _e( 'Course', 'ibeducator' ); ?></label></div>
-			<div class="ib-edu-control">
-				<div class="ib-edu-autocomplete">
-					<input
-						type="text"
-						name="course_id"
-						id="entry-course-id"
-						class="regular-text"
-						autocomplete="off"
-						value="<?php if ( $course ) echo intval( $course->ID ); ?>"
-						data-label="<?php if ( $course ) echo esc_attr( $course->post_title ); ?>"<?php if ( 'admin' != $who ) echo ' disabled="disabled"'; ?>>
-				</div>
-			</div>
-		</div>
-
-		<div class="ib-edu-field">
-			<div class="ib-edu-label"><label for="ib-edu-grade"><?php _e( 'Grade', 'ibeducator' ); ?></label></div>
-			<div class="ib-edu-control">
-				<input type="text" id="ib-edu-grade" class="regular-text" maxlength="6" size="6" name="grade" value="<?php echo esc_attr( $input['grade'] ); ?>">
-				<div class="description"><?php _e( 'A number between 0 and 100.', 'ibeducator' ); ?></div>
-			</div>
-		</div>
-
-		<?php if ( 'admin' == $who ) : ?>
-		<div class="ib-edu-field">
-			<div class="ib-edu-label"><label for="entry-origin"><?php _e( 'Origin', 'ibeducator' ); ?></label></div>
-			<div class="ib-edu-control">
-				<select name="entry_origin" id="entry-origin">
-					<?php foreach ( $origins as $key => $label ) : ?>
-					<option value="<?php echo esc_attr( $key ); ?>"<?php if ( $key == $input['entry_origin'] ) echo ' selected="selected"'; ?>><?php echo esc_html( $label ); ?></option>
-					<?php endforeach; ?>
-				</select>
-			</div>
-		</div>
-		<?php endif; ?>
-
-		<div class="ib-edu-field">
-			<div class="ib-edu-label"><label for="entry-status"><?php _e( 'Status', 'ibeducator' ); ?></label></div>
-			<div class="ib-edu-control">
-				<select name="entry_status" id="entry-status">
-					<?php foreach ( $statuses as $key => $label ) : ?>
-					<option value="<?php echo esc_attr( $key ); ?>"<?php if ( $key == $input['entry_status'] ) echo ' selected="selected"'; ?>><?php echo esc_html( $label ); ?></option>
-					<?php endforeach; ?>
-				</select>
-			</div>
-		</div>
-
-		<div class="ib-edu-field">
-			<div class="ib-edu-label"><label for="ib-edu-entry-date"><?php _e( 'Date', 'ibeducator' ); ?></label></div>
-			<div class="ib-edu-control">
-				<input type="text" id="ib-edu-entry-date" class="regular-text" maxlength="19" size="19" name="entry_date" value="<?php echo esc_attr( $input['entry_date'] ); ?>">
-				<div class="description"><?php _e( 'Date format: yyyy-mm-dd hh:mm:ss', 'ibeducator' ); ?></div>
-			</div>
-		</div>
-
-		<?php if ( 'admin' == $who ) : ?>
-		<div class="ib-edu-field" data-origin="payment"<?php if ( 'payment' != $input['entry_origin'] ) echo ' style="display:none;"'; ?>>
-			<div class="ib-edu-label"><label><?php _e( 'Prerequisites', 'ibeducator' ); ?></label></div>
-			<div class="ib-edu-control">
-				<label><input type="checkbox" name="ignore_prerequisites"> <?php _e( 'Ignore prerequisites', 'ibeducator' ); ?></label>
-			</div>
-		</div>
-		<?php endif; ?>
-
-		<?php submit_button(); ?>
 	</form>
 </div>
 
 <script>
 jQuery(document).ready(function() {
 	function fieldsByOrigin( origin ) {
-		jQuery('#edu_edit_entry_form > .ib-edu-field').each(function() {
+		jQuery('#edu_edit_entry_form .ib-edu-field').each(function() {
 			var forOrigin = this.getAttribute('data-origin');
 
 			if ( forOrigin && forOrigin !== origin ) {
@@ -234,5 +293,7 @@ jQuery(document).ready(function() {
 		url: <?php echo json_encode( admin_url( 'admin-ajax.php' ) ); ?>,
 		entity: 'course'
 	});
+
+	postboxes.add_postbox_toggles(pagenow);
 });
 </script>

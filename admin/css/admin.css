@@ -16,8 +16,17 @@
 }
 
 /* Meta ---------------*/
+.ib-edu-meta {
+	width: 100%;
+}
+
 .ib-edu-meta th {
 	text-align: left;
+}
+
+.ib-edu-meta input[type="text"] {
+	max-width: 100%;
+	width: 100%;
 }
 
 /* Tabs ---------------*/
@@ -42,12 +51,8 @@
 }
 
 /* Form ---------------*/
-.ib-edu-admin-form {
-	margin-top: 20px;
-}
-
 .ib-edu-field {
-	margin: 0 0 30px 0;
+	margin: 0 0 20px 0;
 }
 
 .ib-edu-field:after {
@@ -81,6 +86,20 @@
 	font-style: italic;
 	line-height: 1.5;
 	margin-top: 5px;
+}
+
+.edu-block .ib-edu-label {
+	float: none;
+	margin-bottom: 5px;
+	max-width: none;
+}
+
+.ib-edu-field input[type="text"] {
+	max-width: 100%;
+}
+
+.edu-block .ib-edu-control {
+	margin-left: 0;
 }
 
 /* Search form */
@@ -206,52 +225,9 @@
 	padding-left: 25px;
 }
 
-/* Offers form ---------------*/
-#edu_edit_payment_form,
-#edu_edit_entry_form {
-	padding-top: 10px;
-}
-
-#ib-edu-offers-form {
-	border-collapse: collapse;
-	margin: 0 0 0 -5px;
-	max-width: 620px;
-}
-
-#ib-edu-offers-form th,
-#ib-edu-offers-form td {
-	padding: 5px;
-	text-align: left;
-}
-
-#ib-edu-offers-form th {
-	padding-top: 0;
-}
-
-#ib-edu-offers-form .offer-from,
-#ib-edu-offers-form .offer-to {
-	width: 30%;
-}
-
-#ib-edu-offers-form .offer-price,
-#ib-edu-offers-form .offer-capacity {
-	width: 16%;
-}
-
-#ib-edu-offers-form .offer-actions {
-	width: 8%;
-}
-
-#ib-edu-offers-form input[type="text"] {
-	width: 100%;
-}
-
-#ib-edu-offers-form a.delete-offer {
-	color: #a00;
-}
-
-#ib-edu-offers-form a.delete-offer:hover {
-	color: red;
+/* Edit payment/entry forms ---------------*/
+#edu-create-entry-checkbox {
+	margin-bottom: 0;
 }
 
 /* Entries ---------------*/
@@ -524,13 +500,23 @@
 .edu-tax-rates-table td.rate {width: 9%;}
 .edu-tax-rates-table td.priority {width: 9%;}
 .edu-tax-rates-table td.options {width: 16%;}
-
 .edu-tax-rates-table td.rate input,
 .edu-tax-rates-table td.priority input {
 	width: 70px;
 }
 
 @media screen and (max-width: 782px) {
+	/* Forms */
+	.ib-edu-field .ib-edu-label {
+		float: none;
+		margin-bottom: 5px;
+		max-width: none;
+	}
+
+	.ib-edu-field .ib-edu-control {
+		margin-left: 0;
+	}
+
 	/* Search form */
 	.ib-edu-admin-search .block {
 		float: none;
