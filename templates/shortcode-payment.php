@@ -142,6 +142,14 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 	$access_status = '';
 
 	if ( 'ib_educator_course' == $post->post_type ) {
+		// Registration allowed?
+		$register = get_post_meta( $post->ID, '_ib_educator_register', true );
+
+		if ( 'closed' == $register ) {
+			echo '<p>' . __( 'Registration for this course is closed.', 'ibeducator' ) . '</p>';
+			return;
+		}
+
 		$access_status = IB_Educator::get_instance()->get_access_status( $post->ID, $user_id );
 
 		if ( ! in_array( $access_status, array( 'course_complete', 'forbidden' ) ) ) {

@@ -209,6 +209,14 @@ class IB_Educator_Actions {
 
 		// Check the course prerequisites.
 		if ( 'course' == $payment_type ) {
+			// Registration allowed?
+			$register = get_post_meta( $post_id, '_ib_educator_register', true );
+
+			if ( 'closed' == $register ) {
+				return;
+			}
+
+			// Check prerequisites.
 			$api = IB_Educator::get_instance();
 
 			if ( ! $api->check_prerequisites( $post_id, $user_id ) ) {
@@ -330,6 +338,13 @@ class IB_Educator_Actions {
 		$course_id = get_the_ID();
 
 		if ( ! $course_id ) {
+			return;
+		}
+
+		// Registration allowed?
+		$register = get_post_meta( $course_id, '_ib_educator_register', true );
+		
+		if ( 'closed' == $register ) {
 			return;
 		}
 

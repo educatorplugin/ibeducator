@@ -522,12 +522,21 @@ function ib_edu_has_quiz( $lesson_id ) {
  * Get HTML for the course price widget.
  *
  * @param int $course_id
+ * @param int $user_id
+ * @param string $before
+ * @param string $after
  * @return string
  */
-function ib_edu_get_price_widget( $course_id, $user_id ) {
+function ib_edu_get_price_widget( $course_id, $user_id, $before = '<div class="ib-edu-course-price">', $after = '</div>' ) {
+	// Registration allowed?
+	$register = get_post_meta( $course_id, '_ib_educator_register', true );
+
+	if ( 'closed' == $register ) {
+		return '';
+	}
+
 	// Check membership.
-	$ms = IB_Educator_Memberships::get_instance();
-	$membership_access = $ms->membership_can_access( $course_id, $user_id );
+	$membership_access = IB_Educator_Memberships::get_instance()->membership_can_access( $course_id, $user_id );
 
 	/**
 	 * Filter the course price widget.
@@ -536,14 +545,14 @@ function ib_edu_get_price_widget( $course_id, $user_id ) {
 	 *
 	 * @param bool $membership_access Whether the user's current membership allows him/her to take the course.
 	 */
-	$output = apply_filters( 'ib_educator_course_price_widget', null, $membership_access );
+	$output = apply_filters( 'ib_educator_course_price_widget', null, $membership_access, $course_id, $user_id );
 	
 	if ( null !== $output ) {
 		return $output;
 	}
 
 	// Generate the widget.
-	$output = '<div class="ib-edu-course-price">';
+	$output = $before;
 
 	if ( $membership_access ) {
 		$register_url = ib_edu_get_endpoint_url( 'edu-action', 'join', get_permalink( $course_id ) );
@@ -559,7 +568,7 @@ function ib_edu_get_price_widget( $course_id, $user_id ) {
 				. '" class="ib-edu-button">' . __( 'Register', 'ibeducator' ) . '</a>';
 	}
 
-	$output .= '</div>';
+	$output .= $after;
 	return $output;
 }
 

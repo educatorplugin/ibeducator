@@ -96,6 +96,10 @@ class IB_Educator_Admin_Meta {
 			return;
 		}
 
+		// Registration.
+		$register = ( isset( $_POST['_ib_educator_register'] ) && 'open' != $_POST['_ib_educator_register'] ) ? 'closed' : 'open';
+		update_post_meta( $post_id, '_ib_educator_register', $register );
+
 		// Price.
 		$price = ( isset( $_POST['_ibedu_price'] ) && is_numeric( $_POST['_ibedu_price'] ) ) ? $_POST['_ibedu_price'] : '';
 		update_post_meta( $post_id, '_ibedu_price', $price );

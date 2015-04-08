@@ -4,11 +4,25 @@ require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-form.php';
 $form = new IB_Educator_Form();
 $form->default_decorators();
 
+// Registration.
+$form->set_value( '_ib_educator_register', get_post_meta( $post->ID, '_ib_educator_register', true ) );
+$form->add( array(
+	'type'    => 'select',
+	'name'    => '_ib_educator_register',
+	'label'   => __( 'Registration', 'ibeducator' ),
+	'options' => array(
+		'open'   => __( 'Open', 'ibeducator' ),
+		'closed' => __( 'Closed', 'ibeducator' ),
+	),
+	'default' => 'open',
+) );
+
 // Price.
 $form->set_value( '_ibedu_price', ib_edu_get_course_price( $post->ID ) );
 $form->add( array(
 	'type'   => 'text',
 	'name'   => '_ibedu_price',
+	'class'  => '',
 	'id'     => 'ib-educator-price',
 	'label'  => __( 'Price', 'ibeducator' ),
 	'before' => esc_html( ib_edu_get_currency_symbol( ib_edu_get_currency() ) ) . ' ',
