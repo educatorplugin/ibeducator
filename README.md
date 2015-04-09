@@ -7,6 +7,7 @@ WordPress.org link: https://wordpress.org/plugins/ibeducator/
 ## Unit Tests
 
 The following files and directories are responsible for unit tests:
+
 * bin/
 * tests/
 * .travis.yml
@@ -15,6 +16,7 @@ The following files and directories are responsible for unit tests:
 *Make sure that those files won't go to production.*
 
 To run PHPUnit tests:
+
 1. Go to wp-content/plugins/ibeducator
 2. RUN: bash bin/install-wp-tests.sh wordpress_test root '' localhost latest
 3. RUN: phpunit
