@@ -8,10 +8,11 @@ WordPress.org link: https://wordpress.org/plugins/ibeducator/
 
 The following files and directories are responsible for unit tests:
 
-* bin/
 * tests/
-* .travis.yml
-* phpunit.xml
+* tests/bin/
+* tests/tests/
+* tests/.travis.yml
+* tests/phpunit.xml
 
 *Make sure that those files won't go to production.*
 
