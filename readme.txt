@@ -4,7 +4,7 @@ Donate link: http://educatorplugin.com
 Tags: learning management system, lms, learning, online courses
 Requires at least: 4.0
 Tested up to: 4.1.1
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,6 +56,12 @@ Coming soon.
 8. **Course Settings**
 
 == Changelog ==
+
+= 1.4.1 =
+* Improved UI for the following admin screens: edit payment, edit entry, edit member.
+* Added "Access" option to lessons. This option allows to make a lesson's content viewable without course registration.
+* Added ability to open/close registration for a given course (the "Registration" option in the course edit screen).
+* Other improvements and fixes.
 
 = 1.4.0 =
 * Refactored the payment system. Now, developers can create custom payment gateways.
