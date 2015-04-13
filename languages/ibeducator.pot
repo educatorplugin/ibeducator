@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Educator WordPress Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-20 12:49-0500\n"
-"PO-Revision-Date: 2015-03-20 12:49-0500\n"
+"POT-Creation-Date: 2015-04-13 11:07-0500\n"
+"PO-Revision-Date: 2015-04-13 11:07-0500\n"
 "Last-Translator: Dmytro\n"
 "Language-Team: English <contact@educatorplugin.com>\n"
 "Language: en\n"
@@ -27,14 +27,14 @@ msgid "Please select a course."
 msgstr ""
 
 #: ../admin/ib-educator-admin-actions.php:107
-#: ../includes/ib-educator-actions.php:207
-#: ../includes/ib-educator-actions.php:340
+#: ../includes/ib-educator-actions.php:235
+#: ../includes/ib-educator-actions.php:373
 #, php-format
 msgid "You have to complete the prerequisites for this course: %s"
 msgstr ""
 
 #: ../admin/ib-educator-admin-actions.php:316
-#: ../admin/meta-boxes/course.php:35 ../admin/meta-boxes/course.php:39
+#: ../admin/meta-boxes/course.php:49 ../admin/meta-boxes/course.php:53
 #: ../admin/templates/members.php:112 ../includes/ib-educator.php:921
 #: ../templates/shortcode-user-membership.php:88
 msgid "None"
@@ -53,8 +53,8 @@ msgid "Membership Settings"
 msgstr ""
 
 #: ../admin/ib-educator-admin-post-types.php:29
-#: ../admin/meta-boxes/lesson.php:9 ../admin/templates/edit-entry.php:132
-#: ../admin/templates/edit-payment.php:134 ../admin/templates/entries.php:92
+#: ../admin/meta-boxes/lesson.php:39 ../admin/templates/edit-entry.php:211
+#: ../admin/templates/edit-payment.php:225 ../admin/templates/entries.php:92
 #: ../admin/templates/entry-progress.php:51
 #: ../includes/ib-educator-post-types.php:35
 #: ../includes/objects/ib-educator-payment.php:67
@@ -89,8 +89,8 @@ msgstr ""
 msgid "Educator Payments"
 msgstr ""
 
-#: ../admin/ib-educator-admin.php:81 ../admin/templates/edit-entry.php:87
-#: ../admin/templates/edit-member.php:156
+#: ../admin/ib-educator-admin.php:81 ../admin/templates/edit-entry.php:166
+#: ../admin/templates/edit-member.php:180
 msgid "Payments"
 msgstr ""
 
@@ -117,31 +117,59 @@ msgid "Are you sure you want to delete this item?"
 msgstr ""
 
 #: ../admin/ib-educator-quiz-admin.php:38 ../templates/content-lesson.php:16
-#: ../templates/quiz.php:68
+#: ../templates/quiz.php:69
 msgid "Quiz"
 msgstr ""
 
-#: ../admin/meta-boxes/course.php:13 ../admin/meta-boxes/membership.php:21
+#: ../admin/meta-boxes/course.php:12
+msgid "Registration"
+msgstr ""
+
+#: ../admin/meta-boxes/course.php:14
+msgid "Open"
+msgstr ""
+
+#: ../admin/meta-boxes/course.php:15
+msgid "Closed"
+msgstr ""
+
+#: ../admin/meta-boxes/course.php:27 ../admin/meta-boxes/membership.php:21
 #: ../includes/ib-educator-account.php:411
 #: ../includes/ib-educator-memberships.php:771
 #: ../templates/shortcode-payment.php:59
 msgid "Price"
 msgstr ""
 
-#: ../admin/meta-boxes/course.php:23 ../admin/meta-boxes/membership.php:31
+#: ../admin/meta-boxes/course.php:37 ../admin/meta-boxes/membership.php:31
 #: ../admin/settings/ib-educator-taxes-settings.php:310
 msgid "Tax Class"
 msgstr ""
 
-#: ../admin/meta-boxes/course.php:34
+#: ../admin/meta-boxes/course.php:48
 msgid "Difficulty"
 msgstr ""
 
-#: ../admin/meta-boxes/course.php:55
+#: ../admin/meta-boxes/course.php:69
 msgid "Prerequisite"
 msgstr ""
 
-#: ../admin/meta-boxes/lesson.php:12
+#: ../admin/meta-boxes/lesson.php:17
+msgid "Access"
+msgstr ""
+
+#: ../admin/meta-boxes/lesson.php:23
+msgid "Registered users"
+msgstr ""
+
+#: ../admin/meta-boxes/lesson.php:24
+msgid "Logged in users"
+msgstr ""
+
+#: ../admin/meta-boxes/lesson.php:25
+msgid "Everyone"
+msgstr ""
+
+#: ../admin/meta-boxes/lesson.php:43
 msgid "Select Course"
 msgstr ""
 
@@ -212,7 +240,7 @@ msgid "Delete"
 msgstr ""
 
 #: ../admin/settings/ib-educator-admin-settings.php:107
-#: ../admin/templates/edit-payment.php:203
+#: ../admin/templates/edit-payment.php:173
 msgid "Select"
 msgstr ""
 
@@ -310,6 +338,7 @@ msgid ""
 msgstr ""
 
 #: ../admin/settings/ib-educator-general-settings.php:52
+#: ../admin/templates/edit-payment.php:84
 #: ../includes/objects/ib-educator-entry.php:54
 #: ../templates/shortcode-payment.php:37
 msgid "Payment"
@@ -369,7 +398,7 @@ msgstr ""
 
 #: ../admin/settings/ib-educator-general-settings.php:151
 #: ../admin/settings/ib-educator-general-settings.php:159
-#: ../admin/templates/edit-payment.php:240
+#: ../admin/templates/edit-payment.php:300
 msgid "Currency"
 msgstr ""
 
@@ -539,7 +568,7 @@ msgid "Cancel"
 msgstr ""
 
 #: ../admin/settings/ib-educator-taxes-settings.php:382
-#: ../admin/templates/edit-payment.php:333
+#: ../admin/templates/edit-payment.php:396
 #: ../includes/ib-educator-account.php:223
 msgid "Country"
 msgstr ""
@@ -549,7 +578,7 @@ msgid "State"
 msgstr ""
 
 #: ../admin/settings/ib-educator-taxes-settings.php:384
-#: ../admin/templates/edit-payment.php:366 ../admin/templates/members.php:58
+#: ../admin/templates/edit-payment.php:425 ../admin/templates/members.php:58
 msgid "Name"
 msgstr ""
 
@@ -609,72 +638,79 @@ msgstr ""
 msgid "Entry saved."
 msgstr ""
 
-#: ../admin/templates/edit-entry.php:80
-msgid "Payment ID"
+#: ../admin/templates/edit-entry.php:84
+msgid "Entry"
 msgstr ""
 
-#: ../admin/templates/edit-entry.php:85
-#, php-format
-msgid "Please find payment ID on %s page."
-msgstr ""
-
-#: ../admin/templates/edit-entry.php:98
-#: ../admin/templates/edit-payment.php:159
-#: ../includes/objects/ib-educator-entry.php:55
-#: ../includes/objects/ib-educator-payment.php:68
-msgid "Membership"
-msgstr ""
-
-#: ../admin/templates/edit-entry.php:101
-#: ../admin/templates/edit-payment.php:163
-msgid "Select Membership"
-msgstr ""
-
-#: ../admin/templates/edit-entry.php:116
-#: ../admin/templates/edit-payment.php:118
-#: ../admin/templates/entry-progress.php:41
-#: ../includes/ib-educator-install.php:313
-msgid "Student"
-msgstr ""
-
-#: ../admin/templates/edit-entry.php:148 ../admin/templates/entries.php:95
-#: ../admin/templates/entry-progress.php:148
-#: ../templates/shortcode-student-courses.php:104
-msgid "Grade"
-msgstr ""
-
-#: ../admin/templates/edit-entry.php:151
-msgid "A number between 0 and 100."
-msgstr ""
-
-#: ../admin/templates/edit-entry.php:157
-msgid "Origin"
-msgstr ""
-
-#: ../admin/templates/edit-entry.php:169
-#: ../admin/templates/edit-member.php:123
-#: ../admin/templates/edit-payment.php:259 ../admin/templates/entries.php:64
+#: ../admin/templates/edit-entry.php:89 ../admin/templates/edit-member.php:87
+#: ../admin/templates/edit-payment.php:104 ../admin/templates/entries.php:64
 #: ../admin/templates/entries.php:94 ../admin/templates/members.php:60
 #: ../admin/templates/payments.php:61 ../admin/templates/payments.php:95
 #: ../templates/shortcode-user-membership.php:51
 msgid "Status"
 msgstr ""
 
-#: ../admin/templates/edit-entry.php:180 ../admin/templates/entries.php:96
+#: ../admin/templates/edit-entry.php:105 ../admin/templates/entries.php:96
 #: ../admin/templates/payments.php:96 ../templates/shortcode-payment.php:40
 #: ../templates/shortcode-user-payments.php:27
 msgid "Date"
 msgstr ""
 
-#: ../admin/templates/edit-entry.php:183
+#: ../admin/templates/edit-entry.php:109
 msgid "Date format: yyyy-mm-dd hh:mm:ss"
 msgstr ""
 
-#: ../admin/templates/edit-entry.php:189
+#: ../admin/templates/edit-entry.php:128
+msgid "Entry Data"
+msgstr ""
+
+#: ../admin/templates/edit-entry.php:138
+#: ../admin/templates/edit-payment.php:251
+#: ../includes/objects/ib-educator-entry.php:55
+#: ../includes/objects/ib-educator-payment.php:68
+msgid "Membership"
+msgstr ""
+
+#: ../admin/templates/edit-entry.php:142
+#: ../admin/templates/edit-payment.php:255
+msgid "Select Membership"
+msgstr ""
+
+#: ../admin/templates/edit-entry.php:158
+msgid "Payment ID"
+msgstr ""
+
+#: ../admin/templates/edit-entry.php:164
+#, php-format
+msgid "Please find payment ID on %s page."
+msgstr ""
+
+#: ../admin/templates/edit-entry.php:175
+msgid "Origin"
+msgstr ""
+
+#: ../admin/templates/edit-entry.php:192
+#: ../admin/templates/edit-payment.php:150
+#: ../admin/templates/entry-progress.php:41
+#: ../includes/ib-educator-install.php:313
+msgid "Student"
+msgstr ""
+
+#: ../admin/templates/edit-entry.php:230 ../admin/templates/entries.php:95
+#: ../admin/templates/entry-progress.php:148
+#: ../templates/shortcode-student-courses.php:104
+msgid "Grade"
+msgstr ""
+
+#: ../admin/templates/edit-entry.php:234
+msgid "A number between 0 and 100."
+msgstr ""
+
+#: ../admin/templates/edit-entry.php:242
 msgid "Prerequisites"
 msgstr ""
 
-#: ../admin/templates/edit-entry.php:191
+#: ../admin/templates/edit-entry.php:245
 msgid "Ignore prerequisites"
 msgstr ""
 
@@ -694,23 +730,33 @@ msgstr ""
 msgid "Member updated."
 msgstr ""
 
-#: ../admin/templates/edit-member.php:82
+#: ../admin/templates/edit-member.php:80
+#: ../admin/templates/edit-member.php:127
 msgid "Member"
 msgstr ""
 
-#: ../admin/templates/edit-member.php:102 ../admin/templates/members.php:59
+#: ../admin/templates/edit-member.php:116
+msgid "Data"
+msgstr ""
+
+#: ../admin/templates/edit-member.php:148 ../admin/templates/members.php:59
 #: ../includes/ib-educator-post-types.php:90
 #: ../templates/shortcode-user-membership.php:35
 msgid "Membership Level"
 msgstr ""
 
-#: ../admin/templates/edit-member.php:138 ../admin/templates/members.php:61
+#: ../admin/templates/edit-member.php:167 ../admin/templates/members.php:61
 #: ../templates/shortcode-user-membership.php:84
 msgid "Expiration Date"
 msgstr ""
 
-#: ../admin/templates/edit-member.php:142
+#: ../admin/templates/edit-member.php:171
 msgid "Enter the date like yyyy-mm-dd hh:mm:ss"
+msgstr ""
+
+#: ../admin/templates/edit-member.php:199 ../admin/templates/payments.php:180
+#: ../templates/shortcode-user-payments.php:68
+msgid "No payments found."
 msgstr ""
 
 #: ../admin/templates/edit-payment.php:39
@@ -733,124 +779,128 @@ msgstr ""
 msgid "Payment saved."
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:80 ../admin/templates/payments.php:48
+#: ../admin/templates/edit-payment.php:89 ../admin/templates/payments.php:48
 #: ../admin/templates/payments.php:91
 msgid "Payment Type"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:91
+#: ../admin/templates/edit-payment.php:117
 #: ../templates/shortcode-student-courses.php:77
 #: ../templates/shortcode-student-courses.php:104
 #: ../templates/shortcode-student-courses.php:130
 msgid "Entry ID"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:97
+#: ../admin/templates/edit-payment.php:127
 msgid "This payment is not connected to any entry."
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:102
+#: ../admin/templates/edit-payment.php:132
 msgid "Create an entry for this student"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:179
-msgid "Update membership for this student"
-msgstr ""
-
-#: ../admin/templates/edit-payment.php:181
-msgid "Setup membership for this student"
-msgstr ""
-
-#: ../admin/templates/edit-payment.php:190
-msgid "Switched from:"
-msgstr ""
-
-#: ../admin/templates/edit-payment.php:200
-#: ../templates/shortcode-payment.php:225
+#: ../admin/templates/edit-payment.php:169
+#: ../templates/shortcode-payment.php:231
 msgid "Payment Method"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:218
-#: ../admin/templates/edit-payment.php:365
-#: ../admin/templates/edit-payment.php:379
+#: ../admin/templates/edit-payment.php:190
+msgid "Transaction ID"
+msgstr ""
+
+#: ../admin/templates/edit-payment.php:200
+msgid "IP"
+msgstr ""
+
+#: ../admin/templates/edit-payment.php:221
+msgid "Items"
+msgstr ""
+
+#: ../admin/templates/edit-payment.php:271
+msgid "Update membership for this student"
+msgstr ""
+
+#: ../admin/templates/edit-payment.php:273
+msgid "Setup membership for this student"
+msgstr ""
+
+#: ../admin/templates/edit-payment.php:283
+#: ../admin/templates/edit-payment.php:424
+#: ../admin/templates/edit-payment.php:438
 msgid "Tax"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:225
+#: ../admin/templates/edit-payment.php:291
 msgid "Total Amount"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:228
+#: ../admin/templates/edit-payment.php:294
 msgid ""
 "A number with a maximum of 2 figures after the decimal point (for example, "
 "9.99)."
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:233
-msgid "Transaction ID"
-msgstr ""
-
-#: ../admin/templates/edit-payment.php:243
+#: ../admin/templates/edit-payment.php:303
 msgid "Select Currency"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:270
+#: ../admin/templates/edit-payment.php:322
+msgid "Billing"
+msgstr ""
+
+#: ../admin/templates/edit-payment.php:326
 #: ../includes/ib-educator-account.php:134
 msgid "First Name"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:277
+#: ../admin/templates/edit-payment.php:334
 #: ../includes/ib-educator-account.php:145
 msgid "Last Name"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:284
+#: ../admin/templates/edit-payment.php:342
 #: ../includes/ib-educator-account.php:156
 msgid "Address"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:291
+#: ../admin/templates/edit-payment.php:350
 #: ../includes/ib-educator-account.php:167
 msgid "Address Line 2"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:298
+#: ../admin/templates/edit-payment.php:358
 #: ../includes/ib-educator-account.php:176
 msgid "City"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:305
+#: ../admin/templates/edit-payment.php:366
 #: ../includes/ib-educator-account.php:212
 msgid "Postcode / Zip"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:312
+#: ../admin/templates/edit-payment.php:374
 #: ../includes/ib-educator-account.php:188
 msgid "State / Province"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:350
-msgid "IP"
-msgstr ""
-
-#: ../admin/templates/edit-payment.php:357
+#: ../admin/templates/edit-payment.php:416
 msgid "Payment Lines"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:362
+#: ../admin/templates/edit-payment.php:421
 msgid "Type"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:363
+#: ../admin/templates/edit-payment.php:422
 msgid "Reference ID"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:364 ../admin/templates/payments.php:93
+#: ../admin/templates/edit-payment.php:423 ../admin/templates/payments.php:93
 #: ../templates/shortcode-user-payments.php:29
 msgid "Amount"
 msgstr ""
 
-#: ../admin/templates/edit-payment.php:380 ../admin/templates/payments.php:90
+#: ../admin/templates/edit-payment.php:439 ../admin/templates/payments.php:90
 #: ../includes/ib-educator-account.php:411
 #: ../templates/shortcode-payment.php:58
 msgid "Item"
@@ -961,11 +1011,6 @@ msgstr ""
 
 #: ../admin/templates/payments.php:94
 msgid "Method"
-msgstr ""
-
-#: ../admin/templates/payments.php:180
-#: ../templates/shortcode-user-payments.php:68
-msgid "No payments found."
 msgstr ""
 
 #: ../admin/templates/settings-payment.php:30
@@ -1112,39 +1157,39 @@ msgstr ""
 msgid "You are registered for this course."
 msgstr ""
 
-#: ../includes/functions.php:408
+#: ../includes/functions.php:417
 msgid "Beginner"
 msgstr ""
 
-#: ../includes/functions.php:409
+#: ../includes/functions.php:418
 msgid "Intermediate"
 msgstr ""
 
-#: ../includes/functions.php:410
+#: ../includes/functions.php:419
 msgid "Advanced"
 msgstr ""
 
-#: ../includes/functions.php:543
+#: ../includes/functions.php:559
 msgid "Join"
 msgstr ""
 
-#: ../includes/functions.php:547
+#: ../includes/functions.php:563
 #: ../includes/gateways/free/ib-educator-gateway-free.php:9
 msgid "Free"
 msgstr ""
 
-#: ../includes/functions.php:550
+#: ../includes/functions.php:566
 msgid "Register"
 msgstr ""
 
-#: ../includes/functions.php:702
+#: ../includes/functions.php:728
 #, php-format
 msgid ""
 "%1$s is <strong>deprecated</strong> since Educator version %2$s! Use %3$s "
 "instead."
 msgstr ""
 
-#: ../includes/functions.php:704
+#: ../includes/functions.php:730
 #, php-format
 msgid ""
 "%1$s is <strong>deprecated</strong> since Educator version %2$s with no "
@@ -1215,7 +1260,7 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
-#: ../includes/ib-educator-actions.php:218
+#: ../includes/ib-educator-actions.php:246
 msgid "Please select a payment method."
 msgstr ""
 
@@ -1426,7 +1471,7 @@ msgid "Thank you message"
 msgstr ""
 
 #: ../includes/gateways/paypal/ib-educator-gateway-paypal.php:134
-#: ../templates/shortcode-payment.php:266
+#: ../templates/shortcode-payment.php:272
 msgid "Continue"
 msgstr ""
 
@@ -1521,7 +1566,7 @@ msgstr ""
 msgid "Thank you. The quiz has been accepted."
 msgstr ""
 
-#: ../templates/quiz.php:42
+#: ../templates/quiz.php:45
 msgid "Quiz Grade"
 msgstr ""
 
@@ -1534,7 +1579,7 @@ msgstr ""
 msgid "Your grade is pending."
 msgstr ""
 
-#: ../templates/quiz.php:159
+#: ../templates/quiz.php:160
 msgid "Submit"
 msgstr ""
 
@@ -1560,15 +1605,19 @@ msgstr ""
 msgid "Please select a course to continue."
 msgstr ""
 
-#: ../templates/shortcode-payment.php:165
+#: ../templates/shortcode-payment.php:147
+msgid "Registration for this course is closed."
+msgstr ""
+
+#: ../templates/shortcode-payment.php:171
 msgid "Already have an account?"
 msgstr ""
 
-#: ../templates/shortcode-payment.php:165
+#: ../templates/shortcode-payment.php:171
 msgid "Log in"
 msgstr ""
 
-#: ../templates/shortcode-payment.php:196
+#: ../templates/shortcode-payment.php:202
 msgid "Payment Information"
 msgstr ""
 
