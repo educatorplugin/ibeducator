@@ -195,13 +195,13 @@ class IB_Educator_Admin {
 	 * Enqueue scripts and styles.
 	 */
 	public static function enqueue_scripts_styles() {
-		wp_enqueue_style( 'ib-educator-admin', IBEDUCATOR_PLUGIN_URL . 'admin/css/admin.css', array(), '1.0' );
+		wp_enqueue_style( 'ib-educator-admin', IBEDUCATOR_PLUGIN_URL . 'admin/css/admin.css', array(), '1.4.1' );
 
 		$screen = get_current_screen();
 
 		if ( $screen ) {
 			if ( 'educator_page_ib_educator_payments' == $screen->id ) {
-				wp_enqueue_script( 'ib-educator-edit-payment', IBEDUCATOR_PLUGIN_URL . 'admin/js/edit-payment.js', array( 'jquery' ), '1.0.0', true );
+				wp_enqueue_script( 'ib-educator-edit-payment', IBEDUCATOR_PLUGIN_URL . 'admin/js/edit-payment.js', array( 'jquery' ), '1.4.1', true );
 				wp_enqueue_script( 'postbox' );
 			} elseif ( 'educator_page_ib_educator_entries' == $screen->id ) {
 				wp_enqueue_script( 'postbox' );
