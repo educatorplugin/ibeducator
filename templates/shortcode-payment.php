@@ -143,9 +143,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 
 	if ( 'ib_educator_course' == $post->post_type ) {
 		// Registration allowed?
-		$register = get_post_meta( $post->ID, '_ib_educator_register', true );
-
-		if ( 'closed' == $register ) {
+		if ( 'closed' == ib_edu_registration( $post->ID ) ) {
 			echo '<p>' . __( 'Registration for this course is closed.', 'ibeducator' ) . '</p>';
 			return;
 		}

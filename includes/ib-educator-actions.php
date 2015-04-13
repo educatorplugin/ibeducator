@@ -210,9 +210,7 @@ class IB_Educator_Actions {
 		// Check the course prerequisites.
 		if ( 'course' == $payment_type ) {
 			// Registration allowed?
-			$register = get_post_meta( $post_id, '_ib_educator_register', true );
-
-			if ( 'closed' == $register ) {
+			if ( 'closed' == ib_edu_registration( $post_id ) ) {
 				return;
 			}
 
@@ -342,9 +340,7 @@ class IB_Educator_Actions {
 		}
 
 		// Registration allowed?
-		$register = get_post_meta( $course_id, '_ib_educator_register', true );
-		
-		if ( 'closed' == $register ) {
+		if ( 'closed' == ib_edu_registration( $course_id ) ) {
 			return;
 		}
 

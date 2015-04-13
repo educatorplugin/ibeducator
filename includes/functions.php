@@ -529,9 +529,7 @@ function ib_edu_has_quiz( $lesson_id ) {
  */
 function ib_edu_get_price_widget( $course_id, $user_id, $before = '<div class="ib-edu-course-price">', $after = '</div>' ) {
 	// Registration allowed?
-	$register = get_post_meta( $course_id, '_ib_educator_register', true );
-
-	if ( 'closed' == $register ) {
+	if ( 'closed' == ib_edu_registration( $course_id ) ) {
 		return '';
 	}
 
@@ -705,6 +703,16 @@ function ib_edu_get_location( $part = null ) {
 	}
 
 	return $result;
+}
+
+/**
+ * Get registration status for a given course.
+ *
+ * @param int $course_id
+ * @return string
+ */
+function ib_edu_registration( $course_id ) {
+	return get_post_meta( $course_id, '_ib_educator_register', true );
 }
 
 /**
