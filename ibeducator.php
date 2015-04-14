@@ -7,7 +7,7 @@ Plugin Name: Educator
 Plugin URI: http://educatorplugin.com/
 Description: Offer courses to students online.
 Author: dmytro.d
-Version: 1.4.1
+Version: 1.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: ibeducator
@@ -31,7 +31,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'IBEDUCATOR_VERSION', '1.4.1' );
+define( 'IBEDUCATOR_VERSION', '1.4.2' );
 define( 'IBEDUCATOR_DB_VERSION', '1.4.0' );
 define( 'IBEDUCATOR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'IBEDUCATOR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
