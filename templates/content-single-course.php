@@ -56,7 +56,7 @@ $course_id = get_the_ID();
 
 	<?php if ( $lessons_query && $lessons_query->have_posts() ) : ?>
 	<section class="ib-edu-lessons">
-		<h2><?php _e( 'Lessons', 'incbeducator' ); ?></h2>
+		<h2><?php _e( 'Lessons', 'ibeducator' ); ?></h2>
 		<?php
 			while ( $lessons_query->have_posts() ) {
 				$lessons_query->the_post();

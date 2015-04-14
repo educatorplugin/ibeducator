@@ -57,7 +57,7 @@ class IB_Educator_Main {
 	 * Load plugin textdomain.
 	 */
 	public static function load_textdomain() {
-		load_plugin_textdomain( 'ibeducator', false, IBEDUCATOR_PLUGIN_DIR . 'languages' );
+		load_plugin_textdomain( 'ibeducator', false, 'ibeducator/languages' );
 	}
 
 	/**

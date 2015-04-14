@@ -19,7 +19,7 @@ if ( ! $student_can_study ) {
 			} else {
 				echo '<p>';
 				printf(
-					__( 'Please register for the %s to view this lesson.', 'incbeducator' ),
+					__( 'Please register for the %s to view this lesson.', 'ibeducator' ),
 					'<a href="' . esc_url( get_permalink( ib_edu_get_course_id() ) ) . '">' . __( 'course', 'ibeducator' ) . '</a>'
 				);
 				echo '</p>';
