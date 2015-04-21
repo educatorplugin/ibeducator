@@ -6,6 +6,11 @@ if ( !$_tests_dir ) $_tests_dir = '/tmp/wordpress-tests-lib';
 require_once $_tests_dir . '/includes/functions.php';
 
 function _manually_load_plugin() {
+	// Set plugin options.
+	update_option( 'ib_educator_learning', array(
+		'lesson_comments' => 1,
+	) );
+
 	require dirname( __FILE__ ) . '/../../ibeducator.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );

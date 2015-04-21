@@ -69,7 +69,7 @@ EOT;
 		ob_start();
 		the_content();
 		$the_content = ob_get_clean();
-		$this->assertEquals( "<p>This text can be visible to anyone. <a href=\"http://example.org/?lesson=course-1-lesson-1#more-45\" class=\"more-link\">(more&hellip;)</a></p>\n", $the_content );
+		$this->assertEquals( "<p>This text can be visible to anyone. <a href=\"http://example.org/?lesson=course-1-lesson-1#more-$post->ID\" class=\"more-link\">(more&hellip;)</a></p>\n", $the_content );
 
 		// Test with more set to 1.
 		$more = 1;
@@ -234,5 +234,93 @@ EOT;
 		$this->assertEquals( "<p>Hidden content.</p>\n", $the_content );
 
 		wp_reset_postdata();
+	}
+
+	/**
+	 * Test if lesson comments aren't retrieved for unregistered users.
+	 * Simulate main query.
+	 */
+	public function testLessonCommentsQueryUnregistered() {
+		global $wp_the_query;
+		$tmp = $wp_the_query;
+
+		// Add a comment.
+		wp_insert_comment( array(
+			'comment_post_ID' => $this->lessons[0],
+			'comment_author' => 'admin',
+			'comment_author_email' => 'admin@example.com',
+			'comment_approved' => 1,
+			'comment_date' => current_time( 'mysql' ),
+			'comment_content' => 'lesson comment content',
+			'comment_author_IP' => '127.0.0.1',
+			'comment_type' => '',
+		) );
+
+		IB_Educator_Post_Types::clear_current_user_courses();
+
+		$wp_the_query = new WP_Query();
+		$wp_the_query->query( array(
+			'feed'      => 'rss2',
+			'post_type' => 'ib_educator_lesson',
+			'name'      => 'course-1-lesson-1',
+		) );
+
+		$this->assertEquals( 0, $wp_the_query->comment_count );
+
+		$wp_the_query = $tmp;
+	}
+
+	/**
+	 * Test if lesson comments are retrieved for registered users.
+	 */
+	public function testLessonCommentsQueryRegistered() {
+		global $wp_the_query;
+		$tmp = $wp_the_query;
+
+		// Add a comment.
+		wp_insert_comment( array(
+			'comment_post_ID' => $this->lessons[2],
+			'comment_author' => 'admin',
+			'comment_author_email' => 'admin@example.com',
+			'comment_approved' => 1,
+			'comment_date' => current_time( 'mysql' ),
+			'comment_content' => 'lesson comment content',
+			'comment_author_IP' => '127.0.0.1',
+			'comment_type' => '',
+		) );
+
+		IB_Educator_Post_Types::clear_current_user_courses();
+
+		$wp_the_query = new WP_Query();
+		$wp_the_query->query( array(
+			'feed'      => 'rss2',
+			'post_type' => 'ib_educator_lesson',
+			'name'      => 'course-3-lesson-1',
+		) );
+
+		$this->assertEquals( 1, $wp_the_query->comment_count );
+
+		$wp_the_query = $tmp;
+	}
+
+	public function testGetLessonComments() {
+		// Add a comment.
+		wp_insert_comment( array(
+			'comment_post_ID' => $this->lessons[2],
+			'comment_author' => 'admin',
+			'comment_author_email' => 'admin@example.com',
+			'comment_approved' => 1,
+			'comment_date' => current_time( 'mysql' ),
+			'comment_content' => 'lesson comment content',
+			'comment_author_IP' => '127.0.0.1',
+			'comment_type' => '',
+		) );
+
+		$comments = get_comments( array(
+			'status'      => 'approve',
+			'post_status' => 'publish',
+		) );
+
+		$this->assertEquals( 0, count($comments) );
 	}
 }

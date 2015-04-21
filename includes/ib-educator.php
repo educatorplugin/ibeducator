@@ -61,7 +61,7 @@ class IB_Educator {
 				} elseif ( 'cancelled' == $result->entry_status ) {
 					$has_cancelled = true;
 				} else {
-					// Found payment/entry record that is not complete nor cancelled.
+					// Found payment/entry record that is neither complete, nor cancelled.
 					if ( 'pending' == $result->entry_status ) {
 						$status = 'pending_entry';
 					} elseif ( 'inprogress' == $result->entry_status ) {

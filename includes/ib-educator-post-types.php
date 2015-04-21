@@ -15,6 +15,11 @@ class IB_Educator_Post_Types {
 		add_filter( 'the_content', array( __CLASS__, 'lock_lessons' ) );
 		add_filter( 'the_content_feed', array( __CLASS__, 'lock_lessons_in_feed' ) );
 		add_filter( 'pre_option_rss_use_excerpt', array( __CLASS__, 'hide_content_in_feed' ) );
+
+		if ( 1 == ib_edu_get_option( 'lesson_comments', 'learning' ) ) {
+			add_filter( 'comment_feed_where', array( __CLASS__, 'hide_comments_in_feed' ), 11, 2 );
+			add_filter( 'comments_clauses', array( __CLASS__, 'hide_lesson_comments' ), 11, 2 );
+		}
 	}
 
 	/**
@@ -53,6 +58,12 @@ class IB_Educator_Post_Types {
 		);
 
 		// Lessons.
+		$supports = array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'page-attributes' );
+
+		if ( 1 == ib_edu_get_option( 'lesson_comments', 'learning' ) ) {
+			$supports[] = 'comments';
+		}
+
 		register_post_type(
 			'ib_educator_lesson',
 			apply_filters( 'ib_educator_cpt_lesson', array(
@@ -70,7 +81,7 @@ class IB_Educator_Post_Types {
 				'capability_type'     => 'ib_educator_lesson',
 				'map_meta_cap'        => true,
 				'hierarchical'        => false,
-				'supports'            => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'page-attributes' ),
+				'supports'            => $supports,
 				'has_archive'         => ( ! empty( $permalink_settings['lessons_archive_base'] ) ) ? $permalink_settings['lessons_archive_base'] : _x( 'lessons', 'lesson slug', 'ibeducator' ),
 				'rewrite'             => array(
 					'slug' => ( ! empty( $permalink_settings['lesson_base'] ) ) ? $permalink_settings['lesson_base'] : _x( 'lessons', 'lessons archive slug', 'ibeducator' ),
@@ -138,6 +149,50 @@ class IB_Educator_Post_Types {
 		);
 	}
 
+	public static function set_current_user_courses( $user_id ) {
+		global $wpdb;
+
+		if ( ! $user_id || ! is_null( self::$current_user_courses ) ) {
+			return;
+		}
+
+		$tables = ib_edu_table_names();
+
+		self::$current_user_courses = $wpdb->get_col( $wpdb->prepare(
+			"SELECT course_id FROM {$tables['entries']} WHERE user_id = %d AND entry_status = 'inprogress'",
+			$user_id
+		) );
+	}
+
+	public static function clear_current_user_courses() {
+		self::$current_user_courses = null;
+	}
+
+	public static function can_user_access( $object, $object_id ) {
+		$access = false;
+		$user_id = get_current_user_id();
+
+		if ( 'lesson' == $object ) {
+			$lesson_access = ib_edu_lesson_access( $object_id );
+
+			if ( 'public' == $lesson_access ) {
+				$access = true;
+			} elseif ( $user_id ) {
+				if ( 'logged_in' == $lesson_access ) {
+					$access = true;
+				} else {
+					self::set_current_user_courses( $user_id );
+
+					if ( in_array( ib_edu_get_course_id( $object_id ), self::$current_user_courses ) ) {
+						$access = true;
+					}
+				}
+			}
+		}
+
+		return $access;
+	}
+
 	/**
 	 * Lock the lesson content.
 	 *
@@ -145,29 +200,10 @@ class IB_Educator_Post_Types {
 	 * @return string
 	 */
 	public static function lock_lessons( $content ) {
-		global $wpdb;
+		$post = get_post();
 
-		if ( 'ib_educator_lesson' == get_post_type() ) {
-			$post = get_post();
-			$lesson_id = ! empty( $post ) ? $post->ID : 0;
-			$user_id = get_current_user_id();
-
-			// Get lesson's access option.
-			$access = get_post_meta( $lesson_id, '_ib_educator_access', true );
-
-			if ( 'public' == $access || ( 'logged_in' == $access && $user_id ) ) {
-				return $content;
-			}
-
-			if ( $user_id && null === self::$current_user_courses ) {
-				$tables = ib_edu_table_names();
-				self::$current_user_courses = $wpdb->get_col( $wpdb->prepare(
-					"SELECT course_id FROM {$tables['entries']} WHERE user_id = %d AND entry_status = 'inprogress'",
-					$user_id
-				) );
-			}
-
-			if ( ! self::$current_user_courses || ! in_array( ib_edu_get_course_id( $lesson_id ), self::$current_user_courses ) ) {
+		if ( ! empty( $post ) && 'ib_educator_lesson' == $post->post_type ) {
+			if ( ! self::can_user_access( 'lesson', $post->ID ) ) {
 				$more_index = strpos( $content, '<span id="more-' );
 
 				if ( false !== $more_index ) {
@@ -207,5 +243,49 @@ class IB_Educator_Post_Types {
 		}
 
 		return $option_value;
+	}
+
+	/**
+	 * Hide lesson comments from feeds.
+	 *
+	 * @param string $limits
+	 * @param WP_Query $query
+	 * @return string
+	 */
+	public static function hide_comments_in_feed( $where, $query ) {
+		global $wpdb;
+
+		if ( ! $query->is_main_query() ) {
+			return $where;
+		}
+
+		if ( ! $query->is_singular ) {
+			// General comments feed.
+			$where .= " AND $wpdb->posts.post_type <> 'ib_educator_lesson'";
+		} elseif ( 'ib_educator_lesson' == $query->get( 'post_type' ) ) {
+			// Comments feed on the single lesson page.
+			if ( ! self::can_user_access( 'lesson', $query->posts[0]->ID ) ) {
+				$where .= " AND 1 = 0";
+			}
+		}
+
+		return $where;
+	}
+
+	/**
+	 * Exclude lesson comments from the comment query.
+	 *
+	 * @param array $pieces
+	 * @param WP_Comment_Query $comment_query
+	 * @return array
+	 */
+	public static function hide_lesson_comments( $pieces, $comment_query ) {
+		global $wpdb;
+
+		if ( false !== strpos( $pieces['join'], " $wpdb->posts ON $wpdb->posts" ) ) {
+			$pieces['where'] .= " AND $wpdb->posts.post_type <> 'ib_educator_lesson'";
+		}
+		
+		return $pieces;
 	}
 }

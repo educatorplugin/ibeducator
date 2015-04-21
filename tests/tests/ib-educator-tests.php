@@ -15,21 +15,32 @@ class IB_Educator_Tests extends WP_UnitTestCase {
 	/**
 	 * Setup initial test data.
 	 * e.g., courses, payments, entries.
+	 * Current user: $this->admin_id
+	 * Lessons:
+	 *  - $this->lessons[0] => lecturer: $this->users['lecturer1'], course: $this->courses[0].
+	 *  - $this->lessons[2] => lecturer: $this->users['lecturer1'], course: $this->courses[2].
+	 *  - $this->lessons[3] => lecturer: $this->admin_id, course: $this->courses[3].
+	 * Entries:
+	 *  - $this->entries['current'] => student: $this->admin_id, course: $this->courses[2], status: inprogress.
 	 */
 	public function basicSetUp() {
 		$this->api = IB_Educator::get_instance();
 
 		// Add users.
+		// lecturer1:
 		$this->users['lecturer1'] = wp_insert_user( array(
 			'user_login' => 'lecturer1',
 			'user_pass'  => '123456',
 			'role'       => 'lecturer',
 		) );
+		// student1:
 		$this->users['student1'] = wp_insert_user( array(
 			'user_login' => 'student1',
 			'user_pass'  => '123456',
 			'role'       => 'student',
 		) );
+
+		// Set current user:
 		global $current_user;
 		$current_user = new WP_User( 1 );
 		$current_user->set_role( 'administrator' );
@@ -43,39 +54,73 @@ class IB_Educator_Tests extends WP_UnitTestCase {
 		// Add courses.
 		$this->courses[] = $this->addCourse( 'test-course-1', 'test course 1', $this->users['lecturer1'], 199.99 );
 		$this->courses[] = $this->addCourse( 'test-course-2', 'test course 2', $this->users['lecturer1'], 287.83 );
+		$this->courses[] = $this->addCourse( 'test-course-3', 'test course 3', $this->users['lecturer1'], 329.83 );
+		$this->courses[] = $this->addCourse( 'test-course-4', 'test course 4', $this->admin_id, 329.83 );
 
 		// Add lessons.
+		// Lesson for course 1:
 		$this->lessons[] = $this->addLesson( array(
 			'course_id' => $this->courses[0],
 			'author_id' => $this->users['lecturer1'],
 			'slug'      => 'course-1-lesson-1',
 			'title'     => 'course 1 lesson 1',
 		) );
+		// Lesson for course 2:
 		$this->lessons[] = $this->addLesson( array(
 			'course_id' => $this->courses[1],
 			'author_id' => $this->users['lecturer1'],
 			'slug'      => 'course-2-lesson-1',
 			'title'     => 'course 2 lesson 1',
 		) );
+		// Lesson for course 3:
+		$this->lessons[] = $this->addLesson( array(
+			'course_id' => $this->courses[2],
+			'author_id' => $this->users['lecturer1'],
+			'slug'      => 'course-3-lesson-1',
+			'title'     => 'course 3 lesson 1',
+		) );
+		// Lesson for course 4:
+		$this->lessons[] = $this->addLesson( array(
+			'course_id' => $this->courses[3],
+			'author_id' => $this->admin_id,
+			'slug'      => 'course-4-lesson-1',
+			'title'     => 'course 4 lesson 1',
+		) );
 
 		// Add payments.
+		// Payment from student1 for course 1 (complete):
 		$this->payments['complete'] = $this->addPayment( array(
 			'payment_type'   => 'course',
 			'payment_status' => 'complete',
 			'course_id'      => $this->courses[0],
 			'user_id'        => $this->users['student1'],
 		) );
+		// Payment from student1 for course 2 (pending):
 		$this->payments['pending'] = $this->addPayment( array(
 			'payment_type'   => 'course',
 			'payment_status' => 'pending',
 			'course_id'      => $this->courses[1],
 			'user_id'        => $this->users['student1'],
 		) );
+		// Payment from current user for course 3 (complete):
+		$this->payments['current'] = $this->addPayment( array(
+			'payment_type'   => 'course',
+			'payment_status' => 'complete',
+			'course_id'      => $this->courses[2],
+			'user_id'        => $this->admin_id,
+		) );
 
-		// Add entry.
+		// Add entries.
+		// Entry for student1 for course 1:
 		$this->entries['inprogress'] = $this->addEntry( array(
 			'payment_id'   => $this->payments['complete'],
 			'course_id'    => $this->courses[0],
+			'entry_status' => 'inprogress',
+		) );
+		// Entry for current user for course 3:
+		$this->entries['current'] = $this->addEntry( array(
+			'payment_id'   => $this->payments['current'],
+			'course_id'    => $this->courses[2],
 			'entry_status' => 'inprogress',
 		) );
 	}

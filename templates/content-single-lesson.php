@@ -34,3 +34,12 @@ if ( ! $student_can_study ) {
 		?>
 	</nav>
 </article>
+
+<?php
+	// Comments.
+	if ( $student_can_study
+		 && 1 == ib_edu_get_option( 'lesson_comments', 'learning' )
+		 && ( comments_open() || get_comments_number() ) ) {
+		comments_template();
+	}
+?>

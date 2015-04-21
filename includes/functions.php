@@ -24,6 +24,10 @@ function ib_edu_get_option( $option_key, $option_section ) {
 			$options = get_option( 'ib_educator_settings' );
 			break;
 
+		case 'learning':
+			$options = get_option( 'ib_educator_learning' );
+			break;
+
 		case 'taxes':
 			$options = get_option( 'ib_educator_taxes' );
 			break;
@@ -136,6 +140,7 @@ function ib_edu_get_currencies() {
 		'RUB' => __( 'Russian Rubles', 'ibeducator' ),
 		'SGD' => __( 'Singapore Dollar', 'ibeducator' ),
 		'SEK' => __( 'Swedish Krona', 'ibeducator' ),
+		'KRW' => __( 'South Korean Won', 'ibeducator' ),
 		'CHF' => __( 'Swiss Franc', 'ibeducator' ),
 		'TWD' => __( 'Taiwan New Dollars', 'ibeducator' ),
 		'THB' => __( 'Thai Baht', 'ibeducator' ),
@@ -365,28 +370,29 @@ function ib_edu_get_course_id( $lesson_id = null ) {
  * @return bool
  */
 function ib_edu_student_can_study( $lesson_id ) {
-	// Get lesson's access option.
-	$access = get_post_meta( $lesson_id, '_ib_educator_access', true );
+	$lesson_access = ib_edu_lesson_access( $lesson_id );
+	$user_id = get_current_user_id();
+	$access = false;
 
-	if ( 'public' == $access ) {
-		return true;
-	} elseif ( is_user_logged_in() ) {
-		if ( 'logged_in' == $access ) {
-			return true;
-		}
+	if ( 'public' == $lesson_access ) {
+		$access = true;
+	} elseif ( $user_id ) {
+		if ( 'logged_in' == $lesson_access ) {
+			$access = true;
+		} else {
+			$course_id = ib_edu_get_course_id( $lesson_id );
 
-		$course_id = ib_edu_get_course_id( $lesson_id );
+			if ( $course_id ) {
+				$access_status = IB_Educator::get_instance()->get_access_status( $course_id, $user_id );
 
-		if ( $course_id ) {
-			$access_status = IB_Educator::get_instance()->get_access_status( $course_id, get_current_user_id() );
-
-			if ( in_array( $access_status, array( 'inprogress', 'course_complete' ) ) ) {
-				return true;
+				if ( in_array( $access_status, array( 'inprogress', 'course_complete' ) ) ) {
+					$access = true;
+				}
 			}
 		}
 	}
 
-	return false;
+	return $access;
 }
 
 /**
@@ -713,6 +719,16 @@ function ib_edu_get_location( $part = null ) {
  */
 function ib_edu_registration( $course_id ) {
 	return get_post_meta( $course_id, '_ib_educator_register', true );
+}
+
+/**
+ * Get lesson's access.
+ *
+ * @param int $lesson_id
+ * @return string
+ */
+function ib_edu_lesson_access( $lesson_id ) {
+	return get_post_meta( $lesson_id, '_ib_educator_access', true );
 }
 
 /**

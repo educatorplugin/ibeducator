@@ -24,12 +24,14 @@ class IB_Educator_Admin {
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/ib-educator-quiz-admin.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-admin-settings.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-general-settings.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-learning-settings.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-payment-settings.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-taxes-settings.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-email-settings.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-memberships-settings.php';
 
 		new IB_Educator_General_Settings();
+		new IB_Educator_Learning_Settings();
 		new IB_Educator_Payment_Settings();
 		new IB_Educator_Taxes_Settings();
 		new IB_Educator_Email_Settings();
