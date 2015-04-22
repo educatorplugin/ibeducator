@@ -4,7 +4,7 @@ Donate link: http://educatorplugin.com
 Tags: learning management system, lms, learning, online courses
 Requires at least: 4.0
 Tested up to: 4.1.1
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,6 +56,13 @@ Coming soon.
 8. **Course Settings**
 
 == Changelog ==
+
+= 1.4.3 =
+* Added ability to enable lesson comments.
+  - The visibility of the lesson comments on the single lesson page depens on the lesson's "Access" option.
+  - Lesson comments are removed from the general comments feed (e.g., example.com/?feed=comments-rss2).
+* Moved the priorities of the lessons' content filters (that hide lessons' content) such that they are executed later in queue (file: includes/ib-educator-post-types.php).
+* Other improvements and fixes.
 
 = 1.4.2 =
 * Fixed an issue when the plugin didn't load translation (.MO) file from the "languages" directory. It loaded the MO file from "wp-content/languages/plugins" directory.

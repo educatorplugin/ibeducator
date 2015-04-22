@@ -12,13 +12,13 @@ class IB_Educator_Post_Types {
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'register_post_types' ), 8 ); // Run before the plugin update.
 		add_action( 'init', array( __CLASS__, 'register_taxonomies' ), 8 ); // Run before the plugin update.
-		add_filter( 'the_content', array( __CLASS__, 'lock_lessons' ) );
-		add_filter( 'the_content_feed', array( __CLASS__, 'lock_lessons_in_feed' ) );
-		add_filter( 'pre_option_rss_use_excerpt', array( __CLASS__, 'hide_content_in_feed' ) );
+		add_filter( 'the_content', array( __CLASS__, 'lock_lessons' ), 15 );
+		add_filter( 'the_content_feed', array( __CLASS__, 'lock_lessons_in_feed' ), 15 );
+		add_filter( 'pre_option_rss_use_excerpt', array( __CLASS__, 'hide_content_in_feed' ), 15 );
 
 		if ( 1 == ib_edu_get_option( 'lesson_comments', 'learning' ) ) {
-			add_filter( 'comment_feed_where', array( __CLASS__, 'hide_comments_in_feed' ), 11, 2 );
-			add_filter( 'comments_clauses', array( __CLASS__, 'hide_lesson_comments' ), 11, 2 );
+			add_filter( 'comment_feed_where', array( __CLASS__, 'hide_comments_in_feed' ), 15, 2 );
+			add_filter( 'comments_clauses', array( __CLASS__, 'hide_lesson_comments' ), 15, 2 );
 		}
 	}
 
