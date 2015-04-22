@@ -61,7 +61,6 @@ Coming soon.
 * Added ability to enable lesson comments.
   - The visibility of the lesson comments on the single lesson page depens on the lesson's "Access" option.
   - Lesson comments are removed from the general comments feed (e.g., example.com/?feed=comments-rss2).
-* Moved the priorities of the lessons' content filters (that hide lessons' content) such that they are executed later in queue (file: includes/ib-educator-post-types.php).
 * Other improvements and fixes.
 
 = 1.4.2 =
