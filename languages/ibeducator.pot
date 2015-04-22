@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Educator WordPress Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-13 11:07-0500\n"
-"PO-Revision-Date: 2015-04-13 11:07-0500\n"
+"POT-Creation-Date: 2015-04-22 08:20-0500\n"
+"PO-Revision-Date: 2015-04-22 08:20-0500\n"
 "Last-Translator: Dmytro\n"
 "Language-Team: English <contact@educatorplugin.com>\n"
 "Language: en\n"
@@ -56,7 +56,7 @@ msgstr ""
 #: ../admin/meta-boxes/lesson.php:39 ../admin/templates/edit-entry.php:211
 #: ../admin/templates/edit-payment.php:225 ../admin/templates/entries.php:92
 #: ../admin/templates/entry-progress.php:51
-#: ../includes/ib-educator-post-types.php:35
+#: ../includes/ib-educator-post-types.php:40
 #: ../includes/objects/ib-educator-payment.php:67
 #: ../templates/shortcode-student-courses.php:29
 #: ../templates/shortcode-student-courses.php:77
@@ -69,45 +69,46 @@ msgstr ""
 msgid "All courses"
 msgstr ""
 
-#: ../admin/ib-educator-admin.php:62 ../admin/ib-educator-admin.php:63
+#: ../admin/ib-educator-admin.php:64 ../admin/ib-educator-admin.php:65
 msgid "Educator"
 msgstr ""
 
-#: ../admin/ib-educator-admin.php:72 ../admin/templates/settings-email.php:4
+#: ../admin/ib-educator-admin.php:74 ../admin/templates/settings-email.php:4
 #: ../admin/templates/settings-general.php:4
+#: ../admin/templates/settings-learning.php:4
 #: ../admin/templates/settings-memberships.php:4
 #: ../admin/templates/settings-payment.php:26
 #: ../admin/templates/settings-taxes.php:4
 msgid "Educator Settings"
 msgstr ""
 
-#: ../admin/ib-educator-admin.php:73
+#: ../admin/ib-educator-admin.php:75
 msgid "Settings"
 msgstr ""
 
-#: ../admin/ib-educator-admin.php:80 ../admin/templates/payments.php:34
+#: ../admin/ib-educator-admin.php:82 ../admin/templates/payments.php:34
 msgid "Educator Payments"
 msgstr ""
 
-#: ../admin/ib-educator-admin.php:81 ../admin/templates/edit-entry.php:166
+#: ../admin/ib-educator-admin.php:83 ../admin/templates/edit-entry.php:166
 #: ../admin/templates/edit-member.php:180
 msgid "Payments"
 msgstr ""
 
-#: ../admin/ib-educator-admin.php:90 ../admin/ib-educator-admin.php:98
+#: ../admin/ib-educator-admin.php:92 ../admin/ib-educator-admin.php:100
 #: ../admin/templates/entries.php:50
 msgid "Educator Entries"
 msgstr ""
 
-#: ../admin/ib-educator-admin.php:91 ../admin/ib-educator-admin.php:99
+#: ../admin/ib-educator-admin.php:93 ../admin/ib-educator-admin.php:101
 msgid "Entries"
 msgstr ""
 
-#: ../admin/ib-educator-admin.php:108 ../admin/templates/members.php:28
+#: ../admin/ib-educator-admin.php:110 ../admin/templates/members.php:28
 msgid "Educator Members"
 msgstr ""
 
-#: ../admin/ib-educator-admin.php:109
+#: ../admin/ib-educator-admin.php:111
 msgid "Members"
 msgstr ""
 
@@ -430,6 +431,15 @@ msgstr ""
 msgid "General"
 msgstr ""
 
+#: ../admin/settings/ib-educator-learning-settings.php:19
+#: ../admin/settings/ib-educator-learning-settings.php:77
+msgid "Learning"
+msgstr ""
+
+#: ../admin/settings/ib-educator-learning-settings.php:27
+msgid "Enable comments on lessons"
+msgstr ""
+
 #: ../admin/settings/ib-educator-memberships-settings.php:19
 msgid "Memberships Settings"
 msgstr ""
@@ -456,7 +466,7 @@ msgid "Courses archive base"
 msgstr ""
 
 #: ../admin/settings/ib-educator-permalink-settings.php:46
-#: ../includes/ib-educator-post-types.php:28
+#: ../includes/ib-educator-post-types.php:33
 msgctxt "courses archive slug"
 msgid "courses"
 msgstr ""
@@ -466,7 +476,7 @@ msgid "Course base"
 msgstr ""
 
 #: ../admin/settings/ib-educator-permalink-settings.php:60
-#: ../includes/ib-educator-post-types.php:27
+#: ../includes/ib-educator-post-types.php:32
 msgctxt "course slug"
 msgid "courses"
 msgstr ""
@@ -476,7 +486,7 @@ msgid "Lessons archive base"
 msgstr ""
 
 #: ../admin/settings/ib-educator-permalink-settings.php:74
-#: ../includes/ib-educator-post-types.php:76
+#: ../includes/ib-educator-post-types.php:87
 msgctxt "lessons archive slug"
 msgid "lessons"
 msgstr ""
@@ -486,7 +496,7 @@ msgid "Lesson base"
 msgstr ""
 
 #: ../admin/settings/ib-educator-permalink-settings.php:88
-#: ../includes/ib-educator-post-types.php:74
+#: ../includes/ib-educator-post-types.php:85
 msgctxt "lesson slug"
 msgid "lessons"
 msgstr ""
@@ -740,7 +750,7 @@ msgid "Data"
 msgstr ""
 
 #: ../admin/templates/edit-member.php:148 ../admin/templates/members.php:59
-#: ../includes/ib-educator-post-types.php:90
+#: ../includes/ib-educator-post-types.php:101
 #: ../templates/shortcode-user-membership.php:35
 msgid "Membership Level"
 msgstr ""
@@ -1025,171 +1035,175 @@ msgstr ""
 msgid "Payment Gateways:"
 msgstr ""
 
-#: ../includes/functions.php:115
+#: ../includes/functions.php:119
 msgid "Australian Dollars"
 msgstr ""
 
-#: ../includes/functions.php:116
+#: ../includes/functions.php:120
 msgid "Azerbaijani Manat"
 msgstr ""
 
-#: ../includes/functions.php:117
+#: ../includes/functions.php:121
 msgid "Brazilian Real"
 msgstr ""
 
-#: ../includes/functions.php:118
+#: ../includes/functions.php:122
 msgid "Canadian Dollars"
 msgstr ""
 
-#: ../includes/functions.php:119
+#: ../includes/functions.php:123
 msgid "Chinese Yuan"
 msgstr ""
 
-#: ../includes/functions.php:120
+#: ../includes/functions.php:124
 msgid "Czech Koruna"
 msgstr ""
 
-#: ../includes/functions.php:121
+#: ../includes/functions.php:125
 msgid "Danish Krone"
 msgstr ""
 
-#: ../includes/functions.php:122
+#: ../includes/functions.php:126
 msgid "Euros"
 msgstr ""
 
-#: ../includes/functions.php:123
+#: ../includes/functions.php:127
 msgid "Hong Kong Dollar"
 msgstr ""
 
-#: ../includes/functions.php:124
+#: ../includes/functions.php:128
 msgid "Hungarian Forint"
 msgstr ""
 
-#: ../includes/functions.php:125
+#: ../includes/functions.php:129
 msgid "Indian Rupee"
 msgstr ""
 
-#: ../includes/functions.php:126
+#: ../includes/functions.php:130
 msgid "Iranian Rial"
 msgstr ""
 
-#: ../includes/functions.php:127
+#: ../includes/functions.php:131
 msgid "Israeli Shekel"
 msgstr ""
 
-#: ../includes/functions.php:128
+#: ../includes/functions.php:132
 msgid "Japanese Yen"
 msgstr ""
 
-#: ../includes/functions.php:129
+#: ../includes/functions.php:133
 msgid "Malaysian Ringgits"
 msgstr ""
 
-#: ../includes/functions.php:130
+#: ../includes/functions.php:134
 msgid "Mexican Peso"
 msgstr ""
 
-#: ../includes/functions.php:131
+#: ../includes/functions.php:135
 msgid "New Zealand Dollar"
 msgstr ""
 
-#: ../includes/functions.php:132
+#: ../includes/functions.php:136
 msgid "Norwegian Krone"
 msgstr ""
 
-#: ../includes/functions.php:133
+#: ../includes/functions.php:137
 msgid "Philippine Pesos"
 msgstr ""
 
-#: ../includes/functions.php:134
+#: ../includes/functions.php:138
 msgid "Polish Zloty"
 msgstr ""
 
-#: ../includes/functions.php:135
+#: ../includes/functions.php:139
 msgid "Pounds Sterling"
 msgstr ""
 
-#: ../includes/functions.php:136
+#: ../includes/functions.php:140
 msgid "Russian Rubles"
 msgstr ""
 
-#: ../includes/functions.php:137
+#: ../includes/functions.php:141
 msgid "Singapore Dollar"
 msgstr ""
 
-#: ../includes/functions.php:138
+#: ../includes/functions.php:142
 msgid "Swedish Krona"
 msgstr ""
 
-#: ../includes/functions.php:139
-msgid "Swiss Franc"
-msgstr ""
-
-#: ../includes/functions.php:140
-msgid "Taiwan New Dollars"
-msgstr ""
-
-#: ../includes/functions.php:141
-msgid "Thai Baht"
-msgstr ""
-
-#: ../includes/functions.php:142
-msgid "Turkish Lira"
-msgstr ""
-
 #: ../includes/functions.php:143
-msgid "US Dollars"
+msgid "South Korean Won"
 msgstr ""
 
 #: ../includes/functions.php:144
+msgid "Swiss Franc"
+msgstr ""
+
+#: ../includes/functions.php:145
+msgid "Taiwan New Dollars"
+msgstr ""
+
+#: ../includes/functions.php:146
+msgid "Thai Baht"
+msgstr ""
+
+#: ../includes/functions.php:147
+msgid "Turkish Lira"
+msgstr ""
+
+#: ../includes/functions.php:148
+msgid "US Dollars"
+msgstr ""
+
+#: ../includes/functions.php:149
 msgid "Ukrainian Hryvnia"
 msgstr ""
 
-#: ../includes/functions.php:329
+#: ../includes/functions.php:334
 msgid "Your registration is pending."
 msgstr ""
 
-#: ../includes/functions.php:333
+#: ../includes/functions.php:338
 msgid "The payment for this course is pending."
 msgstr ""
 
-#: ../includes/functions.php:337 ../templates/content-single-course.php:21
+#: ../includes/functions.php:342 ../templates/content-single-course.php:21
 msgid "You are registered for this course."
 msgstr ""
 
-#: ../includes/functions.php:417
+#: ../includes/functions.php:423
 msgid "Beginner"
 msgstr ""
 
-#: ../includes/functions.php:418
+#: ../includes/functions.php:424
 msgid "Intermediate"
 msgstr ""
 
-#: ../includes/functions.php:419
+#: ../includes/functions.php:425
 msgid "Advanced"
 msgstr ""
 
-#: ../includes/functions.php:559
+#: ../includes/functions.php:565
 msgid "Join"
 msgstr ""
 
-#: ../includes/functions.php:563
+#: ../includes/functions.php:569
 #: ../includes/gateways/free/ib-educator-gateway-free.php:9
 msgid "Free"
 msgstr ""
 
-#: ../includes/functions.php:566
+#: ../includes/functions.php:572
 msgid "Register"
 msgstr ""
 
-#: ../includes/functions.php:728
+#: ../includes/functions.php:744
 #, php-format
 msgid ""
 "%1$s is <strong>deprecated</strong> since Educator version %2$s! Use %3$s "
 "instead."
 msgstr ""
 
-#: ../includes/functions.php:730
+#: ../includes/functions.php:746
 #, php-format
 msgid ""
 "%1$s is <strong>deprecated</strong> since Educator version %2$s with no "
@@ -1347,57 +1361,57 @@ msgstr[1] ""
 msgid "Purchase"
 msgstr ""
 
-#: ../includes/ib-educator-post-types.php:34
+#: ../includes/ib-educator-post-types.php:39
 msgid "Courses"
 msgstr ""
 
-#: ../includes/ib-educator-post-types.php:60
+#: ../includes/ib-educator-post-types.php:71
 #: ../templates/content-single-course.php:59
 msgid "Lessons"
 msgstr ""
 
-#: ../includes/ib-educator-post-types.php:61
+#: ../includes/ib-educator-post-types.php:72
 msgid "Lesson"
 msgstr ""
 
-#: ../includes/ib-educator-post-types.php:87
-#: ../includes/ib-educator-post-types.php:89
+#: ../includes/ib-educator-post-types.php:98
+#: ../includes/ib-educator-post-types.php:100
 msgid "Membership Levels"
 msgstr ""
 
-#: ../includes/ib-educator-post-types.php:91
+#: ../includes/ib-educator-post-types.php:102
 msgid "Add New Membership Level"
 msgstr ""
 
-#: ../includes/ib-educator-post-types.php:92
+#: ../includes/ib-educator-post-types.php:103
 msgid "Edit Membership Level"
 msgstr ""
 
-#: ../includes/ib-educator-post-types.php:93
+#: ../includes/ib-educator-post-types.php:104
 msgid "New Membership Level"
 msgstr ""
 
-#: ../includes/ib-educator-post-types.php:94
+#: ../includes/ib-educator-post-types.php:105
 msgid "View Membership Level"
 msgstr ""
 
-#: ../includes/ib-educator-post-types.php:95
+#: ../includes/ib-educator-post-types.php:106
 msgid "Search Membership Levels"
 msgstr ""
 
-#: ../includes/ib-educator-post-types.php:96
+#: ../includes/ib-educator-post-types.php:107
 msgid "No membership levels found"
 msgstr ""
 
-#: ../includes/ib-educator-post-types.php:97
+#: ../includes/ib-educator-post-types.php:108
 msgid "No membership levels found in Trash"
 msgstr ""
 
-#: ../includes/ib-educator-post-types.php:126
+#: ../includes/ib-educator-post-types.php:137
 msgid "Course Categories"
 msgstr ""
 
-#: ../includes/ib-educator-post-types.php:132
+#: ../includes/ib-educator-post-types.php:143
 msgctxt "slug"
 msgid "course-category"
 msgstr ""

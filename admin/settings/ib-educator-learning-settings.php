@@ -24,7 +24,7 @@ class IB_Educator_Learning_Settings extends IB_Educator_Admin_Settings {
 		// Setting: 
 		add_settings_field(
 			'edu_lesson_comments',
-			__( 'Enable lesson comments', 'ibeducator' ),
+			__( 'Enable comments on lessons', 'ibeducator' ),
 			array( $this, 'setting_checkbox' ),
 			'ib_educator_learning_page', // page
 			'ib_educator_learning_settings', // section

@@ -58,7 +58,7 @@ Coming soon.
 == Changelog ==
 
 = 1.4.3 =
-* Added ability to enable lesson comments.
+* Added ability to enable comments on lessons.
   - The visibility of the lesson comments on the single lesson page depens on the lesson's "Access" option.
   - Lesson comments are removed from the general comments feed (e.g., example.com/?feed=comments-rss2).
 * Other improvements and fixes.
