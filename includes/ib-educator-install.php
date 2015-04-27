@@ -51,11 +51,13 @@ class IB_Educator_Install {
 	 * @param bool $inc_endpoints
 	 */
 	public function activate( $inc_post_types = true, $inc_endpoints = true ) {
-		/*$current_version = get_option( 'ib_educator_version' );
+		$current_version = get_option( 'ib_educator_version' );
 
 		if ( $current_version ) {
-			if ( version_compare( $current_version, '1.2.0', '<=' ) ) {}
-		}*/
+			if ( version_compare( $current_version, '1.4.3', '<=' ) ) {
+				$this->update_1_4_4();
+			}
+		}
 
 		// Setup the database tables.
 		$this->setup_tables();
@@ -498,5 +500,36 @@ Administration',
 		}
 
 		update_option( 'ib_educator_tax_classes', $classes );
+	}
+
+	public function update_1_4_4() {
+		// Update term ids for memberships (due to term splitting since WP 4.2).
+		$memberships = get_posts( array(
+			'post_type'      => 'ib_edu_membership',
+			'posts_per_page' => -1,
+		) );
+
+		if ( ! empty( $memberships ) ) {
+			foreach ( $memberships as $post ) {
+				$meta = get_post_meta( $post->ID, '_ib_educator_membership', true );
+
+				if ( is_array( $meta ) && isset( $meta['categories'] ) && is_array( $meta['categories'] ) ) {
+					$update = false;
+
+					foreach ( $meta['categories'] as $key => $term_id ) {
+						$new_term_id = wp_get_split_term( $term_id, 'ib_educator_category' );
+
+						if ( $new_term_id ) {
+							$meta['categories'][ $key ] = $new_term_id;
+							$update = true;
+						}
+					}
+
+					if ( $update ) {
+						update_post_meta( $post->ID, '_ib_educator_membership', $meta );
+					}
+				}
+			}
+		}
 	}
 }
