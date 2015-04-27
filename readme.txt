@@ -14,13 +14,13 @@ Educator is a simple learning management system plugin for WordPress.
 
 You can use this plugin to offer online courses on your WordPress website.
 
-Links:
+= Links: =
 
 * Documentation: http://educatorplugin.com/
 * Learn how this plugin works: http://educatorplugin.com/how-educator-works/
 * Official github repository: https://github.com/dmytro-d/ibeducator
 
-Features:
+= Features: =
 
 * Create courses and add lessons.
 * Create quizzes.
@@ -34,6 +34,10 @@ Features:
 * Course prerequisite.
 * Course/membership payment action and filter hooks.
 * NEW: taxes feature. Because it is a new feature, please test it carefully before using.
+
+= Important Updates =
+
+* <a href="http://educatorplugin.com/term-taxonomy-splitting-in-wp-4-2-and-how-it-affects-educator/">Term Taxonomy Splitting in WP 4.2 and How It Affects Educator</a>
 
 == Installation ==
 
@@ -59,6 +63,7 @@ Coming soon.
 
 = 1.4.4 =
 * IMPORTANT UPDATE: added a fix in response to the taxonomy term splitting since WordPress 4.2. Since WP 4.2, when you update a term (e.g., a "Course Category") and if it is shared between multiple taxonomies, a new term is created which replaces the current term and has a different term_id. Educator stores term_id's for memberships (Educator > Membership Levels > Membership Settings > Categories) to give members ability to join courses from specified categories. If the term gets split, it's new term_id won't correspond to the old one that is stored in a membership. Educator 1.4.4 addresses this issue.
+* Please read this article carefully: <a href="http://educatorplugin.com/term-taxonomy-splitting-in-wp-4-2-and-how-it-affects-educator/">Term Taxonomy Splitting in WP 4.2 and How It Affects Educator</a>. You might need to update "categories" attribute in the Educator's [courses] shortcode (when you edit categories in Courses > Course Categories), if you use this shortcode somewhere.
 
 = 1.4.3 =
 * Added ability to enable comments on lessons.

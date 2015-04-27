@@ -503,6 +503,10 @@ Administration',
 	}
 
 	public function update_1_4_4() {
+		if ( ! function_exists( 'wp_get_split_term' ) ) {
+			return;
+		}
+
 		// Update term ids for memberships (due to term splitting since WP 4.2).
 		$memberships = get_posts( array(
 			'post_type'      => 'ib_edu_membership',
