@@ -3,8 +3,8 @@ Contributors: dmytro.d
 Donate link: http://educatorplugin.com
 Tags: learning management system, lms, learning, online courses
 Requires at least: 4.0
-Tested up to: 4.1.1
-Stable tag: 1.4.3
+Tested up to: 4.2
+Stable tag: 1.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,6 +56,9 @@ Coming soon.
 8. **Course Settings**
 
 == Changelog ==
+
+= 1.4.4 =
+* IMPORTANT UPDATE: added a fix in response to the taxonomy term splitting since WordPress 4.2. Since WP 4.2, when you update a term (e.g., a "Course Category") and if it is shared between multiple taxonomies, a new term is created which replaces the current term and has a different term_id. Educator stores term_id's for memberships (Educator > Membership Levels > Membership Settings > Categories) to give members ability to join courses from specified categories. If the term gets split, it's new term_id won't correspond to the old one that is stored in a membership. Educator 1.4.4 addresses this issue.
 
 = 1.4.3 =
 * Added ability to enable comments on lessons.

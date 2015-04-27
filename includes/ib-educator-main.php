@@ -24,6 +24,9 @@ class IB_Educator_Main {
 		add_action( 'ib_educator_after_main_loop', array( __CLASS__, 'action_after_main_loop' ) );
 		add_action( 'ib_educator_sidebar', array( __CLASS__, 'action_sidebar' ) );
 		add_action( 'ib_educator_before_course_content', array( __CLASS__, 'before_course_content' ) );
+
+		// Update splitted shared terms.
+		add_action( 'split_shared_term', array( __CLASS__, 'split_shared_term' ), 10, 4 );
 	}
 
 	/**
@@ -282,6 +285,39 @@ class IB_Educator_Main {
 		}
 
 		return $items;
+	}
+
+	/**
+	 * Update term_id when a shared term is split.
+	 */
+	public static function split_shared_term( $old_term_id, $new_term_id, $term_taxonomy_id, $taxonomy ) {
+		if ( 'ib_educator_category' == $taxonomy ) {
+			$memberships = get_posts( array(
+				'post_type'      => 'ib_edu_membership',
+				'posts_per_page' => -1,
+			) );
+
+			if ( ! empty( $memberships ) ) {
+				foreach ( $memberships as $post ) {
+					$meta = get_post_meta( $post->ID, '_ib_educator_membership', true );
+					
+					if ( is_array( $meta ) && isset( $meta['categories'] ) && is_array( $meta['categories'] ) ) {
+						$update = false;
+
+						foreach ( $meta['categories'] as $key => $term_id ) {
+							if ( $term_id == $old_term_id ) {
+								$meta['categories'][ $key ] = $new_term_id;
+								$update = true;
+							}
+						}
+
+						if ( $update ) {
+							update_post_meta( $post->ID, '_ib_educator_membership', $meta );
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**
