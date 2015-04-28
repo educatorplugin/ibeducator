@@ -15,10 +15,9 @@ if ( ! empty( $gateway_id ) && ! isset( $gateways[ $gateway_id ] ) ) {
 	return;
 } elseif ( empty( $gateway_id ) ) {
 	reset( $gateways );
-	$gateway_id = $gateways[ key( $gateways ) ]->get_id();
+	$gateway_id = key( $gateways );
 }
 
-$gateway = $gateways[ $gateway_id ];
 $message = isset( $_GET['edu-message'] ) ? $_GET['edu-message'] : '';
 ?>
 
@@ -35,7 +34,13 @@ $message = isset( $_GET['edu-message'] ) ? $_GET['edu-message'] : '';
 	</div>
 	<?php endif; ?>
 
-	<?php self::settings_tabs( 'payment' ); ?>
+	<?php
+		self::settings_tabs( 'payment' );
+
+		if ( ! $gateway_id ) {
+			return;
+		}
+	?>
 
 	<ul class="ib-edu-tabs">
 		<li class="title"><span><?php _e( 'Payment Gateways:', 'ibeducator' ); ?></span></li>
@@ -59,8 +64,10 @@ $message = isset( $_GET['edu-message'] ) ? $_GET['edu-message'] : '';
 		<input type="hidden" name="gateway_id" value="<?php echo esc_attr( $gateway_id ); ?>">
 
 		<?php
-			$gateway->admin_options_form();
-			submit_button();
+			if ( isset( $gateways[ $gateway_id ] ) ) {
+				$gateways[ $gateway_id ]->admin_options_form();
+				submit_button();
+			}
 		?>
 	</form>
 </div>

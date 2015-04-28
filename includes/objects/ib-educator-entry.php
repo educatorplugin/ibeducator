@@ -20,7 +20,7 @@ class IB_Educator_Entry {
 	 * @return IB_Educator_Entry
 	 */
 	public static function get_instance( $data = null ) {
-		if ( is_numeric( $data ) ) {
+		if ( is_numeric( $data ) && $data > 0 ) {
 			global $wpdb;
 			$tables = ib_edu_table_names();
 			$data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $tables['entries'] . " WHERE ID = %d", $data ) );
@@ -50,10 +50,10 @@ class IB_Educator_Entry {
 	 * @return array
 	 */
 	public static function get_origins() {
-		return array(
+		return apply_filters( 'ib_educator_entry_origins', array(
 			'payment'    => __( 'Payment', 'ibeducator' ),
 			'membership' => __( 'Membership', 'ibeducator' ),
-		);
+		) );
 	}
 
 	/**
