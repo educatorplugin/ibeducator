@@ -442,19 +442,19 @@ class IB_Educator_Memberships {
 	}
 
 	/**
-	 * Pause the user's entries of entry_origin "membership".
+	 * Update membership entries' status.
 	 *
 	 * @param int $user_id
+	 * @param string $status
 	 */
-	public function pause_membership_entries( $user_id ) {
+	public function update_membership_entries( $user_id, $status ) {
 		global $wpdb;
 		$tables = ib_edu_table_names();
 
-		// Pause the user's entries.
 		$wpdb->update(
 			$tables['entries'],
 			array(
-				'entry_status' => 'paused',
+				'entry_status' => $status,
 			),
 			array(
 				'user_id'      => $user_id,
@@ -464,6 +464,15 @@ class IB_Educator_Memberships {
 			array( '%s' ),
 			array( '%d', '%s', '%s' )
 		);
+	}
+
+	/**
+	 * Pause the user's entries of entry_origin "membership".
+	 *
+	 * @param int $user_id
+	 */
+	public function pause_membership_entries( $user_id ) {
+		$this->update_membership_entries( $user_id, 'paused' );
 	}
 
 	/**
@@ -580,7 +589,16 @@ class IB_Educator_Memberships {
 	 * @return string
 	 */
 	public function get_price_widget( $membership_id = null ) {
-		if ( is_null( $membership_id ) ) $membership_id = get_the_ID();
+		if ( is_null( $membership_id ) ) {
+			$membership_id = get_the_ID();
+		}
+
+		$output = apply_filters( 'ib_educator_membership_price_widget', null, $membership_id );
+
+		if ( ! is_null( $output ) ) {
+			return $output;
+		}
+
 		$price = $this->get_price( $membership_id );
 		$payment_url = ib_edu_get_endpoint_url( 'edu-membership', $membership_id, get_permalink( ib_edu_page_id( 'payment' ) ) );
 		$output = '<div class="ib-edu-price-widget">';
