@@ -349,30 +349,17 @@ class IB_Educator_Memberships {
 
 		// Setup/update user's membership.
 		$expiration = 0;
-		$update_membership = null;
 
-		if ( 1 == ib_edu_get_option( 'change_memberships', 'memberships' ) ) {
-			$update_membership = $this->get_new_payment_data( $user_id, $membership_id );
-		}
+		if ( 'onetime' != $membership_meta['period'] ) {
+			$from_ts = 0;
 
-		if ( ! empty( $update_membership ) ) {
-			// Update membership.
-			$expiration = $update_membership['expiration'];
-		} else {
-			// New membership.
-			if ( 'onetime' == $membership_meta['period'] ) {
-				$expiration = 0;
-			} else {
-				$from_ts = 0;
-
-				if ( $user_membership && 'expired' != $user_membership['status'] && $membership_id == $user_membership['membership_id'] ) {
-					// Extend membership.
-					$from_ts = $user_membership['expiration'];
-				}
-
-				$expiration = $this->calculate_expiration_date( $membership_meta['duration'],
-					$membership_meta['period'], $from_ts );
+			if ( $user_membership && 'expired' != $user_membership['status'] && $membership_id == $user_membership['membership_id'] ) {
+				// Extend membership.
+				$from_ts = $user_membership['expiration'];
 			}
+
+			$expiration = $this->calculate_expiration_date( $membership_meta['duration'],
+				$membership_meta['period'], $from_ts );
 		}
 
 		// Save changes.
@@ -607,18 +594,6 @@ class IB_Educator_Memberships {
 		$output .= '</div>';
 
 		return $output;
-	}
-
-	/**
-	 * Get the membership switch price corrections.
-	 * e.g. when switching memberships.
-	 *
-	 * @param int $user_id
-	 * @param int $new_membership_id
-	 * @return array
-	 */
-	public function get_new_payment_data( $user_id, $new_membership_id, $ts_today = 0 ) {
-		return array();
 	}
 
 	/**
