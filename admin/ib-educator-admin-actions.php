@@ -295,7 +295,14 @@ class IB_Educator_Admin_Actions {
 					$ms = IB_Educator_Memberships::get_instance();
 
 					// Setup membership.
-					$ms->setup_membership( $payment->user_id, $payment->object_id );
+					$ms->setup_membership(
+						$payment->user_id,
+						$payment->object_id,
+						array(
+							'origin_type' => 'payment',
+							'origin_id'   => $payment->ID
+						)
+					);
 
 					// Send notification email.
 					$student = get_user_by( 'id', $payment->user_id );

@@ -287,6 +287,8 @@ CREATE TABLE $this->members (
   status varchar(20) NOT NULL default '',
   expiration datetime NOT NULL default '0000-00-00 00:00:00',
   paused datetime NOT NULL default '0000-00-00 00:00:00',
+  origin_type varchar(20) NOT NULL default '',
+  origin_id bigint(20) NOT NULL,
   PRIMARY KEY  (ID),
   KEY user_id (user_id),
   KEY status (status),

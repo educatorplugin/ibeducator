@@ -256,6 +256,8 @@ class IB_Educator_Memberships {
 				'status'        => $row->status,
 				'expiration'    => ( '0000-00-00 00:00:00' != $row->expiration ) ? strtotime( $row->expiration ) : 0,
 				'paused'        => ( '0000-00-00 00:00:00' != $row->paused ) ? strtotime( $row->paused ) : 0,
+				'origin_type'   => $row->origin_type,
+				'origin_id'     => $row->origin_id,
 			);
 		}
 
@@ -269,20 +271,23 @@ class IB_Educator_Memberships {
 	 * @return int
 	 */
 	public function update_user_membership( $input ) {
+		global $wpdb;
 		$data = array(
 			'user_id'       => 0,
 			'membership_id' => 0,
 			'status'        => '',
 			'expiration'    => '',
 			'paused'        => '',
+			'origin_type'   => '',
+			'origin_id'     => 0,
 		);
 
 		if ( isset( $input['user_id'] ) ) {
-			$data['user_id'] = absint( $input['user_id'] );
+			$data['user_id'] = $input['user_id'];
 		}
 
 		if ( isset( $input['membership_id'] ) ) {
-			$data['membership_id'] = absint( $input['membership_id'] );
+			$data['membership_id'] = $input['membership_id'];
 		}
 
 		if ( isset( $input['status'] ) ) {
@@ -297,9 +302,15 @@ class IB_Educator_Memberships {
 			$data['paused'] = sanitize_text_field( $input['paused'] );
 		}
 
-		// Save changes.
-		global $wpdb;
+		if ( isset( $input['origin_type'] ) ) {
+			$data['origin_type'] = sanitize_text_field( $input['origin_type'] );
+		}
 
+		if ( isset( $input['origin_id'] ) ) {
+			$data['origin_id'] = $input['origin_id'];
+		}
+
+		// Save changes.
 		if ( isset( $input['ID'] ) && intval( $input['ID'] ) == $input['ID'] && $input['ID'] > 0 ) {
 			$data['ID'] = $input['ID'];
 
@@ -307,14 +318,14 @@ class IB_Educator_Memberships {
 				$this->tbl_members,
 				$data,
 				array( 'ID' => $input['ID'] ),
-				array( '%d', '%d', '%s', '%s', '%s' ),
+				array( '%d', '%d', '%s', '%s', '%s', '%s', '%d' ),
 				array( '%d' )
 			);
 		} else {
 			$wpdb->insert(
 				$this->tbl_members,
 				$data,
-				array( '%d', '%d', '%s', '%s', '%s' )
+				array( '%d', '%d', '%s', '%s', '%s', '%s', '%d' )
 			);
 
 			$data['ID'] = $wpdb->insert_id;
@@ -329,7 +340,7 @@ class IB_Educator_Memberships {
 	 * @param int $user_id,
 	 * @param int $membership_id
 	 */
-	public function setup_membership( $user_id, $membership_id ) {
+	public function setup_membership( $user_id, $membership_id, $atts = array() ) {
 		$user_membership = $this->get_user_membership( $user_id );
 		$membership = get_post( $membership_id );
 
@@ -362,14 +373,24 @@ class IB_Educator_Memberships {
 				$membership_meta['period'], $from_ts );
 		}
 
-		// Save changes.
-		$this->update_user_membership( array(
+		$data = array(
 			'ID'            => ( $user_membership ) ? $user_membership['ID'] : 0,
 			'user_id'       => $user_id,
 			'membership_id' => $membership->ID,
 			'status'        => ( 'paused' != $user_membership['status'] ) ? 'active' : $user_membership['status'],
 			'expiration'    => ( $expiration > 0 ) ? date( 'Y-m-d H:i:s', $expiration ) : '0000-00-00 00:00:00',
-		) );
+		);
+
+		if ( isset( $atts['origin_type'] ) ) {
+			$data['origin_type'] = $atts['origin_type'];
+		}
+
+		if ( isset( $atts['origin_id'] ) ) {
+			$data['origin_id'] = $atts['origin_id'];
+		}
+
+		// Save changes.
+		$this->update_user_membership( $data );
 	}
 
 	/**
@@ -402,6 +423,7 @@ class IB_Educator_Memberships {
 	 * @return bool
 	 */
 	public function membership_can_access( $course_id, $user_id ) {
+		global $wpdb;
 		$user_membership = $this->get_user_membership( $user_id );
 
 		if ( $this->has_expired( $user_membership ) ) {
@@ -410,14 +432,12 @@ class IB_Educator_Memberships {
 
 		$membership_meta = $this->get_membership_meta( $user_membership['membership_id'] );
 
-		if ( ! is_array( $membership_meta['categories'] ) ) {
+		if ( empty( $membership_meta['categories'] ) ) {
 			return false;
 		}
 
-		$categories_sql = implode( ',', array_map( 'absint', $membership_meta['categories'] ) );
-
-		global $wpdb;
-
+		$categories_sql = implode( ',', array_map( 'intval', $membership_meta['categories'] ) );
+		
 		$post_ids = $wpdb->get_col(
 			"SELECT p.ID FROM {$wpdb->posts} p
 			INNER JOIN {$wpdb->term_relationships} tr ON tr.object_id=p.ID
