@@ -18,6 +18,11 @@ $classes = apply_filters( 'ib_educator_membership_classes', array( 'ib-edu-membe
 	</div>
 
 	<div class="membership-options">
-		<?php echo ib_edu_purchase_link( $membership_id, 'membership' ); ?>
+		<?php
+			echo ib_edu_purchase_link( array(
+				'object_id' => $membership_id,
+				'type'      => 'membership',
+			) );
+		?>
 	</div>
 </article>
