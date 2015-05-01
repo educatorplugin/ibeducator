@@ -731,6 +731,20 @@ function ib_edu_lesson_access( $lesson_id ) {
 	return get_post_meta( $lesson_id, '_ib_educator_access', true );
 }
 
+function ib_edu_purchase_link( $object_id, $type ) {
+	$html = '';
+
+	if ( 'membership' == $type ) {
+		$html = sprintf(
+			'<a href="%s">%s</a>',
+			esc_url( ib_edu_get_endpoint_url( 'edu-membership', $object_id, get_permalink( ib_edu_page_id( 'payment' ) ) ) ),
+			__( 'Purchase', 'ib-educator' )
+		);
+	}
+
+	return apply_filters( 'ib_edu_purchase_link', $html, $object_id, $type );
+}
+
 /**
  * Trigger deprecated function error.
  *

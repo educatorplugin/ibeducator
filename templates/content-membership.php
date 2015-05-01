@@ -18,9 +18,6 @@ $classes = apply_filters( 'ib_educator_membership_classes', array( 'ib-edu-membe
 	</div>
 
 	<div class="membership-options">
-		<?php
-			$purchase_url = ib_edu_get_endpoint_url( 'edu-membership', $membership_id, get_permalink( ib_edu_page_id( 'payment' ) ) );
-		?>
-		<a href="<?php echo esc_url( $purchase_url ); ?>"><?php _e( 'Purchase', 'ibeducator' ); ?></a>
+		<?php echo ib_edu_purchase_link( $membership_id, 'membership' ); ?>
 	</div>
 </article>
