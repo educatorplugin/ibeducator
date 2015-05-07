@@ -215,6 +215,11 @@ class IB_Educator {
 			$sql .= $wpdb->prepare( ' AND entry_status = %s', $args['entry_status'] );
 		}
 
+		// Entry origin.
+		if ( isset( $args['entry_origin'] ) ) {
+			$sql .= $wpdb->prepare( ' AND entry_origin = %s', $args['entry_origin'] );
+		}
+
 		// With or without pagination?
 		$has_pagination = isset( $args['page'] ) && isset( $args['per_page'] ) && is_numeric( $args['page'] ) && is_numeric( $args['per_page'] );
 		$pagination_sql = '';
