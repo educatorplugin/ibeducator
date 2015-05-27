@@ -238,6 +238,79 @@ class IB_Educator_Memberships {
 	}
 
 	/**
+	 * Modify expiration date given duration (e.g., 3 months, 1 year, etc).
+	 *
+	 * @param int $duration
+	 * @param string $period
+	 * @param string $direction - or +
+	 * @param int $from_ts
+	 * @return int Timstamp
+	 */
+	public function modify_expiration_date( $duration, $period, $direction = '+', $from_ts = 0 ) {
+		if ( empty( $from_ts ) ) {
+			$from_ts = time();
+		}
+
+		$ts = 0;
+
+		switch ( $period ) {
+			case 'days':
+				$ts = strtotime( $direction . ' ' . $duration . ' days', $from_ts );
+
+				break;
+
+			case 'months':
+				$from_date = explode( '-', date( 'Y-n-j', $from_ts ) );
+				$to_month = ( '-' == $direction ) ? $from_date[1] - $duration : $from_date[1] + $duration;
+				$to_year = $from_date[0];
+				$to_day = $from_date[2];
+
+				if ( $to_month < 1 ) {
+					$to_month += 12;
+					$to_year -= 1;
+				} elseif ( $to_month > 12 ) {
+					$to_month -= 12;
+					$to_year += 1;
+				}
+
+				$from_month_days = date( 't', $from_ts );
+				$to_month_days = date( 't', strtotime( "$to_year-$to_month-1" ) );
+
+				if ( $from_date[2] == $from_month_days || $to_day > $to_month_days ) {
+					// If today is the last day of the month or the next day
+					// is bigger than the number of days in the next month,
+					// set the next day to the last day of the next month.
+					$to_day = $to_month_days;
+				}
+
+				$ts = strtotime( "$to_year-$to_month-$to_day 23:59:59" );
+
+				break;
+
+			case 'years':
+				$from_date = explode( '-', date( 'Y-n-j', $from_ts ) );
+
+				$to_year = ( '-' == $direction ) ? $from_date[0] - $duration : $from_date[0] + $duration;
+				$to_month = $from_date[1];
+				$to_day = $from_date[2];
+
+				$from_month_days = date( 't', $from_ts );
+				$to_month_days = date( 't', strtotime( "$to_year-$to_month-1" ) );
+
+				if ( $from_date[2] == $from_month_days || $to_day > $to_month_days ) {
+					// Account for February, where the number of days differs if it's a leap year.
+					$to_day = $to_month_days;
+				}
+
+				$ts = strtotime( "$to_year-$to_month-$to_day 23:59:59" );
+
+				break;
+		}
+
+		return $ts;
+	}
+
+	/**
 	 * Get the user's membership data.
 	 *
 	 * @param int $user_id
@@ -312,8 +385,6 @@ class IB_Educator_Memberships {
 
 		// Save changes.
 		if ( isset( $input['ID'] ) && intval( $input['ID'] ) == $input['ID'] && $input['ID'] > 0 ) {
-			$data['ID'] = $input['ID'];
-
 			$wpdb->update(
 				$this->tbl_members,
 				$data,
@@ -321,6 +392,8 @@ class IB_Educator_Memberships {
 				array( '%d', '%d', '%s', '%s', '%s', '%s', '%d' ),
 				array( '%d' )
 			);
+
+			$data['ID'] = $input['ID'];
 		} else {
 			$wpdb->insert(
 				$this->tbl_members,

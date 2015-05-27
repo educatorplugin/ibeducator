@@ -184,6 +184,46 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 		$this->assertEquals( '2016-02-29 23:59:59', date( 'Y-m-d H:i:s', $expiration ) );
 	}
 
+	public function testModifyExpirationDate() {
+		$ms = IB_Educator_Memberships::get_instance();
+
+		// -1 Day.
+		$expiration = $ms->modify_expiration_date( 1, 'days', '-', strtotime( '2016-01-01 23:59:59' ) );
+		$this->assertEquals( '2015-12-31 23:59:59', date( 'Y-m-d H:i:s', $expiration ) );
+
+		// -3 Days.
+		$expiration = $ms->modify_expiration_date( 3, 'days', '-', strtotime( '2016-03-01 23:59:59' ) );
+		$this->assertEquals( '2016-02-27 23:59:59', date( 'Y-m-d H:i:s', $expiration ) );
+
+		// -30 Days.
+		$expiration = $ms->modify_expiration_date( 30, 'days', '-', strtotime( '2016-02-29 23:59:59' ) );
+		$this->assertEquals( '2016-01-30 23:59:59', date( 'Y-m-d H:i:s', $expiration ) );
+
+		// -1 Month.
+		$expiration = $ms->modify_expiration_date( 1, 'months', '-', strtotime( '2016-03-31 23:59:59' ) );
+		$this->assertEquals( '2016-02-29 23:59:59', date( 'Y-m-d H:i:s', $expiration ) );
+
+		// -3 Months.
+		$expiration = $ms->modify_expiration_date( 3, 'months', '-', strtotime( '2015-04-05 23:59:59' ) );
+		$this->assertEquals( '2015-01-05 23:59:59', date( 'Y-m-d H:i:s', $expiration ) );
+
+		// -6 Months.
+		$expiration = $ms->modify_expiration_date( 6, 'months', '-', strtotime( '2016-03-31 23:59:59' ) );
+		$this->assertEquals( '2015-09-30 23:59:59', date( 'Y-m-d H:i:s', $expiration ) );
+
+		// -1 Year.
+		$expiration = $ms->modify_expiration_date( 1, 'years', '-', strtotime( '2016-08-25 23:59:59' ) );
+		$this->assertEquals( '2015-08-25 23:59:59', date( 'Y-m-d H:i:s', $expiration ) );
+
+		// -2 Years (from common year to leap year).
+		$expiration = $ms->modify_expiration_date( 2, 'years', '-', strtotime( '2018-02-28 23:59:59' ) );
+		$this->assertEquals( '2016-02-29 23:59:59', date( 'Y-m-d H:i:s', $expiration ) );
+
+		// -3 Years (from common year to common year).
+		$expiration = $ms->modify_expiration_date( 3, 'years', '-', strtotime( '2018-02-28 23:59:59' ) );
+		$this->assertEquals( '2015-02-28 23:59:59', date( 'Y-m-d H:i:s', $expiration ) );
+	}
+
 	/**
 	 * Test "pause membership" and "resume membership" features.
 	 */

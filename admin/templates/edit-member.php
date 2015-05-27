@@ -59,9 +59,9 @@ if ( ! $user_membership ) {
 	?>
 
 	<?php if ( isset( $_GET['edu-message'] ) && 'saved' == $_GET['edu-message'] ) : ?>
-	<div id="message" class="updated below-h2">
-		<p><?php _e( 'Member updated.', 'ibeducator' ); ?></p>
-	</div>
+		<div id="message" class="updated below-h2">
+			<p><?php _e( 'Member updated.', 'ibeducator' ); ?></p>
+		</div>
 	<?php endif; ?>
 
 	<form id="edu_edit_member_form"
@@ -70,6 +70,9 @@ if ( ! $user_membership ) {
 	      method="post">
 		<?php wp_nonce_field( 'ib_educator_edit_member' ); ?>
 		<input type="hidden" id="autocomplete-nonce" value="<?php echo wp_create_nonce( 'ib_educator_autocomplete' ); ?>">
+
+		<input type="hidden" name="origin_type" value="<?php echo esc_attr( $user_membership['origin_type'] ); ?>">
+		<input type="hidden" name="origin_id" value="<?php echo esc_attr( $user_membership['origin_id'] ); ?>">
 
 		<div id="poststuff">
 			<div id="post-body" class="metabox-holder columns-<?php echo 1 == get_current_screen()->get_columns() ? '1' : '2'; ?>">

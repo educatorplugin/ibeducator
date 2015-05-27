@@ -383,6 +383,14 @@ class IB_Educator_Admin_Actions {
 				}
 			}
 
+			if ( isset( $_POST['origin_type'] ) ) {
+				$data['origin_type'] = sanitize_text_field( $_POST['origin_type'] );
+			}
+
+			if ( isset( $_POST['origin_id'] ) ) {
+				$data['origin_id'] = intval( $_POST['origin_id'] );
+			}
+
 			// UNIQUE memberships only.
 			if ( ! $member_id && ! empty( $data['user_id'] ) ) {
 				$user_membership = $ms->get_user_membership( $data['user_id'] );
