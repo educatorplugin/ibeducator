@@ -145,6 +145,20 @@ class IB_Educator_General_Settings extends IB_Educator_Admin_Settings {
 			)
 		);
 
+		// Show course lecturer on the payment page.
+		add_settings_field(
+			'ib_educator_payment_lecturer',
+			__( 'Show course lecturer on the payment page', 'ibeducator' ),
+			array( $this, 'setting_checkbox' ),
+			'ib_educator_general', // page
+			'ib_educator_selling', // section
+			array(
+				'name'           => 'payment_lecturer',
+				'settings_group' => 'ib_educator_settings',
+				'default'        => 1,
+			)
+		);
+
 		// Currency settings.
 		add_settings_section(
 			'ib_educator_currency', // id
@@ -294,6 +308,7 @@ class IB_Educator_General_Settings extends IB_Educator_Admin_Settings {
  					break;
 
  				case 'payment_ip':
+ 				case 'payment_lecturer':
  					$clean[ $key ] = ( 1 != $value ) ? 0 : 1;
  					break;
 			}

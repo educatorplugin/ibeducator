@@ -132,10 +132,13 @@ class IB_Educator_Admin_Settings {
 			$name = $args['name'];
 		}
 
-		if ( empty( $value ) && 0 !== $value && isset( $args['default'] ) ) $value = $args['default'];
+		if ( empty( $value ) && 0 !== $value && isset( $args['default'] ) ) {
+			$value = $args['default'];
+		}
 
 		$id_attr = ! empty( $args['id'] ) ? $id_attr = ' id="' . esc_attr( $args['id'] ) . '"' : '';
 
+		echo '<input type="hidden" name="' . esc_attr( $name ) . '" value="0">';
 		echo '<input type="checkbox"' . $id_attr . ' name="' . esc_attr( $name ) . '" value="1" ' . checked( 1, $value, false ) . '>';
 
 		if ( isset( $args['description'] ) ) {
