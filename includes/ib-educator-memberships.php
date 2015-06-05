@@ -329,8 +329,6 @@ class IB_Educator_Memberships {
 				'status'        => $row->status,
 				'expiration'    => ( '0000-00-00 00:00:00' != $row->expiration ) ? strtotime( $row->expiration ) : 0,
 				'paused'        => ( '0000-00-00 00:00:00' != $row->paused ) ? strtotime( $row->paused ) : 0,
-				'origin_type'   => $row->origin_type,
-				'origin_id'     => $row->origin_id,
 			);
 		}
 
@@ -351,8 +349,6 @@ class IB_Educator_Memberships {
 			'status'        => '',
 			'expiration'    => '',
 			'paused'        => '',
-			'origin_type'   => '',
-			'origin_id'     => 0,
 		);
 
 		if ( isset( $input['user_id'] ) ) {
@@ -375,21 +371,13 @@ class IB_Educator_Memberships {
 			$data['paused'] = sanitize_text_field( $input['paused'] );
 		}
 
-		if ( isset( $input['origin_type'] ) ) {
-			$data['origin_type'] = sanitize_text_field( $input['origin_type'] );
-		}
-
-		if ( isset( $input['origin_id'] ) ) {
-			$data['origin_id'] = $input['origin_id'];
-		}
-
 		// Save changes.
 		if ( isset( $input['ID'] ) && intval( $input['ID'] ) == $input['ID'] && $input['ID'] > 0 ) {
 			$wpdb->update(
 				$this->tbl_members,
 				$data,
 				array( 'ID' => $input['ID'] ),
-				array( '%d', '%d', '%s', '%s', '%s', '%s', '%d' ),
+				array( '%d', '%d', '%s', '%s', '%s' ),
 				array( '%d' )
 			);
 
@@ -398,7 +386,7 @@ class IB_Educator_Memberships {
 			$wpdb->insert(
 				$this->tbl_members,
 				$data,
-				array( '%d', '%d', '%s', '%s', '%s', '%s', '%d' )
+				array( '%d', '%d', '%s', '%s', '%s' )
 			);
 
 			$data['ID'] = $wpdb->insert_id;
@@ -413,7 +401,7 @@ class IB_Educator_Memberships {
 	 * @param int $user_id,
 	 * @param int $membership_id
 	 */
-	public function setup_membership( $user_id, $membership_id, $atts = array() ) {
+	public function setup_membership( $user_id, $membership_id ) {
 		$user_membership = $this->get_user_membership( $user_id );
 		$membership = get_post( $membership_id );
 
@@ -453,14 +441,6 @@ class IB_Educator_Memberships {
 			'status'        => ( 'paused' != $user_membership['status'] ) ? 'active' : $user_membership['status'],
 			'expiration'    => ( $expiration > 0 ) ? date( 'Y-m-d H:i:s', $expiration ) : '0000-00-00 00:00:00',
 		);
-
-		if ( isset( $atts['origin_type'] ) ) {
-			$data['origin_type'] = $atts['origin_type'];
-		}
-
-		if ( isset( $atts['origin_id'] ) ) {
-			$data['origin_id'] = $atts['origin_id'];
-		}
 
 		// Save changes.
 		$this->update_user_membership( $data );

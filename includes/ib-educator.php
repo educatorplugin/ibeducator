@@ -918,14 +918,7 @@ class IB_Educator {
 		} elseif ( 'membership' == $payment->payment_type ) {
 			// Setup membership.
 			$ms = IB_Educator_Memberships::get_instance();
-			$ms->setup_membership(
-				$payment->user_id,
-				$payment->object_id,
-				array(
-					'origin_type' => 'payment',
-					'origin_id'   => $payment->ID
-				)
-			);
+			$ms->setup_membership( $payment->user_id, $payment->object_id );
 
 			$student = get_user_by( 'id', $payment->user_id );
 			$membership = $ms->get_membership( $payment->object_id );

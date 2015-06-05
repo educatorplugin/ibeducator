@@ -71,9 +71,6 @@ if ( ! $user_membership ) {
 		<?php wp_nonce_field( 'ib_educator_edit_member' ); ?>
 		<input type="hidden" id="autocomplete-nonce" value="<?php echo wp_create_nonce( 'ib_educator_autocomplete' ); ?>">
 
-		<input type="hidden" name="origin_type" value="<?php echo esc_attr( $user_membership['origin_type'] ); ?>">
-		<input type="hidden" name="origin_id" value="<?php echo esc_attr( $user_membership['origin_id'] ); ?>">
-
 		<div id="poststuff">
 			<div id="post-body" class="metabox-holder columns-<?php echo 1 == get_current_screen()->get_columns() ? '1' : '2'; ?>">
 				<div id="postbox-container-1" class="postbox-container">

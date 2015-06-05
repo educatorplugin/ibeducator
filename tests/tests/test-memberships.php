@@ -306,7 +306,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 			'categories' => array( $this->categories[1] ),
 		) );
 
-		$ms->setup_membership( $user1, $m1, array( 'origin_type' => 'payment', 'origin_id' => '123456789' ) );
+		$ms->setup_membership( $user1, $m1 );
 		$ms->setup_membership( $user2, $m2 );
 
 		$yesterday = strtotime( '- 1 days', strtotime( date( 'Y-m-d 23:59:59' ) ) );
@@ -327,8 +327,6 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 			'status'        => 'expired',
 			'expiration'    => $yesterday,
 			'paused'        => 0,
-			'origin_type'   => 'payment',
-			'origin_id'     => 123456789,
 		), $ms->get_user_membership( $user1 ) );
 
 		$this->assertEquals( array(
@@ -338,8 +336,6 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 			'status'        => 'expired',
 			'expiration'    => $yesterday,
 			'paused'        => 0,
-			'origin_type'   => '',
-			'origin_id'     => 0,
 		), $ms->get_user_membership( $user2 ) );
 	}
 

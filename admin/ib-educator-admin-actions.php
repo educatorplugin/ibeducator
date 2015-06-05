@@ -295,14 +295,7 @@ class IB_Educator_Admin_Actions {
 					$ms = IB_Educator_Memberships::get_instance();
 
 					// Setup membership.
-					$ms->setup_membership(
-						$payment->user_id,
-						$payment->object_id,
-						array(
-							'origin_type' => 'payment',
-							'origin_id'   => $payment->ID
-						)
-					);
+					$ms->setup_membership( $payment->user_id, $payment->object_id );
 
 					// Send notification email.
 					$student = get_user_by( 'id', $payment->user_id );
@@ -381,14 +374,6 @@ class IB_Educator_Admin_Actions {
 				} else {
 					$data['paused'] = '0000-00-00 00:00:00';
 				}
-			}
-
-			if ( isset( $_POST['origin_type'] ) ) {
-				$data['origin_type'] = sanitize_text_field( $_POST['origin_type'] );
-			}
-
-			if ( isset( $_POST['origin_id'] ) ) {
-				$data['origin_id'] = intval( $_POST['origin_id'] );
 			}
 
 			// UNIQUE memberships only.

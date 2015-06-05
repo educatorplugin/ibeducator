@@ -61,14 +61,7 @@ class IB_Educator_Gateway_Free extends IB_Educator_Payment_Gateway {
 					$entry->save();
 				} elseif ( 'membership' == $payment->payment_type ) {
 					// Setup membership.
-					$ms->setup_membership(
-						$user_id,
-						$object_id,
-						array(
-							'origin_type' => 'payment',
-							'origin_id'   => $payment->ID
-						)
-					);
+					$ms->setup_membership( $user_id, $object_id );
 				}
 			}
 		}
