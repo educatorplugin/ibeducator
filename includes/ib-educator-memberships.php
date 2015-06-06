@@ -61,7 +61,6 @@ class IB_Educator_Memberships {
 	public function get_statuses() {
 		return array(
 			'expired' => __( 'Expired', 'ibeducator' ),
-			//'paused'  => __( 'Paused', 'ibeducator' ),
 			'active'  => __( 'Active', 'ibeducator' ),
 		);
 	}
@@ -630,9 +629,7 @@ class IB_Educator_Memberships {
 
 		$wpdb->update(
 			$this->tbl_members,
-			array(
-				'status' => 'expired',
-			),
+			array( 'status' => 'expired' ),
 			array( 'user_id' => $user_id ),
 			array( '%s' ),
 			array( '%d' )

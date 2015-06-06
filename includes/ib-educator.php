@@ -191,7 +191,7 @@ class IB_Educator {
 				$ids = implode( ',', array_map( 'intval', $args['course_id'] ) );
 				$sql .= " AND course_id IN ($ids)";
 			} else {
-				$sql .= ' AND course_id = ' . intval( $args['user_id'] );
+				$sql .= ' AND course_id = ' . intval( $args['course_id'] );
 			}
 		}
 
