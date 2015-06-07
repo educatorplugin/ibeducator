@@ -34,14 +34,15 @@ switch ( $action ) {
 				<tr>
 					<th style="width:30%;"><?php _e( 'Membership Level', 'ibeducator' ); ?></th>
 					<td>
-						<?php
-							echo esc_html( $membership->post_title );
-						?>
+						<?php echo esc_html( $membership->post_title ); ?>
 						<div>
 							<?php
-								$extend_url = ib_edu_get_endpoint_url( 'edu-membership', $membership->ID, get_permalink( ib_edu_page_id( 'payment' ) ) );
-
-								echo ' <span class="extend-membership"><a href="' . esc_url( $extend_url ) . '">' . __( 'Extend', 'ibeducator' ) . '</a></span>';
+								echo ib_edu_purchase_link( array(
+									'object_id' => $membership->ID,
+									'type'      => 'membership',
+									'class'     => array( 'extend-membership' ),
+									'text'      => __( 'Extend', 'ibeducator' ),
+								) );
 							?>
 						</div>
 					</td>

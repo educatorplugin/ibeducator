@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Educator WordPress Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-22 08:20-0500\n"
-"PO-Revision-Date: 2015-04-22 08:20-0500\n"
+"POT-Creation-Date: 2015-06-07 04:58-0500\n"
+"PO-Revision-Date: 2015-06-07 04:59-0500\n"
 "Last-Translator: Dmytro\n"
 "Language-Team: English <contact@educatorplugin.com>\n"
 "Language: en\n"
@@ -35,8 +35,8 @@ msgstr ""
 
 #: ../admin/ib-educator-admin-actions.php:316
 #: ../admin/meta-boxes/course.php:49 ../admin/meta-boxes/course.php:53
-#: ../admin/templates/members.php:112 ../includes/ib-educator.php:921
-#: ../templates/shortcode-user-membership.php:88
+#: ../admin/templates/members.php:112 ../includes/ib-educator.php:938
+#: ../templates/shortcode-user-membership.php:89
 msgid "None"
 msgstr ""
 
@@ -77,7 +77,7 @@ msgstr ""
 #: ../admin/templates/settings-general.php:4
 #: ../admin/templates/settings-learning.php:4
 #: ../admin/templates/settings-memberships.php:4
-#: ../admin/templates/settings-payment.php:26
+#: ../admin/templates/settings-payment.php:25
 #: ../admin/templates/settings-taxes.php:4
 msgid "Educator Settings"
 msgstr ""
@@ -136,7 +136,7 @@ msgstr ""
 
 #: ../admin/meta-boxes/course.php:27 ../admin/meta-boxes/membership.php:21
 #: ../includes/ib-educator-account.php:411
-#: ../includes/ib-educator-memberships.php:771
+#: ../includes/ib-educator-memberships.php:834
 #: ../templates/shortcode-payment.php:59
 msgid "Price"
 msgstr ""
@@ -398,36 +398,40 @@ msgid "Store customers&apos; IPs on purchases"
 msgstr ""
 
 #: ../admin/settings/ib-educator-general-settings.php:151
-#: ../admin/settings/ib-educator-general-settings.php:159
+msgid "Show course lecturer on the payment page"
+msgstr ""
+
+#: ../admin/settings/ib-educator-general-settings.php:165
+#: ../admin/settings/ib-educator-general-settings.php:173
 #: ../admin/templates/edit-payment.php:300
 msgid "Currency"
 msgstr ""
 
-#: ../admin/settings/ib-educator-general-settings.php:173
+#: ../admin/settings/ib-educator-general-settings.php:187
 msgid "Currency Position"
 msgstr ""
 
-#: ../admin/settings/ib-educator-general-settings.php:181
+#: ../admin/settings/ib-educator-general-settings.php:195
 msgid "Before"
 msgstr ""
 
-#: ../admin/settings/ib-educator-general-settings.php:182
+#: ../admin/settings/ib-educator-general-settings.php:196
 msgid "After"
 msgstr ""
 
-#: ../admin/settings/ib-educator-general-settings.php:190
+#: ../admin/settings/ib-educator-general-settings.php:204
 msgid "Decimal Point Separator"
 msgstr ""
 
-#: ../admin/settings/ib-educator-general-settings.php:205
+#: ../admin/settings/ib-educator-general-settings.php:219
 msgid "Thousands Separator"
 msgstr ""
 
-#: ../admin/settings/ib-educator-general-settings.php:237
+#: ../admin/settings/ib-educator-general-settings.php:251
 msgid "Courses Archive"
 msgstr ""
 
-#: ../admin/settings/ib-educator-general-settings.php:312
+#: ../admin/settings/ib-educator-general-settings.php:327
 msgid "General"
 msgstr ""
 
@@ -656,7 +660,7 @@ msgstr ""
 #: ../admin/templates/edit-payment.php:104 ../admin/templates/entries.php:64
 #: ../admin/templates/entries.php:94 ../admin/templates/members.php:60
 #: ../admin/templates/payments.php:61 ../admin/templates/payments.php:95
-#: ../templates/shortcode-user-membership.php:51
+#: ../templates/shortcode-user-membership.php:52
 msgid "Status"
 msgstr ""
 
@@ -702,7 +706,7 @@ msgstr ""
 #: ../admin/templates/edit-entry.php:192
 #: ../admin/templates/edit-payment.php:150
 #: ../admin/templates/entry-progress.php:41
-#: ../includes/ib-educator-install.php:313
+#: ../includes/ib-educator-install.php:315
 msgid "Student"
 msgstr ""
 
@@ -756,7 +760,7 @@ msgid "Membership Level"
 msgstr ""
 
 #: ../admin/templates/edit-member.php:167 ../admin/templates/members.php:61
-#: ../templates/shortcode-user-membership.php:84
+#: ../templates/shortcode-user-membership.php:85
 msgid "Expiration Date"
 msgstr ""
 
@@ -1023,15 +1027,15 @@ msgstr ""
 msgid "Method"
 msgstr ""
 
-#: ../admin/templates/settings-payment.php:30
+#: ../admin/templates/settings-payment.php:29
 msgid "Payment options updated."
 msgstr ""
 
-#: ../admin/templates/settings-payment.php:34
+#: ../admin/templates/settings-payment.php:33
 msgid "Update failed or options values have not changed."
 msgstr ""
 
-#: ../admin/templates/settings-payment.php:41
+#: ../admin/templates/settings-payment.php:46
 msgid "Payment Gateways:"
 msgstr ""
 
@@ -1196,14 +1200,18 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
-#: ../includes/functions.php:744
+#: ../includes/functions.php:738 ../includes/ib-educator-memberships.php:663
+msgid "Purchase"
+msgstr ""
+
+#: ../includes/functions.php:773
 #, php-format
 msgid ""
 "%1$s is <strong>deprecated</strong> since Educator version %2$s! Use %3$s "
 "instead."
 msgstr ""
 
-#: ../includes/functions.php:746
+#: ../includes/functions.php:775
 #, php-format
 msgid ""
 "%1$s is <strong>deprecated</strong> since Educator version %2$s with no "
@@ -1259,17 +1267,17 @@ msgstr ""
 msgid "Please select your billing country."
 msgstr ""
 
-#: ../includes/ib-educator-account.php:416
+#: ../includes/ib-educator-account.php:418
 #, php-format
 msgid "%s with %s"
 msgstr ""
 
-#: ../includes/ib-educator-account.php:436
+#: ../includes/ib-educator-account.php:442
 #: ../templates/shortcode-payment.php:73
 msgid "Subtotal"
 msgstr ""
 
-#: ../includes/ib-educator-account.php:443
+#: ../includes/ib-educator-account.php:449
 #: ../templates/shortcode-payment.php:83
 msgid "Total"
 msgstr ""
@@ -1278,36 +1286,36 @@ msgstr ""
 msgid "Please select a payment method."
 msgstr ""
 
-#: ../includes/ib-educator-install.php:308
+#: ../includes/ib-educator-install.php:310
 msgid "Lecturer"
 msgstr ""
 
-#: ../includes/ib-educator-install.php:423
+#: ../includes/ib-educator-install.php:425
 #, php-format
 msgid "Registration for %s is complete"
 msgstr ""
 
-#: ../includes/ib-educator-install.php:439
+#: ../includes/ib-educator-install.php:441
 msgid "You've got a grade"
 msgstr ""
 
-#: ../includes/ib-educator-install.php:453
+#: ../includes/ib-educator-install.php:455
 msgid "You've been registered for a membership"
 msgstr ""
 
-#: ../includes/ib-educator-install.php:471
+#: ../includes/ib-educator-install.php:473
 msgid "Your membership expires"
 msgstr ""
 
-#: ../includes/ib-educator-main.php:348
+#: ../includes/ib-educator-main.php:384
 msgid "Difficulty:"
 msgstr ""
 
-#: ../includes/ib-educator-main.php:352
+#: ../includes/ib-educator-main.php:388
 msgid ", "
 msgstr ""
 
-#: ../includes/ib-educator-main.php:355
+#: ../includes/ib-educator-main.php:391
 msgid "Categories:"
 msgstr ""
 
@@ -1331,35 +1339,30 @@ msgstr ""
 msgid "Expired"
 msgstr ""
 
-#: ../includes/ib-educator-memberships.php:65
+#: ../includes/ib-educator-memberships.php:64
 msgid "Active"
 msgstr ""
 
-#: ../includes/ib-educator-memberships.php:135
+#: ../includes/ib-educator-memberships.php:134
 #, php-format
 msgid "per day"
 msgid_plural "per %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../includes/ib-educator-memberships.php:139
+#: ../includes/ib-educator-memberships.php:138
 #, php-format
 msgid "per month"
 msgid_plural "per %d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../includes/ib-educator-memberships.php:143
+#: ../includes/ib-educator-memberships.php:142
 #, php-format
 msgid "per year"
 msgid_plural "per %d years"
 msgstr[0] ""
 msgstr[1] ""
-
-#: ../includes/ib-educator-memberships.php:588
-#: ../templates/content-membership.php:24
-msgid "Purchase"
-msgstr ""
 
 #: ../includes/ib-educator-post-types.php:39
 msgid "Courses"
@@ -1673,7 +1676,7 @@ msgid "Date taken"
 msgstr ""
 
 #: ../templates/shortcode-student-courses.php:145
-#: ../templates/shortcode-user-membership.php:75
+#: ../templates/shortcode-user-membership.php:76
 msgid "Resume"
 msgstr ""
 
@@ -1693,7 +1696,7 @@ msgstr ""
 msgid "Extend"
 msgstr ""
 
-#: ../templates/shortcode-user-membership.php:69
+#: ../templates/shortcode-user-membership.php:70
 msgid "Pause"
 msgstr ""
 

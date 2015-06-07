@@ -412,11 +412,17 @@ class IB_Educator_Account {
 
 		if ( 'ib_educator_course' == $object->post_type ) {
 			$output .= '<tbody><tr><td>';
-			$output .= sprintf(
-				__( '%s with %s', 'ibeducator' ),
-				'<a href="' . esc_url( get_permalink( $object->ID ) ) . '" target="_blank">' . esc_html( $object->post_title ) . '</a>',
-				esc_html( get_the_author_meta( 'display_name', $object->post_author ) )
-			);
+
+			if ( ib_edu_get_option( 'payment_lecturer', 'settings' ) ) {
+				$output .= sprintf(
+					__( '%s with %s', 'ibeducator' ),
+					'<a href="' . esc_url( get_permalink( $object->ID ) ) . '" target="_blank">' . esc_html( $object->post_title ) . '</a>',
+					esc_html( get_the_author_meta( 'display_name', $object->post_author ) )
+				);
+			} else {
+				$output .= '<a href="' . esc_url( get_permalink( $object->ID ) ) . '" target="_blank">' . esc_html( $object->post_title ) . '</a>';
+			}
+
 			$output .= '<input type="hidden" id="payment-object-id" name="course_id" value="' . intval( $object->ID ) . '"></td>';
 			$output .= '<td>' . ib_edu_format_price( $tax_data['subtotal'], false ) . '</td></tr></tbody>';
 		} elseif ( 'ib_edu_membership' == $object->post_type ) {

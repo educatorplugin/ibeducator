@@ -61,7 +61,6 @@ class IB_Educator_Memberships {
 	public function get_statuses() {
 		return array(
 			'expired' => __( 'Expired', 'ibeducator' ),
-			//'paused'  => __( 'Paused', 'ibeducator' ),
 			'active'  => __( 'Active', 'ibeducator' ),
 		);
 	}
@@ -238,6 +237,79 @@ class IB_Educator_Memberships {
 	}
 
 	/**
+	 * Modify expiration date given duration (e.g., 3 months, 1 year, etc).
+	 *
+	 * @param int $duration
+	 * @param string $period
+	 * @param string $direction - or +
+	 * @param int $from_ts
+	 * @return int Timstamp
+	 */
+	public function modify_expiration_date( $duration, $period, $direction = '+', $from_ts = 0 ) {
+		if ( empty( $from_ts ) ) {
+			$from_ts = time();
+		}
+
+		$ts = 0;
+
+		switch ( $period ) {
+			case 'days':
+				$ts = strtotime( $direction . ' ' . $duration . ' days', $from_ts );
+
+				break;
+
+			case 'months':
+				$from_date = explode( '-', date( 'Y-n-j', $from_ts ) );
+				$to_month = ( '-' == $direction ) ? $from_date[1] - $duration : $from_date[1] + $duration;
+				$to_year = $from_date[0];
+				$to_day = $from_date[2];
+
+				if ( $to_month < 1 ) {
+					$to_month += 12;
+					$to_year -= 1;
+				} elseif ( $to_month > 12 ) {
+					$to_month -= 12;
+					$to_year += 1;
+				}
+
+				$from_month_days = date( 't', $from_ts );
+				$to_month_days = date( 't', strtotime( "$to_year-$to_month-1" ) );
+
+				if ( $from_date[2] == $from_month_days || $to_day > $to_month_days ) {
+					// If today is the last day of the month or the next day
+					// is bigger than the number of days in the next month,
+					// set the next day to the last day of the next month.
+					$to_day = $to_month_days;
+				}
+
+				$ts = strtotime( "$to_year-$to_month-$to_day 23:59:59" );
+
+				break;
+
+			case 'years':
+				$from_date = explode( '-', date( 'Y-n-j', $from_ts ) );
+
+				$to_year = ( '-' == $direction ) ? $from_date[0] - $duration : $from_date[0] + $duration;
+				$to_month = $from_date[1];
+				$to_day = $from_date[2];
+
+				$from_month_days = date( 't', $from_ts );
+				$to_month_days = date( 't', strtotime( "$to_year-$to_month-1" ) );
+
+				if ( $from_date[2] == $from_month_days || $to_day > $to_month_days ) {
+					// Account for February, where the number of days differs if it's a leap year.
+					$to_day = $to_month_days;
+				}
+
+				$ts = strtotime( "$to_year-$to_month-$to_day 23:59:59" );
+
+				break;
+		}
+
+		return $ts;
+	}
+
+	/**
 	 * Get the user's membership data.
 	 *
 	 * @param int $user_id
@@ -269,6 +341,7 @@ class IB_Educator_Memberships {
 	 * @return int
 	 */
 	public function update_user_membership( $input ) {
+		global $wpdb;
 		$data = array(
 			'user_id'       => 0,
 			'membership_id' => 0,
@@ -278,11 +351,11 @@ class IB_Educator_Memberships {
 		);
 
 		if ( isset( $input['user_id'] ) ) {
-			$data['user_id'] = absint( $input['user_id'] );
+			$data['user_id'] = $input['user_id'];
 		}
 
 		if ( isset( $input['membership_id'] ) ) {
-			$data['membership_id'] = absint( $input['membership_id'] );
+			$data['membership_id'] = $input['membership_id'];
 		}
 
 		if ( isset( $input['status'] ) ) {
@@ -298,11 +371,7 @@ class IB_Educator_Memberships {
 		}
 
 		// Save changes.
-		global $wpdb;
-
 		if ( isset( $input['ID'] ) && intval( $input['ID'] ) == $input['ID'] && $input['ID'] > 0 ) {
-			$data['ID'] = $input['ID'];
-
 			$wpdb->update(
 				$this->tbl_members,
 				$data,
@@ -310,6 +379,8 @@ class IB_Educator_Memberships {
 				array( '%d', '%d', '%s', '%s', '%s' ),
 				array( '%d' )
 			);
+
+			$data['ID'] = $input['ID'];
 		} else {
 			$wpdb->insert(
 				$this->tbl_members,
@@ -349,40 +420,29 @@ class IB_Educator_Memberships {
 
 		// Setup/update user's membership.
 		$expiration = 0;
-		$update_membership = null;
 
-		if ( 1 == ib_edu_get_option( 'change_memberships', 'memberships' ) ) {
-			$update_membership = $this->get_new_payment_data( $user_id, $membership_id );
-		}
+		if ( 'onetime' != $membership_meta['period'] ) {
+			$from_ts = 0;
 
-		if ( ! empty( $update_membership ) ) {
-			// Update membership.
-			$expiration = $update_membership['expiration'];
-		} else {
-			// New membership.
-			if ( 'onetime' == $membership_meta['period'] ) {
-				$expiration = 0;
-			} else {
-				$from_ts = 0;
-
-				if ( $user_membership && 'expired' != $user_membership['status'] && $membership_id == $user_membership['membership_id'] ) {
-					// Extend membership.
-					$from_ts = $user_membership['expiration'];
-				}
-
-				$expiration = $this->calculate_expiration_date( $membership_meta['duration'],
-					$membership_meta['period'], $from_ts );
+			if ( $user_membership && 'expired' != $user_membership['status'] && $membership_id == $user_membership['membership_id'] ) {
+				// Extend membership.
+				$from_ts = $user_membership['expiration'];
 			}
+
+			$expiration = $this->calculate_expiration_date( $membership_meta['duration'],
+				$membership_meta['period'], $from_ts );
 		}
 
-		// Save changes.
-		$this->update_user_membership( array(
+		$data = array(
 			'ID'            => ( $user_membership ) ? $user_membership['ID'] : 0,
 			'user_id'       => $user_id,
 			'membership_id' => $membership->ID,
 			'status'        => ( 'paused' != $user_membership['status'] ) ? 'active' : $user_membership['status'],
 			'expiration'    => ( $expiration > 0 ) ? date( 'Y-m-d H:i:s', $expiration ) : '0000-00-00 00:00:00',
-		) );
+		);
+
+		// Save changes.
+		$this->update_user_membership( $data );
 	}
 
 	/**
@@ -415,6 +475,7 @@ class IB_Educator_Memberships {
 	 * @return bool
 	 */
 	public function membership_can_access( $course_id, $user_id ) {
+		global $wpdb;
 		$user_membership = $this->get_user_membership( $user_id );
 
 		if ( $this->has_expired( $user_membership ) ) {
@@ -423,14 +484,12 @@ class IB_Educator_Memberships {
 
 		$membership_meta = $this->get_membership_meta( $user_membership['membership_id'] );
 
-		if ( ! is_array( $membership_meta['categories'] ) ) {
+		if ( empty( $membership_meta['categories'] ) ) {
 			return false;
 		}
 
-		$categories_sql = implode( ',', array_map( 'absint', $membership_meta['categories'] ) );
-
-		global $wpdb;
-
+		$categories_sql = implode( ',', array_map( 'intval', $membership_meta['categories'] ) );
+		
 		$post_ids = $wpdb->get_col(
 			"SELECT p.ID FROM {$wpdb->posts} p
 			INNER JOIN {$wpdb->term_relationships} tr ON tr.object_id=p.ID
@@ -442,19 +501,19 @@ class IB_Educator_Memberships {
 	}
 
 	/**
-	 * Pause the user's entries of entry_origin "membership".
+	 * Update membership entries' status.
 	 *
 	 * @param int $user_id
+	 * @param string $status
 	 */
-	public function pause_membership_entries( $user_id ) {
+	public function update_membership_entries( $user_id, $status ) {
 		global $wpdb;
 		$tables = ib_edu_table_names();
 
-		// Pause the user's entries.
 		$wpdb->update(
 			$tables['entries'],
 			array(
-				'entry_status' => 'paused',
+				'entry_status' => $status,
 			),
 			array(
 				'user_id'      => $user_id,
@@ -464,6 +523,15 @@ class IB_Educator_Memberships {
 			array( '%s' ),
 			array( '%d', '%s', '%s' )
 		);
+	}
+
+	/**
+	 * Pause the user's entries of entry_origin "membership".
+	 *
+	 * @param int $user_id
+	 */
+	public function pause_membership_entries( $user_id ) {
+		$this->update_membership_entries( $user_id, 'paused' );
 	}
 
 	/**
@@ -561,9 +629,7 @@ class IB_Educator_Memberships {
 
 		$wpdb->update(
 			$this->tbl_members,
-			array(
-				'status' => 'expired',
-			),
+			array( 'status' => 'expired' ),
 			array( 'user_id' => $user_id ),
 			array( '%s' ),
 			array( '%d' )
@@ -580,7 +646,16 @@ class IB_Educator_Memberships {
 	 * @return string
 	 */
 	public function get_price_widget( $membership_id = null ) {
-		if ( is_null( $membership_id ) ) $membership_id = get_the_ID();
+		if ( is_null( $membership_id ) ) {
+			$membership_id = get_the_ID();
+		}
+
+		$output = apply_filters( 'ib_educator_membership_price_widget', null, $membership_id );
+
+		if ( ! is_null( $output ) ) {
+			return $output;
+		}
+
 		$price = $this->get_price( $membership_id );
 		$payment_url = ib_edu_get_endpoint_url( 'edu-membership', $membership_id, get_permalink( ib_edu_page_id( 'payment' ) ) );
 		$output = '<div class="ib-edu-price-widget">';
@@ -589,18 +664,6 @@ class IB_Educator_Memberships {
 		$output .= '</div>';
 
 		return $output;
-	}
-
-	/**
-	 * Get the membership switch price corrections.
-	 * e.g. when switching memberships.
-	 *
-	 * @param int $user_id
-	 * @param int $new_membership_id
-	 * @return array
-	 */
-	public function get_new_payment_data( $user_id, $new_membership_id, $ts_today = 0 ) {
-		return array();
 	}
 
 	/**

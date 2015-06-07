@@ -153,7 +153,7 @@ class IB_Educator {
 
 		// Filter by entry_status.
 		if ( isset( $args['entry_status'] ) ) {
-			$sql .= " AND entry_status='" . esc_sql( $args['entry_status'] ) . "'";
+			$sql .= $wpdb->prepare( ' AND entry_status = %s', $args['entry_status'] );
 		}
 
 		$row = $wpdb->get_row( $sql );
@@ -173,38 +173,51 @@ class IB_Educator {
 	 */
 	public function get_entries( $args ) {
 		global $wpdb;
-		$sql = "SELECT * FROM {$this->entries} WHERE 1";
+		$sql = "SELECT * FROM $this->entries WHERE 1";
 
-		// Filter by entry_id.
+		// Entry ID.
 		if ( isset( $args['entry_id'] ) ) {
-			$sql .= ' AND ID=' . absint( $args['entry_id'] );
-		}
-
-		// Filter by course_id.
-		if ( isset( $args['course_id'] ) ) {
-			$course_id = array();
-
-			if ( is_array( $args['course_id'] ) ) {
-				foreach ( $args['course_id'] as $id ) {
-					$course_id[] = absint( $id );
-				}
+			if ( is_array( $args['entry_id'] ) ) {
+				$ids = implode( ',', array_map( 'intval', $args['entry_id'] ) );
+				$sql .= " AND ID IN ($ids)";
 			} else {
-				$course_id[] = absint( $args['course_id'] );
-			}
-
-			if ( ! empty( $course_id ) ) {
-				$sql .= ' AND course_id IN (' . implode( ',', $course_id ) . ')';
+				$sql .= ' AND ID = ' . intval( $args['entry_id'] );
 			}
 		}
 
-		// Filter by user_id.
+		// Course ID.
+		if ( isset( $args['course_id'] ) ) {
+			if ( is_array( $args['course_id'] ) ) {
+				$ids = implode( ',', array_map( 'intval', $args['course_id'] ) );
+				$sql .= " AND course_id IN ($ids)";
+			} else {
+				$sql .= ' AND course_id = ' . intval( $args['course_id'] );
+			}
+		}
+
+		// User ID.
 		if ( isset( $args['user_id'] ) ) {
-			$sql .= ' AND user_id=' . absint( $args['user_id'] );
+			if ( is_array( $args['user_id'] ) ) {
+				$ids = implode( ',', array_map( 'intval', $args['user_id'] ) );
+				$sql .= " AND user_id IN ($ids)";
+			} else {
+				$sql .= ' AND user_id = ' . intval( $args['user_id'] );
+			}
 		}
 
-		// Filter by entry status.
+		// Payment ID.
+		if ( isset( $args['payment_id'] ) ) {
+			$sql .= ' AND payment_id = ' . intval( $args['payment_id'] );
+		}
+
+		// Entry status.
 		if ( isset( $args['entry_status'] ) ) {
-			$sql .= " AND entry_status='" . esc_sql( $args['entry_status'] ) . "'";
+			$sql .= $wpdb->prepare( ' AND entry_status = %s', $args['entry_status'] );
+		}
+
+		// Entry origin.
+		if ( isset( $args['entry_origin'] ) ) {
+			$sql .= $wpdb->prepare( ' AND entry_origin = %s', $args['entry_origin'] );
 		}
 
 		// With or without pagination?
@@ -799,6 +812,10 @@ class IB_Educator {
 	 */
 	public function check_quiz_pending( $ids ) {
 		global $wpdb;
+
+		if ( empty( $ids ) ) {
+			return array();
+		}
 
 		foreach ( $ids as $key => $id ) {
 			$ids[ $key ] = absint( $id );

@@ -59,9 +59,9 @@ if ( ! $user_membership ) {
 	?>
 
 	<?php if ( isset( $_GET['edu-message'] ) && 'saved' == $_GET['edu-message'] ) : ?>
-	<div id="message" class="updated below-h2">
-		<p><?php _e( 'Member updated.', 'ibeducator' ); ?></p>
-	</div>
+		<div id="message" class="updated below-h2">
+			<p><?php _e( 'Member updated.', 'ibeducator' ); ?></p>
+		</div>
 	<?php endif; ?>
 
 	<form id="edu_edit_member_form"

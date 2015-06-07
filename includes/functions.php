@@ -731,6 +731,35 @@ function ib_edu_lesson_access( $lesson_id ) {
 	return get_post_meta( $lesson_id, '_ib_educator_access', true );
 }
 
+function ib_edu_purchase_link( $atts ) {
+	$atts = wp_parse_args( $atts, array(
+		'object_id' => null,
+		'type'      => null,
+		'text'      => __( 'Purchase', 'ib-educator' ),
+		'class'     => array(),
+	) );
+
+	// Add default class.
+	array_push( $atts['class'], 'edu-purchase-link' );
+
+	$html = apply_filters( 'ib_edu_pre_purchase_link', null, $atts );
+
+	if ( ! is_null( $html ) ) {
+		return $html;
+	}
+
+	if ( 'membership' == $atts['type'] ) {
+		$html = sprintf(
+			'<a href="%s" class="%s">%s</a>',
+			esc_url( ib_edu_get_endpoint_url( 'edu-membership', $atts['object_id'], get_permalink( ib_edu_page_id( 'payment' ) ) ) ),
+			esc_attr( implode( ' ', $atts['class'] ) ),
+			$atts['text']
+		);
+	}
+
+	return $html;
+}
+
 /**
  * Trigger deprecated function error.
  *
