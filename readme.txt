@@ -14,11 +14,13 @@ Educator is a simple learning management system plugin for WordPress.
 
 You can use this plugin to offer online courses on your WordPress website.
 
+Since version 1.4.5 the Educator plugin can be integrated with WooCommerce using an additional plugin - <a href="https://wordpress.org/plugins/educator-woocommerce-integration/">Educator WooCommerce Integration</a>. Please check <a href="http://educatorplugin.com/using-woocommerce-to-sell-courses/">Using WooCommerce to Sell Courses</a> for more info.
+
 = Links: =
 
 * Documentation: http://educatorplugin.com/
 * Learn how this plugin works: http://educatorplugin.com/how-educator-works/
-* Official github repository: https://github.com/dmytro-d/ibeducator
+* Official github repository: https://github.com/educatorplugin/ibeducator
 
 = Features: =
 
