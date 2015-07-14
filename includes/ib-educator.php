@@ -382,7 +382,9 @@ class IB_Educator {
 	 * @return false|WP_Query
 	 */
 	public function get_lessons( $course_id ) {
-		if ( ! is_numeric( $course_id ) ) return false;
+		if ( ! is_numeric( $course_id ) ) {
+			return false;
+		}
 
 		return new WP_Query( array(
 			'post_type'      => 'ib_educator_lesson',
@@ -403,6 +405,7 @@ class IB_Educator {
 	 */
 	public function get_num_lessons( $course_id ) {
 		global $wpdb;
+
 		$num_lessons = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(1) FROM {$wpdb->posts} p

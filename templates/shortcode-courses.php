@@ -7,12 +7,12 @@
 		) );
 	?>
 	<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
-	<?php
-		while ( $courses->have_posts() ) {
-			$courses->the_post();
-			IB_Educator_View::template_part( 'content', 'course' );
-		}
-	?>
+		<?php
+			while ( $courses->have_posts() ) {
+				$courses->the_post();
+				IB_Educator_View::template_part( 'content', 'course' );
+			}
+		?>
 	</div>
 
 	<?php
@@ -20,17 +20,17 @@
 	?>
 
 	<?php if ( ! isset( $atts['nopaging'] ) || 1 != $atts['nopaging'] ) : ?>
-	<div class="ib-edu-pagination">
-	<?php
-		$big = 999999999;
+		<div class="ib-edu-pagination">
+			<?php
+				$big = 999999999;
 
-		echo paginate_links( array(
-			'base'    => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
-			'format'  => '?paged=%#%',
-			'current' => max( 1, $args['paged'] ),
-			'total'   => $courses->max_num_pages,
-		) );
-	?>
-	</div>
+				echo paginate_links( array(
+					'base'    => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
+					'format'  => '?paged=%#%',
+					'current' => max( 1, $args['paged'] ),
+					'total'   => $courses->max_num_pages,
+				) );
+			?>
+		</div>
 	<?php endif; ?>
 <?php endif; ?>

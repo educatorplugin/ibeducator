@@ -55,16 +55,16 @@ $course_id = get_the_ID();
 	?>
 
 	<?php if ( $lessons_query && $lessons_query->have_posts() ) : ?>
-	<section class="ib-edu-lessons">
-		<h2><?php _e( 'Lessons', 'ibeducator' ); ?></h2>
-		<?php
-			while ( $lessons_query->have_posts() ) {
-				$lessons_query->the_post();
-				IB_Educator_View::template_part( 'content', 'lesson' );
-			}
+		<section class="ib-edu-lessons">
+			<h2><?php _e( 'Lessons', 'ibeducator' ); ?></h2>
+			<?php
+				while ( $lessons_query->have_posts() ) {
+					$lessons_query->the_post();
+					IB_Educator_View::template_part( 'content', 'lesson' );
+				}
 
-			wp_reset_postdata();
-		?>
-	</section>
+				wp_reset_postdata();
+			?>
+		</section>
 	<?php endif; ?>
 </article>
