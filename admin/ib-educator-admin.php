@@ -29,6 +29,7 @@ class IB_Educator_Admin {
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-taxes-settings.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-email-settings.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-memberships-settings.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-syllabus.php';
 
 		new IB_Educator_General_Settings();
 		new IB_Educator_Learning_Settings();
@@ -40,6 +41,7 @@ class IB_Educator_Admin {
 		IB_Educator_Admin_Post_Types::init();
 		IB_Educator_Admin_Meta::init();
 		IB_Educator_Quiz_Admin::init();
+		new EDR_Syllabus();
 	}
 
 	/**
@@ -51,7 +53,9 @@ class IB_Educator_Admin {
 		switch ( $screen->id ) {
 			case 'options-permalink':
 				include IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-permalink-settings.php';
+
 				new IB_Educator_Permalink_Settings();
+
 				break;
 		}
 	}

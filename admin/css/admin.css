@@ -15,6 +15,11 @@
 	text-decoration: none;
 }
 
+/* Sortable ---------------*/
+.edr-placeholder {
+	border: 2px dashed #ddd;
+}
+
 /* Meta ---------------*/
 .ib-edu-meta {
 	width: 100%;

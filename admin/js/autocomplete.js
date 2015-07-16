@@ -1,5 +1,5 @@
 (function($) {
-	function Autocomplete( input, options ) {
+	function Autocomplete(input, options) {
 		this.input = $(input);
 		this.options = options;
 		this.running = false;
@@ -61,7 +61,7 @@
 			that.clearChoices();
 		});
 
-		$('body').on('click', function() {
+		$('body').on('click.edr-autocomplete', function() {
 			that.clearChoices();
 		});
 	};
@@ -75,6 +75,15 @@
 	 */
 	Autocomplete.prototype.setValue = function(value) {
 		this.input.val(value);
+	};
+
+	/**
+	 * Get input value.
+	 *
+	 * @return {String}
+	 */
+	Autocomplete.prototype.getValue = function() {
+		return this.input.val();
 	};
 
 	/**
@@ -93,6 +102,15 @@
 		}
 
 		this.trigger.find('.value').html(label);
+	};
+
+	/**
+	 * Get label.
+	 *
+	 * @return {String}
+	 */
+	Autocomplete.prototype.getLabel = function() {
+		return this.trigger.find('.value').html();
 	};
 
 	/**
@@ -228,7 +246,29 @@
 		other.css('display', 'none');
 	};
 
+	Autocomplete.prototype.destroy = function() {
+		if (this.ajaxRequest) {
+			this.ajaxRequest.abort();
+		}
+
+		if (this.ajaxTimeout) {
+			clearTimeout(this.ajaxTimeout);
+		}
+
+		this.trigger.off();
+		this.choicesDiv.find('> .choices-filter > input').off();
+		this.choicesDiv.off();
+		$('body').off('.edr-autocomplete');
+
+		this.choicesDiv.remove();
+
+		this.choicesDiv = null;
+		this.input = null;
+	};
+
 	window.ibEducatorAutocomplete = function(input, options) {
 		var autocomplete = new Autocomplete(input, options);
+
+		return autocomplete;
 	};
 })(jQuery);

@@ -19,11 +19,13 @@ class IB_Educator_Main {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_scripts_styles' ) );
 		add_filter( 'wp_nav_menu_objects', array( __CLASS__, 'add_menu_classes' ) );
 
-		// Add templating actions.
-		add_action( 'ib_educator_before_main_loop', array( __CLASS__, 'action_before_main_loop' ) );
-		add_action( 'ib_educator_after_main_loop', array( __CLASS__, 'action_after_main_loop' ) );
-		add_action( 'ib_educator_sidebar', array( __CLASS__, 'action_sidebar' ) );
-		add_action( 'ib_educator_before_course_content', array( __CLASS__, 'before_course_content' ) );
+		// Add template functions.
+		add_action( 'after_setup_theme', array( __CLASS__, 'require_template_functions' ) );
+
+		// Include scripts for the front-end only.
+		if ( ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' ) ) {
+			require_once IBEDUCATOR_PLUGIN_DIR . 'includes/template-hooks.php';
+		}
 
 		// Update splitted shared terms.
 		add_action( 'split_shared_term', array( __CLASS__, 'split_shared_term' ), 10, 4 );
@@ -318,6 +320,14 @@ class IB_Educator_Main {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Require the template functions,
+	 * so they are included only when needed.
+	 */
+	public static function require_template_functions() {
+		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/template-functions.php';
 	}
 
 	/**

@@ -15,7 +15,15 @@ class IB_Educator_Autocomplete {
 	public static function enqueue_scripts_styles() {
 		$screen = get_current_screen();
 
-		if ( $screen && in_array( $screen->id, array( 'toplevel_page_ib_educator_admin', 'educator_page_ib_educator_payments', 'educator_page_ib_educator_entries', 'educator_page_ib_educator_members' ) ) ) {
+		$autocomplete_pages = array(
+			'toplevel_page_ib_educator_admin',
+			'educator_page_ib_educator_payments',
+			'educator_page_ib_educator_entries',
+			'educator_page_ib_educator_members',
+			'ib_educator_course',
+		);
+
+		if ( $screen && in_array( $screen->id, $autocomplete_pages ) ) {
 			wp_enqueue_script( 'ib-educator-autocomplete', IBEDUCATOR_PLUGIN_URL . 'admin/js/autocomplete.js', array( 'jquery' ), '1.0' );
 		}
 	}
@@ -24,6 +32,20 @@ class IB_Educator_Autocomplete {
 	 * AJAX: autocomplete.
 	 */
 	public static function ajax_autocomplete() {
+		if ( ! isset( $_GET['entity'] ) ) {
+			exit();
+		}
+
+		$entity = $_GET['entity'];
+
+		/**
+		 * Fires before the default autocomplete request is being processed.
+		 * Can be used to override autocomplete requests.
+		 *
+		 * @param string $entity
+		 */
+		do_action( 'edr_autocomplete_ajax', $entity );
+
 		// Check capability.
 		if ( ! current_user_can( 'manage_educator' ) ) {
 			exit;
@@ -33,11 +55,6 @@ class IB_Educator_Autocomplete {
 			exit;
 		}
 
-		if ( ! isset( $_GET['entity'] ) ) {
-			exit;
-		}
-
-		$entity = $_GET['entity'];
 		$response = array();
 		
 		switch ( $entity ) {
@@ -65,6 +82,7 @@ class IB_Educator_Autocomplete {
 						);
 					}
 				}
+
 				break;
 
 			case 'post':
@@ -95,10 +113,12 @@ class IB_Educator_Autocomplete {
 
 					wp_reset_postdata();
 				}
+
 				break;
 		}
 
 		echo json_encode( $response );
-		exit;
+
+		exit();
 	}
 }
