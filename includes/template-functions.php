@@ -130,7 +130,7 @@ function edr_display_lessons( $course_id ) {
 			unset( $tmp );
 		}
 
-		IB_Educator_View::the_template( 'syllabus', array(
+		IB_Educator_View::the_template( 'course/syllabus', array(
 			'syllabus' => $syllabus,
 			'lessons'  => $lessons,
 		) );
