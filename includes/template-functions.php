@@ -1,5 +1,103 @@
 <?php
 
+if ( ! function_exists( 'edr_before_main_loop' ) ) :
+/**
+ * Default html before the main loop.
+ *
+ * @param string $where
+ */
+function edr_before_main_loop( $where = '' ) {
+	$template = get_template();
+
+	switch ( $template ) {
+		case 'twentyfourteen':
+			echo '<div id="main-content" class="main-content"><div id="primary" class="content-area"><div id="content" class="site-content" role="main">';
+
+			if ( 'archive' != $where ) {
+				echo '<div class="ib-edu-twentyfourteen">';
+			}
+
+			break;
+
+		case 'twentyfifteen':
+			echo '<div id="primary" class="content-area"><main id="main" class="site-main" role="main">';
+
+			if ( 'archive' != $where ) {
+				echo '<div class="ib-edu-twentyfifteen">';
+			}
+
+			break;
+	}
+}
+endif;
+
+if ( ! function_exists( 'edr_after_main_loop' ) ) :
+/**
+ * Default html after the main loop.
+ *
+ * @param string $where
+ */
+function edr_after_main_loop( $where = '' ) {
+	$template = get_template();
+
+	switch ( $template ) {
+		case 'twentyfourteen':
+			echo '</div></div></div>';
+
+			if ( 'archive' != $where ) {
+				echo '</div>';
+			}
+
+			break;
+
+		case 'twentyfifteen':
+			echo '</main></div>';
+
+			if ( 'archive' != $where ) {
+				echo '</div>';
+			}
+
+			break;
+	}
+}
+endif;
+
+if ( ! function_exists( 'edr_show_sidebar' ) ) :
+/**
+ * Show sidebar.
+ */
+function edr_show_sidebar() {
+	get_sidebar( 'educator' );
+}
+endif;
+
+if ( ! function_exists( 'edr_show_course_difficulty' ) ) :
+/**
+ * Display course difficulty level.
+ */
+function edr_show_course_difficulty() {
+	$difficulty = ib_edu_get_difficulty( get_the_ID() );
+
+	if ( $difficulty ) {
+		IB_Educator_View::the_template( 'course/difficulty', array( 'difficulty' => $difficulty ) );
+	}
+}
+endif;
+
+if ( ! function_exists( 'edr_show_course_categories' ) ) :
+/**
+ * Display course categories.
+ */
+function edr_show_course_categories() {
+	$categories = get_the_term_list( get_the_ID(), 'ib_educator_category', '', __( ', ', 'ibeducator' ) );
+
+	if ( $categories ) {
+		IB_Educator_View::the_template( 'course/categories', array( 'categories' => $categories ) );
+	}
+}
+endif;
+
+if ( ! function_exists( 'edr_display_lessons' ) ) :
 /**
  * Display lessons of a given course.
  *
@@ -56,3 +154,4 @@ function edr_display_lessons( $course_id ) {
 		}
 	}
 }
+endif;
