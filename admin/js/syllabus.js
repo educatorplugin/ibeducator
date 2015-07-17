@@ -1,10 +1,20 @@
 (function($) {
 	'use strict';
 
+	/**
+	 * Add lessons collection to the register.
+	 *
+	 * @param {Object} lessons
+	 */
 	function addLessonCollection(lessons) {
 		lessonCollections.push(lessons);
 	}
 
+	/**
+	 * Remove lessons collection from the register.
+	 *
+	 * @param {Object} lessons
+	 */
 	function removeLessonCollection(lessons) {
 		for (var i = 0; i < lessonCollections.length; ++i) {
 			if (lessonCollections[i] === lessons) {
@@ -14,6 +24,11 @@
 		}
 	}
 
+	/**
+	 * Check if a given lesson exists in the register.
+	 *
+	 * @param {number} lessonId
+	 */
 	function lessonExists(lessonId) {
 		var i, lessonExists;
 
@@ -35,7 +50,14 @@
 		return false;
 	}
 
+	/**
+	 * @type {Array.<Lessons>}
+	 */
 	var lessonCollections = [];
+
+	/**
+	 * @type {number}
+	 */
 	var uniqueGroupId = 1;
 
 	/**
@@ -62,23 +84,34 @@
 	var LessonView = Backbone.View.extend({
 		tagName: 'li',
 		className: 'lesson',
-
 		template: _.template($('#edr-syllabus-lesson-view').html()),
 
+		/**
+		 * @type {Object.<string, string>}
+		 */
 		events: {
 			'click button.remove-lesson': 'removeLesson'
 		},
 
+		/**
+		 * Initialize.
+		 */
 		initialize: function() {
 			this.listenTo(this.model, 'destroy', this.remove);
 		},
 
+		/**
+		 * Render.
+		 */
 		render: function() {
 			this.$el.html(this.template(this.model.toJSON()));
 
 			return this;
 		},
 
+		/**
+		 * Process "remove lesson" event.
+		 */
 		removeLesson: function() {
 			this.model.destroy();
 		}
@@ -106,16 +139,24 @@
 	 */
 	var GroupView = Backbone.View.extend({
 		tagName: 'li',
-
 		template: _.template($('#edr-syllabus-group-view').html()),
 
+		/**
+		 * @type {Object.<string, string>}
+		 */
 		events: {
 			'click button.add-lesson': 'addLesson',
 			'click button.remove-group': 'removeGroup'
 		},
 
+		/**
+		 * @type {(Object|null)}
+		 */
 		lessons: null,
 
+		/**
+		 * Initialize.
+		 */
 		initialize: function(options) {
 			var i;
 
@@ -131,6 +172,11 @@
 			addLessonCollection(this.lessons);
 		},
 
+		/**
+		 * Render.
+		 *
+		 * @return {Object} this
+		 */
 		render: function() {
 			var that = this;
 
@@ -141,7 +187,7 @@
 				value: 'title',
 				searchBy: 'title',
 				nonce: edrSyllabusText.autoCompleteNonce,
-				url: ajaxurl,
+				url: ajaxurl + '?current_course_id=' + $('input#post_ID').val(),
 				entity: 'admin_syllabus_lessons'
 			});
 
@@ -154,6 +200,7 @@
 					ui.item.data('edr-index', ui.item.index());
 				},
 				update: function(e, ui) {
+					// Update the lesson's index in the collection.
 					var comparator = that.lessons.comparator;
 					var model = that.lessons.at(ui.item.data('edr-index'));
 
@@ -174,6 +221,11 @@
 			return this;
 		},
 
+		/**
+		 * Render a lesson.
+		 *
+		 * @param {Object} lessonModel
+		 */
 		renderLesson: function(lessonModel) {
 			var lessonView = new LessonView({
 				model: lessonModel
@@ -182,6 +234,11 @@
 			this.$el.find('ul.lessons').append(lessonView.render().$el);
 		},
 
+		/**
+		 * Add a lesson to the collection and render it.
+		 *
+		 * @param {Object} e Event object.
+		 */
 		addLesson: function(e) {
 			e.preventDefault();
 
@@ -203,12 +260,20 @@
 			this.lessons.add(data);
 		},
 
+		/**
+		 * Remove group.
+		 *
+		 * @param {Object} e Event object.
+		 */
 		removeGroup: function(e) {
 			e.preventDefault();
 
 			this.model.destroy();
 		},
 
+		/**
+		 * Remove this view.
+		 */
 		remove: function() {
 			_.each(this.lessons.models, function(lessonModel) {
 				lessonModel.trigger('destroy');
@@ -227,14 +292,26 @@
 	 * App View.
 	 */
 	var AppView = Backbone.View.extend({
+		/**
+		 * @type {string}
+		 */
 		el: '#edr-syllabus',
 
+		/**
+		 * @type {Object.<string, string>}
+		 */
 		events: {
 			'click button.add-group': 'addGroup'
 		},
 
+		/**
+		 * @type {boolean}
+		 */
 		loading: true,
 
+		/**
+		 * Initialize.
+		 */
 		initialize: function() {
 			var that = this;
 			var groupModel = null;
@@ -277,6 +354,7 @@
 				this.$el.find('> .groups').append(groupsHTML);
 			}
 
+			// Make groups sortable.
 			this.$el.find('> .groups').sortable({
 				axis: 'y',
 				handle: '.handle',
@@ -286,6 +364,7 @@
 					ui.item.data('edr-index', ui.item.index());
 				},
 				update: function(e, ui) {
+					// Update the group's index in the collection.
 					var comparator = that.groups.comparator;
 					var model = that.groups.at(ui.item.data('edr-index'));
 
@@ -297,11 +376,17 @@
 				}
 			});
 
+			// The syllabus manager is ready at this point.
 			this.loading = false;
 			this.$el.find('input[name="edr_syllabus_status"]').val('ready');
 			this.$el.find('div.edr-loading').hide();
 		},
 
+		/**
+		 * Render a group.
+		 *
+		 * @param {Object} groupModel
+		 */
 		renderGroup: function(groupModel) {
 			var groupView = new GroupView({
 				model: groupModel
@@ -310,6 +395,11 @@
 			this.$el.find('> .groups').append(groupView.render().$el);
 		},
 
+		/**
+		 * Add a group to the collection and render it.
+		 *
+		 * @param {Object} e Event object.
+		 */
 		addGroup: function(e) {
 			e.preventDefault();
 

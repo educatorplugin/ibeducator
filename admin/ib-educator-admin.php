@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Educator plugin's admin setup.
+ */
 class IB_Educator_Admin {
 	/**
 	 * Initialize admin.
@@ -29,7 +32,7 @@ class IB_Educator_Admin {
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-taxes-settings.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-email-settings.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-memberships-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-syllabus.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-syllabus-admin.php';
 
 		new IB_Educator_General_Settings();
 		new IB_Educator_Learning_Settings();
@@ -41,7 +44,7 @@ class IB_Educator_Admin {
 		IB_Educator_Admin_Post_Types::init();
 		IB_Educator_Admin_Meta::init();
 		IB_Educator_Quiz_Admin::init();
-		new EDR_Syllabus();
+		new EDR_Syllabus_Admin();
 	}
 
 	/**
