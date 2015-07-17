@@ -19,11 +19,13 @@ class IB_Educator_Main {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_scripts_styles' ) );
 		add_filter( 'wp_nav_menu_objects', array( __CLASS__, 'add_menu_classes' ) );
 
-		// Add templating actions.
-		add_action( 'ib_educator_before_main_loop', array( __CLASS__, 'action_before_main_loop' ) );
-		add_action( 'ib_educator_after_main_loop', array( __CLASS__, 'action_after_main_loop' ) );
-		add_action( 'ib_educator_sidebar', array( __CLASS__, 'action_sidebar' ) );
-		add_action( 'ib_educator_before_course_content', array( __CLASS__, 'before_course_content' ) );
+		// Add template functions.
+		add_action( 'after_setup_theme', array( __CLASS__, 'require_template_functions' ) );
+
+		// Include scripts for the front-end only.
+		if ( ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' ) ) {
+			require_once IBEDUCATOR_PLUGIN_DIR . 'includes/template-hooks.php';
+		}
 
 		// Update splitted shared terms.
 		add_action( 'split_shared_term', array( __CLASS__, 'split_shared_term' ), 10, 4 );
@@ -321,74 +323,10 @@ class IB_Educator_Main {
 	}
 
 	/**
-	 * Action hook: before main loop.
+	 * Require the template functions,
+	 * so they are included only when needed.
 	 */
-	public static function action_before_main_loop( $where = '' ) {
-		$template = get_template();
-
-		switch ( $template ) {
-			case 'twentyfourteen':
-				echo '<div id="main-content" class="main-content"><div id="primary" class="content-area"><div id="content" class="site-content" role="main">';
-
-				if ( 'archive' != $where ) echo '<div class="ib-edu-twentyfourteen">';
-
-				break;
-
-			case 'twentyfifteen':
-				echo '<div id="primary" class="content-area"><main id="main" class="site-main" role="main">';
-
-				if ( 'archive' != $where ) echo '<div class="ib-edu-twentyfifteen">';
-
-				break;
-		}
-	}
-
-	/**
-	 * Action hook: after main loop.
-	 */
-	public static function action_after_main_loop( $where = '' ) {
-		$template = get_template();
-
-		switch ( $template ) {
-			case 'twentyfourteen':
-				echo '</div></div></div>';
-
-				if ( 'archive' != $where ) echo '</div>';
-
-				break;
-
-			case 'twentyfifteen':
-				echo '</main></div>';
-
-				if ( 'archive' != $where ) echo '</div>';
-
-				break;
-		}
-	}
-
-	/**
-	 * Action hook: main loop sidebar.
-	 */
-	public static function action_sidebar() {
-		get_sidebar();
-	}
-
-	/**
-	 * Action hook: before course content.
-	 */
-	public static function before_course_content() {
-		// Output course difficulty.
-		$difficulty = ib_edu_get_difficulty( get_the_ID() );
-
-		if ( $difficulty ) {
-			echo '<div class="ib-edu-course-difficulty"><span class="label">' . __( 'Difficulty:', 'ibeducator' ) . '</span>' . esc_html( $difficulty['label'] ) . '</div>';
-		}
-
-		// Output course categories.
-		$categories = get_the_term_list( get_the_ID(), 'ib_educator_category', '', __( ', ', 'ibeducator' ) );
-
-		if ( $categories ) {
-			echo '<div class="ib-edu-course-categories"><span class="label">' . __( 'Categories:', 'ibeducator' ) . '</span>' . $categories . '</div>';
-		}
+	public static function require_template_functions() {
+		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/template-functions.php';
 	}
 }

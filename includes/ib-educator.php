@@ -289,7 +289,9 @@ class IB_Educator {
 	public function get_student_courses( $user_id ) {
 		global $wpdb;
 		
-		if ( absint( $user_id ) != $user_id ) return false;
+		if ( absint( $user_id ) != $user_id ) {
+			return false;
+		}
 		
 		$ids = array();
 
@@ -309,10 +311,12 @@ class IB_Educator {
 			}
 
 			$query = new WP_Query( array(
-				'post_type' => 'ib_educator_course',
-				'post__in'  => $ids,
-				'orderby'   => 'post__in',
-				'order'     => 'ASC'
+				'post_type'      => 'ib_educator_course',
+				'post_status'    => 'publish',
+				'post__in'       => $ids,
+				'posts_per_page' => -1,
+				'orderby'        => 'post__in',
+				'order'          => 'ASC',
 			) );
 
 			if ( $query->have_posts() ) {
@@ -353,10 +357,12 @@ class IB_Educator {
 			}
 
 			$query = new WP_Query( array(
-				'post_type' => 'ib_educator_course',
-				'post__in'  => $ids,
-				'orderby'   => 'post__in',
-				'order'     => 'ASC'
+				'post_type'      => 'ib_educator_course',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'post__in'       => $ids,
+				'orderby'        => 'post__in',
+				'order'          => 'ASC'
 			) );
 
 			if ( $query->have_posts() ) {
