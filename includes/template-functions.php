@@ -118,9 +118,10 @@ function edr_display_lessons( $course_id ) {
 
 		if ( ! empty( $lesson_ids ) ) {
 			$tmp = get_posts( array(
-				'post_type'   => 'ib_educator_lesson',
-				'post__in'    => $lesson_ids,
-				'post_status' => 'publish'
+				'post_type'      => 'ib_educator_lesson',
+				'post__in'       => $lesson_ids,
+				'post_status'    => 'publish',
+				'posts_per_page' => count( $lesson_ids ),
 			) );
 
 			foreach ( $tmp as $lesson ) {

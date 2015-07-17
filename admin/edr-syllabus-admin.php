@@ -252,6 +252,13 @@ class EDR_Syllabus_Admin {
 			'post_type'      => 'ib_educator_lesson',
 			'post_status'    => 'publish',
 			'posts_per_page' => 15,
+			'meta_query'     => array(
+				array(
+					'key'     => '_ibedu_course',
+					'value'   => $current_course_id,
+					'compare' => '='
+				)
+			),
 		);
 
 		if ( ! empty( $_GET['input'] ) ) {
@@ -265,17 +272,8 @@ class EDR_Syllabus_Admin {
 			while ( $query->have_posts() ) {
 				$query->the_post();
 
-				$lesson_id = get_the_ID();
-				$course_id = get_post_meta( $lesson_id, '_ibedu_course', true );
-
-				// Get only unassigned lessons or the
-				// lessons that belong to the current course.
-				if ( $course_id && $course_id != $current_course_id ) {
-					continue;
-				}
-
 				$response[] = array(
-					'id'    => intval( $lesson_id ),
+					'id'    => get_the_ID(),
 					'title' => get_the_title(),
 				);
 			}

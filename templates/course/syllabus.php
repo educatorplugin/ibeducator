@@ -1,8 +1,8 @@
+<h2 id="edr-syllabus-title"><?php _e( 'Lessons', 'ibeducator' ); ?></h2>
 <ul class="edr-syllabus">
 	<?php foreach ( $syllabus as $group ) : ?>
 		<li class="group">
 			<div class="group-header"><h3><?php echo esc_html( $group['title'] ); ?></h3></div>
-
 			<?php if ( ! empty( $group['lessons'] ) ) : ?>
 				<div class="group-body">
 					<ul class="edr-syllabus-lessons">
