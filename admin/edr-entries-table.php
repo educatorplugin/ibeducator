@@ -55,13 +55,36 @@ class EDR_Entries_Table extends WP_List_Table {
 	 */
 	public function display_entry_filters() {
 		$statuses = IB_Educator_Entry::get_statuses();
+		$access = '';
+
+		if ( current_user_can( 'manage_educator' ) ) {
+			$access = 'all';
+		} elseif ( current_user_can( 'educator_edit_entries' ) ) {
+			$access = 'own';
+		}
+
+		$courses = null;
+
+		if ( ! empty( $access ) ) {
+			$course_args = array(
+				'post_type'      => 'ib_educator_course',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+			);
+
+			if ( 'own' == $access ) {
+				$course_args['include'] = IB_Educator::get_instance()->get_lecturer_courses( get_current_user_id() );
+			}
+
+			$courses = get_posts( $course_args );
+		}
 		?>
 		<div class="ib-edu-tablenav top">
 			<form class="ib-edu-admin-search" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" method="get">
 				<input type="hidden" name="page" value="ib_educator_entries">
 				<div class="block">
 					<label for="search-entry-id"><?php echo _x( 'ID', 'ID of an item', 'ibeducator' ); ?></label>
-					<input type="text" id="search-entry-id" name="id" value="<?php if ( ! empty( $args['entry_id'] ) ) echo intval( $args['entry_id'] ); ?>">
+					<input type="text" id="search-entry-id" name="id" value="<?php if ( isset( $_GET['id'] ) ) echo intval( $_GET['id'] ); ?>">
 				</div>
 				<div class="block">
 					<label for="search-entry-status"><?php _e( 'Status', 'ibeducator' ); ?></label>
@@ -76,6 +99,23 @@ class EDR_Entries_Table extends WP_List_Table {
 						?>
 					</select>
 				</div>
+				<div class="block">
+					<label for="search-student"><?php _e( 'Student', 'ibeducator' ); ?></label>
+					<input type="text" id="search-student" name="student" value="<?php if ( isset( $_GET['student'] ) ) echo esc_attr( $_GET['student'] ); ?>">
+				</div>
+				<?php if ( ! empty( $courses ) ) : ?>
+					<div class="block">
+						<label><?php _e( 'Course', 'ibeducator' ); ?></label>
+						<select name="course">
+							<option value=""><?php _e( 'All', 'ibeducator' ); ?></option>
+							<?php
+								foreach ( $courses as $course ) {
+									echo '<option value="' . intval( $course->ID ) . '">' . esc_html( $course->post_title ) . '</option>';
+								}
+							?>
+						</select>
+					</div>
+				<?php endif; ?>
 				<div class="block">
 					<input type="submit" class="button" value="<?php _e( 'Search', 'ibeducator' ); ?>">
 				</div>
