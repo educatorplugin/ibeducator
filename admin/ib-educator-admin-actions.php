@@ -440,4 +440,34 @@ class IB_Educator_Admin_Actions {
 
 		wp_redirect( admin_url( 'admin.php?page=ib_educator_admin&tab=payment&gateway_id=' . $gateway_id . '&edu-message=' . $message ) );
 	}
+
+	/**
+	 * Delete an entry.
+	 */
+	public static function delete_entry() {
+		// Verify nonce.
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'edr_delete_entry' ) ) {
+			return;
+		}
+
+		// Check permissions.
+		if ( ! current_user_can( 'manage_educator' ) ) {
+			return;
+		}
+
+		// Get entry.
+		$entry_id = isset( $_GET['entry_id'] ) ? intval( $_GET['entry_id'] ) : 0;
+
+		if ( ! $entry_id ) {
+			return;
+		}
+
+		$entry = IB_Educator_Entry::get_instance( $entry_id );
+
+		// Delete entry if it was found.
+		if ( $entry->ID && $entry->delete() ) {
+			wp_redirect( admin_url( 'admin.php?page=ib_educator_entries&edr-message=entry_deleted' ) );
+			exit();
+		}
+	}
 }

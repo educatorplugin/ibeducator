@@ -171,7 +171,7 @@ class IB_Educator {
 	 * @param array $args
 	 * @return array
 	 */
-	public function get_entries( $args ) {
+	public function get_entries( $args, $output_type = 'OBJECT' ) {
 		global $wpdb;
 		$sql = "SELECT * FROM $this->entries WHERE 1";
 
@@ -229,10 +229,12 @@ class IB_Educator {
 			$pagination_sql .= ' LIMIT ' . ( ( $args['page'] - 1 ) * $args['per_page'] ) . ', ' . $args['per_page'];
 		}
 
-		$entries = $wpdb->get_results( $sql . ' ORDER BY entry_date DESC' . $pagination_sql );
+		$entries = $wpdb->get_results( $sql . ' ORDER BY entry_date DESC' . $pagination_sql, $output_type );
 
 		if ( $entries ) {
-			$entries = array_map( array( 'IB_Educator_Entry', 'get_instance' ), $entries );
+			if ( 'OBJECT' == $output_type ) {
+				$entries = array_map( array( 'IB_Educator_Entry', 'get_instance' ), $entries );
+			}
 		}
 
 		if ( $has_pagination ) {
@@ -826,12 +828,9 @@ class IB_Educator {
 			return array();
 		}
 
-		foreach ( $ids as $key => $id ) {
-			$ids[ $key ] = absint( $id );
-		}
-
-		$ids = implode( ',', $ids );
+		$ids = implode( ',', array_map( 'absint', $ids ) );
 		$entries = $wpdb->get_col( "SELECT entry_id FROM $this->grades WHERE status = 'pending' AND entry_id IN ($ids) GROUP BY entry_id" );
+
 		return $entries;
 	}
 
