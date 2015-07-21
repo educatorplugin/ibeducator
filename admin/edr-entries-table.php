@@ -12,6 +12,9 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * Entries list table.
  */
 class EDR_Entries_Table extends WP_List_Table {
+	/**
+	 * @var array
+	 */
 	protected $pending_quiz_entries = null;
 
 	/**
@@ -78,13 +81,19 @@ class EDR_Entries_Table extends WP_List_Table {
 
 			$courses = get_posts( $course_args );
 		}
+
+		$student = null;
+
+		if ( isset( $_GET['student'] ) ) {
+			$student = get_user_by( 'slug', $_GET['student'] );
+		}
 		?>
 		<div class="ib-edu-tablenav top">
 			<form class="ib-edu-admin-search" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" method="get">
 				<input type="hidden" name="page" value="ib_educator_entries">
 				<div class="block">
 					<label for="search-entry-id"><?php echo _x( 'ID', 'ID of an item', 'ibeducator' ); ?></label>
-					<input type="text" id="search-entry-id" name="id" value="<?php if ( isset( $_GET['id'] ) ) echo intval( $_GET['id'] ); ?>">
+					<input type="text" id="search-entry-id" name="id" value="<?php if ( ! empty( $_GET['id'] ) ) echo intval( $_GET['id'] ); ?>">
 				</div>
 				<div class="block">
 					<label for="search-entry-status"><?php _e( 'Status', 'ibeducator' ); ?></label>
@@ -101,16 +110,26 @@ class EDR_Entries_Table extends WP_List_Table {
 				</div>
 				<div class="block">
 					<label for="search-student"><?php _e( 'Student', 'ibeducator' ); ?></label>
-					<input type="text" id="search-student" name="student" value="<?php if ( isset( $_GET['student'] ) ) echo esc_attr( $_GET['student'] ); ?>">
+					<div class="ib-edu-autocomplete">
+						<input
+							type="text"
+							name="student"
+							id="search-student"
+							autocomplete="off"
+							value="<?php if ( $student ) echo esc_attr( $student->user_nicename ); ?>"
+							data-label="<?php if ( $student ) echo esc_attr( $student->display_name . ' (' . $student->user_login . ')' ); ?>">
+					</div>
 				</div>
 				<?php if ( ! empty( $courses ) ) : ?>
 					<div class="block">
 						<label><?php _e( 'Course', 'ibeducator' ); ?></label>
-						<select name="course">
+						<select name="course_id">
 							<option value=""><?php _e( 'All', 'ibeducator' ); ?></option>
 							<?php
 								foreach ( $courses as $course ) {
-									echo '<option value="' . intval( $course->ID ) . '">' . esc_html( $course->post_title ) . '</option>';
+									$selected = ( isset( $_GET['course_id'] ) && $course->ID == $_GET['course_id'] ) ? ' selected="selected"' : '';
+
+									echo '<option value="' . intval( $course->ID ) . '"' . $selected . '>' . esc_html( $course->post_title ) . '</option>';
 								}
 							?>
 						</select>
@@ -121,6 +140,17 @@ class EDR_Entries_Table extends WP_List_Table {
 				</div>
 			</form>
 		</div>
+
+		<script>
+			ibEducatorAutocomplete(document.getElementById('search-student'), {
+				key: 'slug',
+				value: 'name',
+				searchBy: 'name',
+				nonce: <?php echo json_encode( wp_create_nonce( 'ib_educator_autocomplete' ) ); ?>,
+				url: <?php echo json_encode( admin_url( 'admin-ajax.php' ) ); ?>,
+				entity: 'entries_student'
+			});
+		</script>
 		<?php
 	}
 
@@ -201,7 +231,9 @@ class EDR_Entries_Table extends WP_List_Table {
 		$student = get_user_by( 'id', $item['user_id'] );
 
 		if ( $student ) {
-			return esc_html( $student->user_login );
+			$student_url = add_query_arg( array( 'student' => $student->user_nicename ), admin_url( 'admin.php?page=ib_educator_entries' ) );
+
+			return '<a href="' . esc_url( $student_url ) . '">' . esc_html( $student->user_login ) . '</a>';
 		}
 
 		return '';
@@ -300,6 +332,20 @@ class EDR_Entries_Table extends WP_List_Table {
 			$args['entry_id'] = $_GET['id'];
 		}
 
+		// Search by course id.
+		if ( ! empty( $_GET['course_id'] ) ) {
+			$args['course_id'] = $_GET['course_id'];
+		}
+
+		if ( ! empty( $_GET['student'] ) ) {
+			$user = get_user_by( 'slug', $_GET['student'] );
+
+			if ( $user ) {
+				$args['user_id'] = $user->ID;
+			}
+		}
+
+		// Check capabilities.
 		if ( current_user_can( 'manage_educator' ) ) {
 			// Get all entries.
 			$entries = $api->get_entries( $args, 'ARRAY_A' );

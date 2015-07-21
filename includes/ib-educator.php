@@ -173,6 +173,7 @@ class IB_Educator {
 	 */
 	public function get_entries( $args, $output_type = 'OBJECT' ) {
 		global $wpdb;
+
 		$sql = "SELECT * FROM $this->entries WHERE 1";
 
 		// Entry ID.
@@ -511,6 +512,7 @@ class IB_Educator {
 	 */
 	public function get_payments_count() {
 		global $wpdb;
+
 		return $wpdb->get_results( "SELECT payment_status, count(1) as num_rows FROM {$this->payments} GROUP BY payment_status", OBJECT_K );
 	}
 
@@ -522,6 +524,7 @@ class IB_Educator {
 	 */
 	public function get_lecturer_courses( $user_id ) {
 		global $wpdb;
+
 		return $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_author=%d AND post_type='ib_educator_course'", $user_id ) );
 	}
 
