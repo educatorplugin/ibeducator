@@ -204,14 +204,12 @@ class IB_Educator_Admin_Settings {
 				searchBy: 'country',
 				items: [
 					<?php
-						echo '{"code":"","country":"&nbsp;"}';
-
-						//$i = 0;
+						$i = 0;
 
 						foreach ( $countries as $code => $country ) {
-							//if ( $i > 0 ) {echo ',';}
+							if ( $i > 0 ) {echo ',';}
 
-							echo ',{"code":' . json_encode( esc_html( $code ) ) . ',"country":' . json_encode( esc_html( $country ) ) . '}';
+							echo '{"code":' . json_encode( esc_html( $code ) ) . ',"country":' . json_encode( esc_html( $country ) ) . '}';
 
 							$states = $edu_countries->get_states( $code );
 
@@ -221,7 +219,7 @@ class IB_Educator_Admin_Settings {
 								}
 							}
 
-							//++$i;
+							++$i;
 						}
 					?>
 				]

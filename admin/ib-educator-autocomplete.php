@@ -19,6 +19,7 @@ class IB_Educator_Autocomplete {
 			'toplevel_page_ib_educator_admin',
 			'educator_page_ib_educator_payments',
 			'educator_page_ib_educator_entries',
+			'toplevel_page_ib_educator_entries',
 			'educator_page_ib_educator_members',
 			'ib_educator_course',
 		);
@@ -32,6 +33,8 @@ class IB_Educator_Autocomplete {
 	 * AJAX: autocomplete.
 	 */
 	public static function ajax_autocomplete() {
+		global $wpdb;
+
 		if ( ! isset( $_GET['entity'] ) ) {
 			exit();
 		}
@@ -46,11 +49,6 @@ class IB_Educator_Autocomplete {
 		 */
 		do_action( 'edr_autocomplete_ajax', $entity );
 
-		// Check capability.
-		if ( ! current_user_can( 'manage_educator' ) ) {
-			exit;
-		}
-
 		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'ib_educator_autocomplete' ) ) {
 			exit;
 		}
@@ -60,6 +58,10 @@ class IB_Educator_Autocomplete {
 		switch ( $entity ) {
 			case 'user':
 			case 'student':
+				if ( ! current_user_can( 'manage_educator' ) ) {
+					exit();
+				}
+
 				$user_args = array();
 				
 				if ( ! empty( $_GET['input'] ) ) {
@@ -85,8 +87,54 @@ class IB_Educator_Autocomplete {
 
 				break;
 
+			case 'entries_student':
+				$user_args = array(
+					'number' => 15,
+				);
+
+				if ( current_user_can( 'manage_educator' ) ) {
+				} elseif ( current_user_can( 'educator_edit_entries' ) ) {
+					$cur_user_id = get_current_user_id();
+					$course_ids = implode( ',', IB_Educator::get_instance()->get_lecturer_courses( $cur_user_id ) );
+					$tables = ib_edu_table_names();
+					$student_ids = $wpdb->get_col(
+						"SELECT DISTINCT user_id
+						FROM {$tables['entries']}
+						WHERE course_id IN ($course_ids)"
+					);
+
+					if ( ! empty( $student_ids ) ) {
+						$user_args['include'] = $student_ids;
+					} else {
+						exit();
+					}
+				} else {
+					exit();
+				}
+
+				if ( ! empty( $_GET['input'] ) ) {
+					$user_args['search'] = '*' . $_GET['input'] . '*';
+				}
+
+				$user_query = new WP_User_Query( $user_args );
+
+				if ( ! empty( $user_query->results ) ) {
+					foreach ( $user_query->results as $user ) {
+						$response[] = array(
+							'slug' => esc_html( $user->user_nicename ),
+							'name' => esc_html( $user->display_name . ' (' . $user->user_nicename . ')' ),
+						);
+					}
+				}
+
+				break;
+
 			case 'post':
 			case 'course':
+				if ( ! current_user_can( 'manage_educator' ) ) {
+					exit();
+				}
+
 				$post_args = array();
 
 				if ( ! empty( $_GET['input'] ) ) {

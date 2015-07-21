@@ -6,6 +6,7 @@
 		this.ajaxRequest = null;
 		this.ajaxTimeout = null;
 		this.visible = false;
+		this.multiple = false;
 
 		this.init();
 	}
@@ -20,8 +21,14 @@
 		this.input.attr('type', 'hidden');
 
 		// Create select element.
-		this.trigger = $('<a href="#"><span class="value"></span></a>');
-		this.setLabel(this.input.attr('data-label'));
+		this.trigger = $('<div class="chosen-values"></div>');
+
+		var label = this.input.attr('data-label');
+		var value = this.input.val();
+
+		if (label && value) {
+			this.setLabel(label, value);
+		}
 
 		if (this.isDisabled()) {
 			this.input.parent().addClass('disabled');
@@ -34,6 +41,15 @@
 			e.preventDefault();
 			e.stopPropagation();
 			that.autocomplete(0);
+		});
+
+		this.trigger.on('click', '.remove-value', function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+
+			if (!that.isDisabled()) {
+				that.remove($(this).parent().data('value'));
+			}
 		});
 
 		// Add choices div.
@@ -56,8 +72,7 @@
 			e.preventDefault();
 			e.stopPropagation();
 
-			that.setValue(this.getAttribute('data-value'));
-			that.setLabel(this.innerHTML);
+			that.add(this.innerHTML, this.getAttribute('data-value'));
 			that.clearChoices();
 		});
 
@@ -87,6 +102,27 @@
 	};
 
 	/**
+	 * Add item.
+	 *
+	 * @param {string} label
+	 * @param {string} value
+	 */
+	Autocomplete.prototype.add = function(label, value) {
+		this.setValue(value);
+		this.setLabel(label, value);
+	};
+
+	/**
+	 * Remove item.
+	 *
+	 * @param {string} value
+	 */
+	Autocomplete.prototype.remove = function(value) {
+		this.trigger.find('> div[data-value="' + value + '"]').remove();
+		this.input.val('');
+	};
+
+	/**
 	 * Get value.
 	 */
 	Autocomplete.prototype.getFilterValue = function() {
@@ -95,13 +131,32 @@
 
 	/**
 	 * Set input label.
+	 *
+	 * @param {string} label
+	 * @param {string} value
 	 */
-	Autocomplete.prototype.setLabel = function(label) {
+	Autocomplete.prototype.setLabel = function(label, value) {
+		var firstLabel, labelHTML;
+
+		value = value || '';
+
 		if (label === '') {
 			label = '&nbsp;';
 		}
 
-		this.trigger.find('.value').html(label);
+		labelHTML = '<div class="chosen-value" data-value="' + value + '"><span>' + label + '</span>';
+
+		if (value !== '') {
+			labelHTML += '<button class="remove-value">&times;</button>';
+		}
+
+		labelHTML += '</div>';
+
+		if (this.multiple) {
+			this.trigger.append(labelHTML);
+		} else {
+			this.trigger.html(labelHTML);
+		}
 	};
 
 	/**
@@ -109,8 +164,8 @@
 	 *
 	 * @return {String}
 	 */
-	Autocomplete.prototype.getLabel = function() {
-		return this.trigger.find('.value').html();
+	Autocomplete.prototype.getLabel = function(value) {
+		return this.trigger.find('> div[data-value="' + value + '"] > span').html();
 	};
 
 	/**
@@ -125,19 +180,6 @@
 
 		choicesContainer = this.choicesDiv.find('.choices');
 		choicesContainer.html('');
-
-		if (!this.choicesDiv.is(':visible')) {
-			offset = this.trigger.offset();
-
-			this.choicesDiv.css({
-				left: offset.left + 'px',
-				top: (offset.top + this.trigger.outerHeight()) + 'px',
-				width: (this.trigger.outerWidth() - 2) + 'px',
-				display: 'block'
-			});
-
-			this.trigger.parent().addClass('open');
-		}
 
 		for (i = 0; i < choices.length; ++i) {
 			choiceClasses = ['choice'];
@@ -200,6 +242,23 @@
 
 		var that = this;
 
+		// Show choices container.
+		if (!this.choicesDiv.is(':visible')) {
+			offset = this.trigger.offset();
+
+			this.choicesDiv.css({
+				left: offset.left + 'px',
+				top: (offset.top + this.trigger.outerHeight()) + 'px',
+				width: (this.trigger.outerWidth() - 2) + 'px',
+				display: 'block'
+			});
+
+			this.trigger.parent().addClass('open');
+
+			this.choicesDiv.find('> .choices-filter > input').focus();
+		}
+
+		// Display items.
 		if (this.options.items) {
 			var result = [];
 			var inputValue = this.getFilterValue();

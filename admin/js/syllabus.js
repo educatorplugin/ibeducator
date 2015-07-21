@@ -255,7 +255,7 @@
 			}
 
 			data.group_id = this.model.get('group_id');
-			data.title = this.autocomplete.getLabel();
+			data.title = this.autocomplete.getLabel(data.post_id);
 
 			this.lessons.add(data);
 		},

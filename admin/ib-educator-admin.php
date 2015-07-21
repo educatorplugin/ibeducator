@@ -13,8 +13,8 @@ class IB_Educator_Admin {
 		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ), 9 );
 		add_action( 'admin_init', array( __CLASS__, 'admin_actions' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_scripts_styles' ), 9 );
+		add_filter( 'set-screen-option', array( __CLASS__, 'set_screen_option' ), 10, 3 );
 		add_action( 'wp_ajax_ib_educator_delete_payment', array( __CLASS__, 'admin_payments_delete' ) );
-		add_action( 'wp_ajax_ib_educator_delete_entry', array( __CLASS__, 'admin_entries_delete' ) );
 	}
 
 	/**
@@ -93,8 +93,10 @@ class IB_Educator_Admin {
 			array( __CLASS__, 'admin_payments' )
 		);
 
+		$entries_hook = null;
+
 		if ( current_user_can( 'manage_educator' ) ) {
-			add_submenu_page(
+			$entries_hook = add_submenu_page(
 				'ib_educator_admin',
 				__( 'Educator Entries', 'ibeducator' ),
 				__( 'Entries', 'ibeducator' ),
@@ -103,13 +105,18 @@ class IB_Educator_Admin {
 				array( __CLASS__, 'admin_entries' )
 			);
 		} elseif ( current_user_can( 'educator_edit_entries' ) ) {
-			add_menu_page(
+			$entries_hook = add_menu_page(
 				__( 'Educator Entries', 'ibeducator' ),
 				__( 'Entries', 'ibeducator' ),
 				'educator_edit_entries',
 				'ib_educator_entries',
 				array( __CLASS__, 'admin_entries' )
 			);
+		}
+
+		if ( $entries_hook ) {
+			// Set screen options for the entries admin page.
+			add_action( "load-$entries_hook", array( __CLASS__, 'add_entries_screen_options' ) );
 		}
 
 		add_submenu_page(
@@ -127,6 +134,7 @@ class IB_Educator_Admin {
 	 */
 	public static function settings_page() {
 		$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : '';
+
 		do_action( 'ib_educator_settings_page', $tab );
 	}
 
@@ -152,6 +160,10 @@ class IB_Educator_Admin {
 
 				case 'edit-payment-gateway':
 					IB_Educator_Admin_Actions::edit_payment_gateway();
+					break;
+
+				case 'delete-entry':
+					IB_Educator_Admin_Actions::delete_entry();
 					break;
 			}
 		}
@@ -184,6 +196,25 @@ class IB_Educator_Admin {
 				require( IBEDUCATOR_PLUGIN_DIR . 'admin/templates/' . $action . '.php' );
 				break;
 		}
+	}
+
+	/**
+	 * Add screen options to the entries admin page.
+	 */
+	public static function add_entries_screen_options() {
+		$screen = get_current_screen();
+
+		if ( ! $screen || 'educator_page_ib_educator_entries' != $screen->id || isset( $_GET['edu-action'] ) ) {
+			return;
+		}
+
+		$args = array(
+			'option'  => 'entries_per_page',
+			'label'   => __( 'Entries per page', 'ibeducator' ),
+			'default' => 10,
+		);
+
+		add_screen_option( 'per_page', $args );
 	}
 
 	/**
@@ -221,6 +252,22 @@ class IB_Educator_Admin {
 	}
 
 	/**
+	 * Save screen options for various admin pages.
+	 *
+	 * @param mixed $result
+	 * @param string $option
+	 * @param mixed $value
+	 * @return mixed
+	 */
+	public static function set_screen_option( $result, $option, $value ) {
+		if ( 'entries_per_page' == $option ) {
+			$result = (int) $value;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * AJAX: delete payment.
 	 */
 	public static function admin_payments_delete() {
@@ -238,33 +285,6 @@ class IB_Educator_Admin {
 		$payment = IB_Educator_Payment::get_instance( $payment_id );
 
 		if ( $payment && $payment->delete() ) {
-			$response = 'success';
-		} else {
-			$response = 'failure';
-		}
-
-		echo $response;
-		exit;
-	}
-
-	/**
-	 * AJAX: delete entry.
-	 */
-	public static function admin_entries_delete() {
-		if ( ! current_user_can( 'manage_educator' ) ) {
-			exit;
-		}
-
-		$entry_id = isset( $_POST['entry_id'] ) ? absint( $_POST['entry_id'] ) : 0;
-
-		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'ib_educator_delete_entry_' . $entry_id ) ) {
-			exit;
-		}
-
-		$response = '';
-		$entry = IB_Educator_Entry::get_instance( $entry_id );
-
-		if ( $entry && $entry->delete() ) {
 			$response = 'success';
 		} else {
 			$response = 'failure';
