@@ -122,15 +122,16 @@ class EDR_Syllabus_Admin {
 
 						if ( ! empty( $group['lessons'] ) ) {
 							foreach ( $group['lessons'] as $lesson_id ) {
+								$edit_url = get_edit_post_link( $lesson_id );
 								$group_lessons[] = array(
-									'post_id' => $lesson_id,
-									'title'   => isset( $lessons[ $lesson_id ] ) ? $lessons[ $lesson_id ]->post_title : '',
+									'post_id' => (int) $lesson_id,
+									'title'   => isset( $lessons[ $lesson_id ] ) ? '<a href="' . esc_url( $edit_url ) . '">' . esc_html( $lessons[ $lesson_id ]->post_title ) . '</a>' : '',
 								);
 							}
 						}
 
 						$js_obj[] = array(
-							'title'   => $group['title'],
+							'title'   => esc_html( $group['title'] ),
 							'lessons' => $group_lessons,
 						);
 					}
