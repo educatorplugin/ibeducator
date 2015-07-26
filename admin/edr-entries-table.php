@@ -354,7 +354,10 @@ class EDR_Entries_Table extends WP_List_Table {
 			$course_ids = $api->get_lecturer_courses( get_current_user_id() );
 
 			if ( ! empty( $course_ids ) ) {
-				$args['course_id'] = $course_ids;
+				if ( empty( $args['course_id'] ) || ! in_array( $args['course_id'], $course_ids) ) {
+					$args['course_id'] = $course_ids;
+				}
+
 				$entries = $api->get_entries( $args, 'ARRAY_A' );
 			}
 		}
