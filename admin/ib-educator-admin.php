@@ -235,7 +235,7 @@ class IB_Educator_Admin {
 	 * Enqueue scripts and styles.
 	 */
 	public static function enqueue_scripts_styles() {
-		wp_enqueue_style( 'ib-educator-admin', IBEDUCATOR_PLUGIN_URL . 'admin/css/admin.css', array(), '1.4.1' );
+		wp_enqueue_style( 'ib-educator-admin', IBEDUCATOR_PLUGIN_URL . 'admin/css/admin.css', array(), '1.5' );
 
 		$screen = get_current_screen();
 

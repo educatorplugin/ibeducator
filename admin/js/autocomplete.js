@@ -8,6 +8,9 @@
 		this.visible = false;
 		this.multiple = false;
 
+		this.search = null;
+		this.items = null;
+
 		this.init();
 	}
 
@@ -19,6 +22,7 @@
 
 		// Hide the input field.
 		this.input.attr('type', 'hidden');
+		this.input.addClass('edr-autocomplete');
 
 		// Create select element.
 		this.trigger = $('<div class="chosen-values"></div>');
@@ -43,6 +47,7 @@
 			that.autocomplete(0);
 		});
 
+		// Remove a choice.
 		this.trigger.on('click', '.remove-value', function(e) {
 			e.stopPropagation();
 			e.preventDefault();
@@ -174,9 +179,7 @@
 	 * @param {Array} choices
 	 */
 	Autocomplete.prototype.display = function(choices) {
-		var offset, choicesContainer, i, choiceClasses;
-
-		this.clearOtherChoices();
+		var choicesContainer, i, choiceClasses;
 
 		choicesContainer = this.choicesDiv.find('.choices');
 		choicesContainer.html('');
@@ -203,6 +206,8 @@
 			this.ajaxRequest.abort();
 		}
 
+		this.search = this.getFilterValue();
+
 		// Send AJAX request.
 		this.ajaxRequest = $.ajax({
 			type: 'get',
@@ -210,14 +215,16 @@
 			dataType: 'json',
 			url: this.options.url,
 			data: {
-				input: this.getFilterValue(),
+				input: this.search,
 				action: 'ib_educator_autocomplete',
 				entity: this.options.entity,
 				_wpnonce: this.options.nonce
 			},
 			success: function(response) {
 				if (response) {
-					that.display(response);
+					that.items = response;
+
+					that.display(that.items);
 				}
 
 				that.running = false;
@@ -232,6 +239,11 @@
 	 * Fetch and display choices based on the choices filter.
 	 */
 	Autocomplete.prototype.autocomplete = function(ajaxTimeout) {
+		var result,
+			inputValue,
+			offset,
+			that = this;
+
 		ajaxTimeout = ajaxTimeout || 0;
 
 		if (this.running || this.isDisabled()) {
@@ -240,7 +252,8 @@
 
 		this.running = true;
 
-		var that = this;
+		// Hide choices of the other autocomplete elements on the page.
+		this.clearOtherChoices();
 
 		// Show choices container.
 		if (!this.choicesDiv.is(':visible')) {
@@ -259,9 +272,16 @@
 		}
 
 		// Display items.
-		if (this.options.items) {
-			var result = [];
-			var inputValue = this.getFilterValue();
+		if (this.items && this.search === this.getFilterValue()) {
+			// If the search input didn't change, display cached items.
+			this.display(this.items);
+
+			this.running = false;
+		} else if (this.options.items) {
+			// if the items are set in options, don't do a request,
+			// just display this items.
+			result = [];
+			inputValue = this.getFilterValue();
 
 			for (var i = 0; i < this.options.items.length; ++i) {
 				if (this.options.items[i][this.options.searchBy].indexOf(inputValue) !== -1) {
@@ -270,8 +290,10 @@
 			}
 
 			this.display(result);
+
 			this.running = false;
 		} else {
+			// Use AJAX to fetch items.
 			if (this.ajaxTimeout) {
 				clearTimeout(this.ajaxTimeout);
 			}
@@ -299,10 +321,11 @@
 	 * Clear divs of other choices.
 	 */
 	Autocomplete.prototype.clearOtherChoices = function() {
-		var other = $('div.ib-edu-autocomplete-choices').not(this.choicesDiv);
+		var other = $('input.edr-autocomplete').not(this.input);
 
-		other.find('.choices').html('');
-		other.css('display', 'none');
+		other.each(function() {
+			$(this).data('edrAutocomplete').clearChoices();
+		});
 	};
 
 	Autocomplete.prototype.destroy = function() {
@@ -321,12 +344,16 @@
 
 		this.choicesDiv.remove();
 
+		this.input.data('edrAutocomplete', null);
+
 		this.choicesDiv = null;
 		this.input = null;
 	};
 
 	window.ibEducatorAutocomplete = function(input, options) {
 		var autocomplete = new Autocomplete(input, options);
+
+		$.data(input, 'edrAutocomplete', autocomplete);
 
 		return autocomplete;
 	};

@@ -68,3 +68,7 @@
 	line-height: 28px;
 	margin: 0;
 }
+
+#edr-syllabus .lesson h4 a {
+	text-decoration: none;
+}

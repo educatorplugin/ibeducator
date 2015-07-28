@@ -25,7 +25,7 @@ class IB_Educator_Autocomplete {
 		);
 
 		if ( $screen && in_array( $screen->id, $autocomplete_pages ) ) {
-			wp_enqueue_script( 'ib-educator-autocomplete', IBEDUCATOR_PLUGIN_URL . 'admin/js/autocomplete.js', array( 'jquery' ), '1.0' );
+			wp_enqueue_script( 'ib-educator-autocomplete', IBEDUCATOR_PLUGIN_URL . 'admin/js/autocomplete.js', array( 'jquery' ), '1.5' );
 		}
 	}
 

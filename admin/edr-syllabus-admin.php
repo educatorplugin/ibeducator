@@ -151,6 +151,8 @@ class EDR_Syllabus_Admin {
 	 * @param bool $update
 	 */
 	public function update_syllabus( $post_id, $post, $update ) {
+		global $wpdb;
+
 		if ( ! isset( $_POST['edr_save_syllabus_nonce'] ) || ! wp_verify_nonce( $_POST['edr_save_syllabus_nonce'], 'edr_save_syllabus' ) ) {
 			return;
 		}
@@ -173,6 +175,9 @@ class EDR_Syllabus_Admin {
 
 		if ( is_array( $groups ) ) {
 			$lessons = array();
+			$menu_order_case = '';
+			$menu_order_in = array();
+			$menu_order = 1;
 
 			// Validate submitted lessons.
 			if ( ! empty( $_POST['edr_syllabus_lessons'] ) ) {
@@ -201,7 +206,11 @@ class EDR_Syllabus_Admin {
 
  							// Add this lesson to the group.
  							$lessons[ $group_id ][] = $tmp_lesson->ID;
- 						}
+
+							// Update the menu order of this lesson.
+							$menu_order_case .= ' WHEN ' . intval( $tmp_lesson->ID ) . ' THEN ' . $menu_order++;
+							$menu_order_in[] = (int) $tmp_lesson->ID;
+						}
 
  						unset( $tmp );
  					}
@@ -226,7 +235,14 @@ class EDR_Syllabus_Admin {
 			}
 		}
 
+		// Update syllabus.
 		update_post_meta( $post_id, '_edr_syllabus', $syllabus );
+
+		// Update the menu order of the lessons.
+		if ( '' != $menu_order_case ) {
+			$wpdb->query( 'UPDATE ' . $wpdb->posts . ' SET menu_order = CASE ID' . $menu_order_case .
+				' END WHERE ID IN (' . implode( ',', $menu_order_in ) . ')' );
+		}
 	}
 
 	/**
