@@ -105,9 +105,10 @@ class EDR_Syllabus_Admin {
 						// Get all required lessons, so we won't need
 						// to execute a database query for each group.
 						$tmp = get_posts( array(
-							'post_type'   => 'ib_educator_lesson',
-							'post_status' => 'publish',
-							'include'     => $lesson_ids,
+							'post_type'      => 'ib_educator_lesson',
+							'post_status'    => 'publish',
+							'include'        => $lesson_ids,
+							'posts_per_page' => -1,
 						) );
 
 						foreach ( $tmp as $lesson ) {
@@ -189,10 +190,11 @@ class EDR_Syllabus_Admin {
 
 					// Get submitted lessons for them to be verified.
 					$tmp = get_posts( array(
-						'post_type'   => 'ib_educator_lesson',
-						'post_status' => 'publish',
-						'include'     => array_map( 'intval', $tmp_lessons ),
-						'orderby'     => 'post__in',
+						'post_type'      => 'ib_educator_lesson',
+						'post_status'    => 'publish',
+						'include'        => array_map( 'intval', $tmp_lessons ),
+						'orderby'        => 'post__in',
+						'posts_per_page' => -1,
  					) );
 
  					if ( ! empty( $tmp ) ) {
