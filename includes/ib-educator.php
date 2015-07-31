@@ -171,8 +171,9 @@ class IB_Educator {
 	 * @param array $args
 	 * @return array
 	 */
-	public function get_entries( $args ) {
+	public function get_entries( $args, $output_type = 'OBJECT' ) {
 		global $wpdb;
+
 		$sql = "SELECT * FROM $this->entries WHERE 1";
 
 		// Entry ID.
@@ -229,10 +230,12 @@ class IB_Educator {
 			$pagination_sql .= ' LIMIT ' . ( ( $args['page'] - 1 ) * $args['per_page'] ) . ', ' . $args['per_page'];
 		}
 
-		$entries = $wpdb->get_results( $sql . ' ORDER BY entry_date DESC' . $pagination_sql );
+		$entries = $wpdb->get_results( $sql . ' ORDER BY entry_date DESC' . $pagination_sql, $output_type );
 
 		if ( $entries ) {
-			$entries = array_map( array( 'IB_Educator_Entry', 'get_instance' ), $entries );
+			if ( 'OBJECT' == $output_type ) {
+				$entries = array_map( array( 'IB_Educator_Entry', 'get_instance' ), $entries );
+			}
 		}
 
 		if ( $has_pagination ) {
@@ -289,7 +292,9 @@ class IB_Educator {
 	public function get_student_courses( $user_id ) {
 		global $wpdb;
 		
-		if ( absint( $user_id ) != $user_id ) return false;
+		if ( absint( $user_id ) != $user_id ) {
+			return false;
+		}
 		
 		$ids = array();
 
@@ -309,10 +314,12 @@ class IB_Educator {
 			}
 
 			$query = new WP_Query( array(
-				'post_type' => 'ib_educator_course',
-				'post__in'  => $ids,
-				'orderby'   => 'post__in',
-				'order'     => 'ASC'
+				'post_type'      => 'ib_educator_course',
+				'post_status'    => 'publish',
+				'post__in'       => $ids,
+				'posts_per_page' => -1,
+				'orderby'        => 'post__in',
+				'order'          => 'ASC',
 			) );
 
 			if ( $query->have_posts() ) {
@@ -353,10 +360,12 @@ class IB_Educator {
 			}
 
 			$query = new WP_Query( array(
-				'post_type' => 'ib_educator_course',
-				'post__in'  => $ids,
-				'orderby'   => 'post__in',
-				'order'     => 'ASC'
+				'post_type'      => 'ib_educator_course',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'post__in'       => $ids,
+				'orderby'        => 'post__in',
+				'order'          => 'ASC'
 			) );
 
 			if ( $query->have_posts() ) {
@@ -382,7 +391,9 @@ class IB_Educator {
 	 * @return false|WP_Query
 	 */
 	public function get_lessons( $course_id ) {
-		if ( ! is_numeric( $course_id ) ) return false;
+		if ( ! is_numeric( $course_id ) ) {
+			return false;
+		}
 
 		return new WP_Query( array(
 			'post_type'      => 'ib_educator_lesson',
@@ -403,6 +414,7 @@ class IB_Educator {
 	 */
 	public function get_num_lessons( $course_id ) {
 		global $wpdb;
+
 		$num_lessons = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(1) FROM {$wpdb->posts} p
@@ -500,6 +512,7 @@ class IB_Educator {
 	 */
 	public function get_payments_count() {
 		global $wpdb;
+
 		return $wpdb->get_results( "SELECT payment_status, count(1) as num_rows FROM {$this->payments} GROUP BY payment_status", OBJECT_K );
 	}
 
@@ -511,6 +524,7 @@ class IB_Educator {
 	 */
 	public function get_lecturer_courses( $user_id ) {
 		global $wpdb;
+
 		return $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_author=%d AND post_type='ib_educator_course'", $user_id ) );
 	}
 
@@ -817,12 +831,9 @@ class IB_Educator {
 			return array();
 		}
 
-		foreach ( $ids as $key => $id ) {
-			$ids[ $key ] = absint( $id );
-		}
-
-		$ids = implode( ',', $ids );
+		$ids = implode( ',', array_map( 'absint', $ids ) );
 		$entries = $wpdb->get_col( "SELECT entry_id FROM $this->grades WHERE status = 'pending' AND entry_id IN ($ids) GROUP BY entry_id" );
+
 		return $entries;
 	}
 

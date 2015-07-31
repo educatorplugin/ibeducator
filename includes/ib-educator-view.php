@@ -10,6 +10,28 @@ class IB_Educator_View {
 		return IBEDUCATOR_PLUGIN_DIR . 'templates';
 	}
 
+	public static function locate_template_path( $name ) {
+		$file_path = trailingslashit( get_stylesheet_directory() ) . 'ibeducator/' . $name;
+
+		if ( file_exists( $file_path ) ) {
+			return $file_path;
+		} else {
+			$file_path = trailingslashit( get_template_directory() ) . 'ibeducator/' . $name;
+
+			if ( file_exists( $file_path ) ) {
+				return $file_path;
+			} else {
+				$file_path = trailingslashit( self::templates_dir() ) . $name;
+
+				if ( file_exists( $file_path ) ) {
+					return $file_path;
+				}
+			}
+		}
+
+		return '';
+	}
+
 	/**
 	 * Locate template file.
 	 *
@@ -58,6 +80,18 @@ class IB_Educator_View {
 
 		if ( $template ) {
 			load_template( $template, false );
+		}
+	}
+
+	public static function the_template( $template_name, $vars = null ) {
+		$template_path = self::locate_template_path( $template_name . '.php' );
+
+		if ( '' != $template_path ) {
+			if ( is_array( $vars ) ) {
+				extract( $vars );
+			}
+
+			include $template_path;
 		}
 	}
 }

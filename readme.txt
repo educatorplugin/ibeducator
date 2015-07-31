@@ -1,10 +1,10 @@
 === Educator ===
-Contributors: dmytro.d
+Contributors: educatorteam, dmytro.d
 Donate link: http://educatorplugin.com
 Tags: learning management system, lms, learning, online courses
 Requires at least: 4.0
 Tested up to: 4.2
-Stable tag: 1.4.5
+Stable tag: 1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,13 @@ Coming soon.
 8. **Course Settings**
 
 == Changelog ==
+
+= 1.5.0 =
+* Added the Syllabus manager. Now, it is possible to group lessons on the course page.
+* Fixed the shortcode that displays the student's courses. This shortcode has used the default posts_per_page setting. Now it displays all entries.
+* (IMPORTANT) Improved the template functions and hooks functionality (old template hook processing functions were renamed and moved to the new file).
+* Improved the "Educator > Entries" admin screen. Now, it's possible to search entries by a student and a course.
+* Improved the autocomplete field.
 
 = 1.4.5 =
 * Fixed an issue that was appearing when the course categories where not set for a membership level.

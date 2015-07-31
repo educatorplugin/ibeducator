@@ -1,11 +1,15 @@
 (function($) {
-	function Autocomplete( input, options ) {
+	function Autocomplete(input, options) {
 		this.input = $(input);
 		this.options = options;
 		this.running = false;
 		this.ajaxRequest = null;
 		this.ajaxTimeout = null;
 		this.visible = false;
+		this.multiple = false;
+
+		this.search = null;
+		this.items = null;
 
 		this.init();
 	}
@@ -18,10 +22,17 @@
 
 		// Hide the input field.
 		this.input.attr('type', 'hidden');
+		this.input.addClass('edr-autocomplete');
 
 		// Create select element.
-		this.trigger = $('<a href="#"><span class="value"></span></a>');
-		this.setLabel(this.input.attr('data-label'));
+		this.trigger = $('<div class="chosen-values"></div>');
+
+		var label = this.input.attr('data-label');
+		var value = this.input.val();
+
+		if (label && value) {
+			this.setLabel(label, value);
+		}
 
 		if (this.isDisabled()) {
 			this.input.parent().addClass('disabled');
@@ -34,6 +45,16 @@
 			e.preventDefault();
 			e.stopPropagation();
 			that.autocomplete(0);
+		});
+
+		// Remove a choice.
+		this.trigger.on('click', '.remove-value', function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+
+			if (!that.isDisabled()) {
+				that.remove($(this).parent().data('value'));
+			}
 		});
 
 		// Add choices div.
@@ -56,12 +77,11 @@
 			e.preventDefault();
 			e.stopPropagation();
 
-			that.setValue(this.getAttribute('data-value'));
-			that.setLabel(this.innerHTML);
+			that.add(this.innerHTML, this.getAttribute('data-value'));
 			that.clearChoices();
 		});
 
-		$('body').on('click', function() {
+		$('body').on('click.edr-autocomplete', function() {
 			that.clearChoices();
 		});
 	};
@@ -78,6 +98,36 @@
 	};
 
 	/**
+	 * Get input value.
+	 *
+	 * @return {String}
+	 */
+	Autocomplete.prototype.getValue = function() {
+		return this.input.val();
+	};
+
+	/**
+	 * Add item.
+	 *
+	 * @param {string} label
+	 * @param {string} value
+	 */
+	Autocomplete.prototype.add = function(label, value) {
+		this.setValue(value);
+		this.setLabel(label, value);
+	};
+
+	/**
+	 * Remove item.
+	 *
+	 * @param {string} value
+	 */
+	Autocomplete.prototype.remove = function(value) {
+		this.trigger.find('> div[data-value="' + value + '"]').remove();
+		this.input.val('');
+	};
+
+	/**
 	 * Get value.
 	 */
 	Autocomplete.prototype.getFilterValue = function() {
@@ -86,13 +136,41 @@
 
 	/**
 	 * Set input label.
+	 *
+	 * @param {string} label
+	 * @param {string} value
 	 */
-	Autocomplete.prototype.setLabel = function(label) {
+	Autocomplete.prototype.setLabel = function(label, value) {
+		var firstLabel, labelHTML;
+
+		value = value || '';
+
 		if (label === '') {
 			label = '&nbsp;';
 		}
 
-		this.trigger.find('.value').html(label);
+		labelHTML = '<div class="chosen-value" data-value="' + value + '"><span>' + label + '</span>';
+
+		if (value !== '') {
+			labelHTML += '<button class="remove-value">&times;</button>';
+		}
+
+		labelHTML += '</div>';
+
+		if (this.multiple) {
+			this.trigger.append(labelHTML);
+		} else {
+			this.trigger.html(labelHTML);
+		}
+	};
+
+	/**
+	 * Get label.
+	 *
+	 * @return {String}
+	 */
+	Autocomplete.prototype.getLabel = function(value) {
+		return this.trigger.find('> div[data-value="' + value + '"] > span').html();
 	};
 
 	/**
@@ -101,25 +179,10 @@
 	 * @param {Array} choices
 	 */
 	Autocomplete.prototype.display = function(choices) {
-		var offset, choicesContainer, i, choiceClasses;
-
-		this.clearOtherChoices();
+		var choicesContainer, i, choiceClasses;
 
 		choicesContainer = this.choicesDiv.find('.choices');
 		choicesContainer.html('');
-
-		if (!this.choicesDiv.is(':visible')) {
-			offset = this.trigger.offset();
-
-			this.choicesDiv.css({
-				left: offset.left + 'px',
-				top: (offset.top + this.trigger.outerHeight()) + 'px',
-				width: (this.trigger.outerWidth() - 2) + 'px',
-				display: 'block'
-			});
-
-			this.trigger.parent().addClass('open');
-		}
 
 		for (i = 0; i < choices.length; ++i) {
 			choiceClasses = ['choice'];
@@ -143,6 +206,8 @@
 			this.ajaxRequest.abort();
 		}
 
+		this.search = this.getFilterValue();
+
 		// Send AJAX request.
 		this.ajaxRequest = $.ajax({
 			type: 'get',
@@ -150,14 +215,16 @@
 			dataType: 'json',
 			url: this.options.url,
 			data: {
-				input: this.getFilterValue(),
+				input: this.search,
 				action: 'ib_educator_autocomplete',
 				entity: this.options.entity,
 				_wpnonce: this.options.nonce
 			},
 			success: function(response) {
 				if (response) {
-					that.display(response);
+					that.items = response;
+
+					that.display(that.items);
 				}
 
 				that.running = false;
@@ -172,6 +239,11 @@
 	 * Fetch and display choices based on the choices filter.
 	 */
 	Autocomplete.prototype.autocomplete = function(ajaxTimeout) {
+		var result,
+			inputValue,
+			offset,
+			that = this;
+
 		ajaxTimeout = ajaxTimeout || 0;
 
 		if (this.running || this.isDisabled()) {
@@ -180,11 +252,36 @@
 
 		this.running = true;
 
-		var that = this;
+		// Hide choices of the other autocomplete elements on the page.
+		this.clearOtherChoices();
 
-		if (this.options.items) {
-			var result = [];
-			var inputValue = this.getFilterValue();
+		// Show choices container.
+		if (!this.choicesDiv.is(':visible')) {
+			offset = this.trigger.offset();
+
+			this.choicesDiv.css({
+				left: offset.left + 'px',
+				top: (offset.top + this.trigger.outerHeight()) + 'px',
+				width: (this.trigger.outerWidth() - 2) + 'px',
+				display: 'block'
+			});
+
+			this.trigger.parent().addClass('open');
+
+			this.choicesDiv.find('> .choices-filter > input').focus();
+		}
+
+		// Display items.
+		if (this.items && this.search === this.getFilterValue()) {
+			// If the search input didn't change, display cached items.
+			this.display(this.items);
+
+			this.running = false;
+		} else if (this.options.items) {
+			// if the items are set in options, don't do a request,
+			// just display this items.
+			result = [];
+			inputValue = this.getFilterValue();
 
 			for (var i = 0; i < this.options.items.length; ++i) {
 				if (this.options.items[i][this.options.searchBy].indexOf(inputValue) !== -1) {
@@ -193,8 +290,10 @@
 			}
 
 			this.display(result);
+
 			this.running = false;
 		} else {
+			// Use AJAX to fetch items.
 			if (this.ajaxTimeout) {
 				clearTimeout(this.ajaxTimeout);
 			}
@@ -222,13 +321,40 @@
 	 * Clear divs of other choices.
 	 */
 	Autocomplete.prototype.clearOtherChoices = function() {
-		var other = $('div.ib-edu-autocomplete-choices').not(this.choicesDiv);
+		var other = $('input.edr-autocomplete').not(this.input);
 
-		other.find('.choices').html('');
-		other.css('display', 'none');
+		other.each(function() {
+			$(this).data('edrAutocomplete').clearChoices();
+		});
+	};
+
+	Autocomplete.prototype.destroy = function() {
+		if (this.ajaxRequest) {
+			this.ajaxRequest.abort();
+		}
+
+		if (this.ajaxTimeout) {
+			clearTimeout(this.ajaxTimeout);
+		}
+
+		this.trigger.off();
+		this.choicesDiv.find('> .choices-filter > input').off();
+		this.choicesDiv.off();
+		$('body').off('.edr-autocomplete');
+
+		this.choicesDiv.remove();
+
+		this.input.data('edrAutocomplete', null);
+
+		this.choicesDiv = null;
+		this.input = null;
 	};
 
 	window.ibEducatorAutocomplete = function(input, options) {
 		var autocomplete = new Autocomplete(input, options);
+
+		$.data(input, 'edrAutocomplete', autocomplete);
+
+		return autocomplete;
 	};
 })(jQuery);

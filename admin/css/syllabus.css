@@ -1,0 +1,74 @@
+#edr-syllabus .group-header,
+#edr-syllabus .group-body {
+	border: 1px solid #ddd;
+	padding: 10px;
+}
+
+#edr-syllabus .group-header {
+	background-color: #f9f9f9;
+}
+
+#edr-syllabus .group-body {
+	background-color: #fff;
+}
+
+#edr-syllabus input.group-title {
+	width: 50%;
+}
+
+#edr-syllabus .group-body {
+	border-top: 0;
+}
+
+#edr-syllabus .add-lesson-container > div,
+#edr-syllabus .add-lesson {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#edr-syllabus .add-lesson-container > div {
+	width: 250px;
+}
+
+#edr-syllabus .remove {
+	background: #fff;
+	border: 1px solid #ddd;
+	color: #999;
+	cursor: pointer;
+	display: inline-block;
+	float: right;
+	font-size: 17px;
+	font-weight: bold;
+	height: 28px;
+	line-height: 28px;
+	padding: 0;
+	width: 28px;
+}
+
+#edr-syllabus .handle {
+	color: #999;
+	cursor: move;
+	float: left;
+	height: 28px;
+	line-height: 28px;
+	margin: 0 5px 0 0;
+	text-align: center;
+	width: 28px;
+}
+
+#edr-syllabus .lesson {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	overflow: hidden;
+	padding: 10px;
+}
+
+#edr-syllabus .lesson h4 {
+	float: left;
+	line-height: 28px;
+	margin: 0;
+}
+
+#edr-syllabus .lesson h4 a {
+	text-decoration: none;
+}

@@ -50,21 +50,11 @@ $course_id = get_the_ID();
 	</div>
 
 	<?php
-		$api = IB_Educator::get_instance();
-		$lessons_query = $api->get_lessons( $course_id );
+		/**
+		 * Fires to add various elements to the course footer.
+		 *
+		 * @param int $course_id
+		 */
+		do_action( 'edr_course_footer', $course_id );
 	?>
-
-	<?php if ( $lessons_query && $lessons_query->have_posts() ) : ?>
-	<section class="ib-edu-lessons">
-		<h2><?php _e( 'Lessons', 'ibeducator' ); ?></h2>
-		<?php
-			while ( $lessons_query->have_posts() ) {
-				$lessons_query->the_post();
-				IB_Educator_View::template_part( 'content', 'lesson' );
-			}
-
-			wp_reset_postdata();
-		?>
-	</section>
-	<?php endif; ?>
 </article>

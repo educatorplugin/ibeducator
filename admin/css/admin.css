@@ -15,6 +15,11 @@
 	text-decoration: none;
 }
 
+/* Sortable ---------------*/
+.edr-placeholder {
+	border: 2px dashed #ddd;
+}
+
 /* Meta ---------------*/
 .ib-edu-meta {
 	width: 100%;
@@ -130,49 +135,87 @@
 	margin-right: 5px;
 }
 
+.ib-edu-admin-search .ib-edu-autocomplete {
+	display: inline-block;
+	min-width: 190px;
+	vertical-align: middle;
+}
+
 /* Autocomplete ---------------*/
 .ib-edu-autocomplete {
 	display: block;
 	max-width: 250px;
 }
 
-.ib-edu-autocomplete.open > a {
+.ib-edu-autocomplete.open .chosen-values {
 	border-color: #aaa;
 	border-bottom-color: transparent;
 }
 
-.ib-edu-autocomplete.disabled > a {
+.ib-edu-autocomplete.disabled .chosen-values {
 	color: #999;
 	cursor: default;
 }
 
-.ib-edu-autocomplete > a:after,
+.ib-edu-autocomplete .chosen-values:after,
 .ib-edu-autocomplete-choices .choices-filter:after {
 	color: #999;
 	display: block;
 	font-family: 'dashicons';
 	position: absolute;
-	top: 5px;
+	top: 6px;
 	right: 5px;
 }
 
-.ib-edu-autocomplete > a:focus,
+.ib-edu-autocomplete .chosen-values:focus,
 .ib-edu-autocomplete-choices .choices-filter input:focus {
 	box-shadow: none;
 }
 
-.ib-edu-autocomplete > a {
+.ib-edu-autocomplete .chosen-values {
 	background-color: #fff;
 	border: 1px solid #ddd;
 	color: #333;
 	display: block;
-	padding: 5px 10px;
+	min-height: 24px;
+	padding: 1px 20px 1px 4px;
 	position: relative;
 	text-decoration: none;
 }
 
-.ib-edu-autocomplete > a:after {
+.ib-edu-autocomplete .chosen-values:after {
 	content: '\f140';
+	font-size: 16px;
+	top: 3px;
+}
+
+.ib-edu-autocomplete .chosen-values > div {
+	background-color: #f5f5f5;
+	border: 1px solid #ddd;
+	display: inline-block;
+	margin: 2px;
+	padding: 0 16px 0 4px;
+	position: relative;
+}
+
+.ib-edu-autocomplete .remove-value {
+	background: none;
+	border: 0;
+	color: #999;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 18px;
+	font-weight: bold;
+	height: 16px;
+	line-height: 16px;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	right: 0;
+	text-align: center;
+	top: 1px;
+	vertical-align: middle;
+	width: 16px;
 }
 
 .ib-edu-autocomplete-choices {
