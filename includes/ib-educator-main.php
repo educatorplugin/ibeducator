@@ -15,7 +15,6 @@ class IB_Educator_Main {
 		add_action( 'init', array( __CLASS__, 'add_rewrite_endpoints' ), 8 ); // Run before the plugin update.
 		add_action( 'template_redirect', array( __CLASS__, 'process_actions' ) );
 		add_filter( 'template_include', array( __CLASS__, 'override_templates' ) );
-		add_action( 'template_redirect', array( __CLASS__, 'protect_private_pages' ) );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_scripts_styles' ) );
 		add_filter( 'wp_nav_menu_objects', array( __CLASS__, 'add_menu_classes' ) );
 
@@ -214,26 +213,6 @@ class IB_Educator_Main {
 		}
 
 		return $template;
-	}
-
-	/**
-	 * Protect private pages.
-	 */
-	public static function protect_private_pages() {
-		// User must be logged in to view a private pages (e.g. payment, my courses).
-		$private_pages = array();
-
-		// Student courses page.
-		$student_courses_page = ib_edu_page_id( 'student_courses_page' );
-
-		if ( $student_courses_page > 0 ) {
-			$private_pages[] = $student_courses_page;
-		}
-
-		if ( ! empty( $private_pages ) && is_page( $private_pages ) && ! is_user_logged_in() ) {
-			wp_redirect( wp_login_url( get_permalink( $GLOBALS['wp_query']->post->ID ) ) );
-			exit;
-		}
 	}
 
 	/**
