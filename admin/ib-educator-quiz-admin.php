@@ -58,7 +58,8 @@ class IB_Educator_Quiz_Admin {
 	 * @return array Saved choices.
 	 */
 	protected static function save_question_choices( $question_id, $choices ) {
-		$api = IB_Educator::get_instance();
+		global $wpdb;
+		$quizzes = Edr_Manager::get( 'quizzes' );
 		$choice_ids = array();
 
 		foreach ( $choices as $choice ) {
@@ -69,13 +70,12 @@ class IB_Educator_Quiz_Admin {
 
 		// Delete choices that are not sent by the user.
 		if ( ! empty( $choice_ids ) ) {
-			global $wpdb;
 			$tables = ib_edu_table_names();
 			$wpdb->query( $wpdb->prepare( "DELETE FROM " . $tables['choices'] . " WHERE question_id=%d AND ID NOT IN (" . implode( ',', $choice_ids ) . ")", $question_id ) );
 		}
 
 		// Add choices to the question.
-		$current_choices = $api->get_question_choices( $question_id );
+		$current_choices = $quizzes->get_question_choices( $question_id );
 		$saved_choices = array();
 
 		foreach ( $choices as $choice ) {
@@ -87,10 +87,10 @@ class IB_Educator_Quiz_Admin {
 			);
 
 			if ( $current_choices && isset( $current_choices[ $choice_data['ID'] ] ) ) {
-				$api->update_choice( $choice_data['ID'], $choice_data );
+				$quizzes->update_choice( $choice_data['ID'], $choice_data );
 			} else {
 				$choice_data['question_id'] = $question_id;
-				$choice_data['ID'] = $api->add_choice( $choice_data );
+				$choice_data['ID'] = $quizzes->add_choice( $choice_data );
 			}
 
 			$choice_data['choice_id'] = $choice_data['ID'];
@@ -105,8 +105,6 @@ class IB_Educator_Quiz_Admin {
 	 * AJAX: process quiz question admin requests.
 	 */
 	public static function quiz_question() {
-		$api = IB_Educator::get_instance();
-
 		switch ( $_SERVER['REQUEST_METHOD'] ) {
 			case 'POST':
 				$response = array(
@@ -273,10 +271,13 @@ class IB_Educator_Quiz_Admin {
 				}
 
 				if ( $question->ID ) {
+					$quizzes = Edr_Manager::get( 'quizzes' );
+
 					// First, delete question choices.
 					$choices_deleted = true;
+
 					if ( 'multiplechoice' == $question->question_type ) {
-						$choices_deleted = $api->delete_choices( $question->ID );
+						$choices_deleted = $quizzes->delete_choices( $question->ID );
 					}
 
 					if ( false !== $choices_deleted ) {

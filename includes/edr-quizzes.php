@@ -47,6 +47,70 @@ class Edr_Quizzes {
 		return $questions;
 	}
 
+	public function add_choice( $data ) {
+		global $wpdb;
+
+		$wpdb->insert(
+			$this->tbl_choices,
+			array(
+				'question_id' => $data['question_id'],
+				'choice_text' => $data['choice_text'],
+				'correct'     => $data['correct'],
+				'menu_order'  => $data['menu_order']
+			),
+			array( '%d', '%s', '%d', '%d' )
+		);
+
+		return $wpdb->insert_id;
+	}
+
+	public function update_choice( $choice_id, $data ) {
+		global $wpdb;
+
+		return $wpdb->update(
+			$this->tbl_choices,
+			array(
+				'choice_text' => $data['choice_text'],
+				'correct'     => $data['correct'],
+				'menu_order'  => $data['menu_order']
+			),
+			array( 'ID' => $choice_id ),
+			array( '%s', '%d', '%d' ),
+			array( '%d' )
+		);
+	}
+
+	public function delete_choice( $choice_id ) {
+		global $wpdb;
+
+		return $wpdb->delete(
+			$this->tbl_choices,
+			array( 'ID' => $choice_id ),
+			array( '%d' )
+		);
+	}
+
+	public function delete_choices( $question_id ) {
+		global $wpdb;
+
+		return $wpdb->delete(
+			$this->tbl_choices,
+			array( 'question_id' => $question_id ),
+			array( '%d' )
+		);
+	}
+
+	public function get_question_choices( $question_id ) {
+		global $wpdb;
+
+		$query = 'SELECT ID, choice_text, correct, menu_order'
+			   . ' FROM ' . $this->tbl_choices
+			   . ' WHERE question_id = %d'
+			   . ' ORDER BY menu_order ASC';
+
+		return $wpdb->get_results( $wpdb->prepare( $query, $question_id ), OBJECT_K );
+	}
+
 	/**
 	 * !!!REPLACES IB_Educator::get_choices()
 	 */
@@ -182,5 +246,19 @@ class Edr_Quizzes {
 		}
 
 		return $wpdb->insert( $this->tbl_answers, $insert_data, $data_format );
+	}
+
+	public function check_for_pending_quizzes( $ids ) {
+		global $wpdb;
+
+		if ( empty( $ids ) ) {
+			return array();
+		}
+
+		$ids = implode( ',', array_map( 'absint', $ids ) );
+
+		$entries = $wpdb->get_col( "SELECT entry_id FROM $this->tbl_grades WHERE status = 'pending' AND entry_id IN ($ids) GROUP BY entry_id" );
+
+		return $entries;
 	}
 }
