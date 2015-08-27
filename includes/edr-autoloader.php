@@ -3,6 +3,9 @@
 if ( ! defined( 'ABSPATH' ) ) exit();
 
 class Edr_Autoloader {
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		$this->plugin_dir = IBEDUCATOR_PLUGIN_DIR;
 
@@ -13,10 +16,21 @@ class Edr_Autoloader {
 		spl_autoload_register( array( $this, 'autoload' ) );
 	}
 
+	/**
+	 * Get file name given a class name.
+	 *
+	 * @param string $class
+	 * @return string
+	 */
 	public function get_file_name( $class ) {
 		return str_replace( '_', '-', strtolower( $class ) ) . '.php';
 	}
 
+	/**
+	 * Autoload various classes.
+	 *
+	 * @param string $class
+	 */
 	public function autoload( $class ) {
 		$file = '';
 

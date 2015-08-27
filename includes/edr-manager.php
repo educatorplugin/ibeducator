@@ -1,8 +1,17 @@
 <?php
 
 class Edr_Manager {
+	/**
+	 * @var array
+	 */
 	protected static $data = array();
 
+	/**
+	 * Get data or service by key.
+	 *
+	 * @param string $key
+	 * @return mixed
+	 */
 	public static function get( $key ) {
 		if ( ! array_key_exists( $key, self::$data ) ) {
 			self::init_by_key( $key );
@@ -11,6 +20,11 @@ class Edr_Manager {
 		return self::$data[ $key ];
 	}
 
+	/**
+	 * Initialize data or service by key.
+	 *
+	 * @param string $key
+	 */
 	protected static function init_by_key( $key ) {
 		switch ( $key ) {
 			case 'quizzes':
