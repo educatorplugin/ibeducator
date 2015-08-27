@@ -1,11 +1,29 @@
 <?php
 
 class Edr_Quizzes {
+	/**
+	 * @var string
+	 */
 	protected $tbl_questions;
+
+	/**
+	 * @var string
+	 */
 	protected $tbl_choices;
+
+	/**
+	 * @var string
+	 */
 	protected $tbl_grades;
+
+	/**
+	 * @var string
+	 */
 	protected $tbl_answers;
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 		$tables = ib_edu_table_names();
 		$this->tbl_questions = $tables['questions'];
@@ -14,10 +32,23 @@ class Edr_Quizzes {
 		$this->tbl_answers   = $tables['answers'];
 	}
 
+	/**
+	 * Get the maximum number of attempts per quiz.
+	 *
+	 * @param int $lesson_id
+	 * @return int
+	 */
 	public function get_max_attempts_number( $lesson_id ) {
 		return get_post_meta( $lesson_id, '_edr_attempts', true );
 	}
 
+	/**
+	 * Get the number of attempts per quiz per entry.
+	 *
+	 * @param int $entry_id
+	 * @param int $lesson_id
+	 * @return int
+	 */
 	public function get_attempts_number( $entry_id, $lesson_id ) {
 		global $wpdb;
 
@@ -30,7 +61,10 @@ class Edr_Quizzes {
 	}
 
 	/**
-	 * !!!REPLACES IB_Educator::get_questions()
+	 * Get quiz questions.
+	 *
+	 * @param int $lesson_id
+	 * @return array
 	 */
 	public function get_questions( $lesson_id ) {
 		global $wpdb;
@@ -40,17 +74,23 @@ class Edr_Quizzes {
 
 		$questions = $wpdb->get_results( $wpdb->prepare( $query, $lesson_id ) );
 
-		if ( $questions ) {
+		if ( ! empty( $questions ) ) {
 			$questions = array_map( array( 'IB_Educator_Question', 'get_instance' ), $questions );
 		}
 
 		return $questions;
 	}
 
+	/**
+	 * Add a question answer choice.
+	 *
+	 * @param array $data
+	 * @return false|int Inserted ID or false.
+	 */
 	public function add_choice( $data ) {
 		global $wpdb;
 
-		$wpdb->insert(
+		$done = $wpdb->insert(
 			$this->tbl_choices,
 			array(
 				'question_id' => $data['question_id'],
@@ -61,9 +101,20 @@ class Edr_Quizzes {
 			array( '%d', '%s', '%d', '%d' )
 		);
 
-		return $wpdb->insert_id;
+		if ( $done ) {
+			return $wpdb->insert_id;
+		}
+
+		return false;
 	}
 
+	/**
+	 * Update a question answer choice.
+	 *
+	 * @param int $choice_id
+	 * @param array $data
+	 * @return false|int Number of updated rows (0 if no rows were updated) or false on error.
+	 */
 	public function update_choice( $choice_id, $data ) {
 		global $wpdb;
 
@@ -80,6 +131,12 @@ class Edr_Quizzes {
 		);
 	}
 
+	/**
+	 * Delete question answer choice.
+	 *
+	 * @param int $choice_id
+	 * @return false|int Number of rows deleted or false on error.
+	 */
 	public function delete_choice( $choice_id ) {
 		global $wpdb;
 
@@ -90,6 +147,12 @@ class Edr_Quizzes {
 		);
 	}
 
+	/**
+	 * Delete question answer choices given a question ID.
+	 *
+	 * @param int $question_id
+	 * @return false|int Number of rows deleted or false on error.
+	 */
 	public function delete_choices( $question_id ) {
 		global $wpdb;
 
@@ -100,6 +163,12 @@ class Edr_Quizzes {
 		);
 	}
 
+	/**
+	 * Get available choices for a multiple choice question.
+	 *
+	 * @param int $question_id
+	 * @return array
+	 */
 	public function get_question_choices( $question_id ) {
 		global $wpdb;
 
@@ -112,7 +181,10 @@ class Edr_Quizzes {
 	}
 
 	/**
-	 * !!!REPLACES IB_Educator::get_choices()
+	 * Get all choices for a given lesson.
+	 *
+	 * @param int $lesson_id
+	 * @return array
 	 */
 	public function get_choices( $lesson_id, $sorted = false ) {
 		global $wpdb;
@@ -121,11 +193,7 @@ class Edr_Quizzes {
 			   . ' ORDER BY menu_order ASC';
 		$choices = $wpdb->get_results( $wpdb->prepare( $query, $lesson_id ) );
 
-		if ( ! $sorted ) {
-			return $choices;
-		}
-
-		if ( $choices ) {
+		if ( $sorted && ! empty( $choices ) ) {
 			$sorted_arr = array();
 
 			foreach ( $choices as $row ) {
@@ -139,12 +207,15 @@ class Edr_Quizzes {
 			return $sorted_arr;
 		}
 
-		return false;
+		return $choices;
 	}
 
 	/**
-	 * !!!REPLACES IB_Educator::get_quiz_grade()
-	 * @return array|null
+	 * Get the latest grade for a given quiz.
+	 *
+	 * @param int $lesson_id
+	 * @param int $entry_id
+	 * @return object
 	 */
 	public function get_grade( $lesson_id, $entry_id ) {
 		global $wpdb;
@@ -156,7 +227,10 @@ class Edr_Quizzes {
 	}
 
 	/**
-	 * !!!REPLACES IB_Educator::add_quiz_grade( $grade_data )
+	 * Add grade for a quiz.
+	 *
+	 * @param array $data
+	 * @return false|int Grade ID or false on error.
 	 */
 	public function add_grade( $data ) {
 		global $wpdb;
@@ -180,7 +254,11 @@ class Edr_Quizzes {
 	}
 
 	/**
-	 * !!!REPLACES IB_Educator::update_quiz_grade( $grade_data )
+	 * Update quiz grade.
+	 *
+	 * @param int $grade_id
+	 * @param array $data
+	 * @return false|int Number of updated rows or false on error.
 	 */
 	public function update_grade( $grade_id, $data ) {
 		global $wpdb;
@@ -211,7 +289,9 @@ class Edr_Quizzes {
 	}
 
 	/**
-	 * !!!REPLACES IB_Educator::get_student_answers()
+	 * Get a student's answers to a given quiz.
+	 *
+	 * @param int $grade_id
 	 * @return array
 	 */
 	public function get_answers( $grade_id ) {
@@ -223,7 +303,10 @@ class Edr_Quizzes {
 	}
 
 	/**
-	 * !!!REPLACES IB_Educator::add_student_answer( $grade_data )
+	 * Add an answer to a question.
+	 *
+	 * @param array $data
+	 * @return false|int Answer ID or false on error.
 	 */
 	public function add_answer( $data ) {
 		global $wpdb;
@@ -245,9 +328,21 @@ class Edr_Quizzes {
 			$data_format[] = '%s';
 		}
 
-		return $wpdb->insert( $this->tbl_answers, $insert_data, $data_format );
+		$done = $wpdb->insert( $this->tbl_answers, $insert_data, $data_format );
+
+		if ( $done ) {
+			return $wpdb->insert_id;
+		}
+
+		return false;
 	}
 
+	/**
+	 * Get the entries with ungraded quizzes.
+	 *
+	 * @param array $ids
+	 * @return array
+	 */
 	public function check_for_pending_quizzes( $ids ) {
 		global $wpdb;
 
