@@ -44,7 +44,7 @@ class IB_Educator_Actions {
 		// Get questions.
 		$questions = $quizzes->get_questions( $lesson_id );
 		
-		if ( ! $questions ) {
+		if ( empty( $questions ) ) {
 			return;
 		}
 

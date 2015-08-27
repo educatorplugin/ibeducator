@@ -82,7 +82,7 @@ $course = get_post( $entry->course_id );
 						$answers = array();
 					}
 
-					if ( $questions ) {
+					if ( ! empty( $questions ) ) {
 						?>
 						<table class="questions">
 							<thead>

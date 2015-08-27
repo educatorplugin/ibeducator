@@ -19,7 +19,7 @@ $attempts_number = $quizzes->get_attempts_number( $entry->ID, $lesson_id );
 $questions = $quizzes->get_questions( $lesson_id );
 ?>
 
-<?php if ( $questions ) : ?>
+<?php if ( ! empty( $questions ) ) : ?>
 	<?php
 		$message = get_query_var( 'edu-message' );
 
@@ -99,7 +99,7 @@ $questions = $quizzes->get_questions( $lesson_id );
 							// Multiple Choice Question.
 
 							// Check if this question has the answer choices.
-							if ( ! $choices || ! isset( $choices[ $question->ID ] ) ) {
+							if ( ! isset( $choices[ $question->ID ] ) ) {
 								continue;
 							}
 							

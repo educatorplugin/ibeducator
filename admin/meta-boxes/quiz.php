@@ -107,13 +107,11 @@
 $questions_js = '[';
 $questions = $quizzes->get_questions( array( 'lesson_id' => $lesson_id ) );
 
-if ( $questions ) {
-	foreach ( $questions as $question ) {
-		$questions_js .= "{id: " . absint( $question->ID ) . ", "
-					   . "question: '" . esc_js( $question->question ) . "', "
-					   . "question_type: '" . esc_js( $question->question_type ) . "', "
-					   . "menu_order: " . absint( $question->menu_order ) . '},';
-	}
+foreach ( $questions as $question ) {
+	$questions_js .= "{id: " . absint( $question->ID ) . ", "
+				   . "question: '" . esc_js( $question->question ) . "', "
+				   . "question_type: '" . esc_js( $question->question_type ) . "', "
+				   . "menu_order: " . absint( $question->menu_order ) . '},';
 }
 
 $questions_js .= ']';
@@ -122,20 +120,18 @@ $questions_js .= ']';
 $choices_json = '{';
 $choices = $quizzes->get_choices( $lesson_id, true );
 
-if ( $choices ) {
-	foreach ( $choices as $question_id => $question ) {
-		$choices_json .= 'question_' . absint( $question_id ) . ':[';
-		
-		foreach ( $question as $choice ) {
-			$choices_json .= "{choice_id: " . absint( $choice->ID ) . ", "
-						   . "question_id: " . absint( $choice->question_id ) . ", "
-						   . "choice_text: '" . esc_js( $choice->choice_text ) . "', "
-						   . "correct: " . absint( $choice->correct ) . ", "
-						   . "menu_order: " . absint( $choice->menu_order ) . "},";
-		}
+foreach ( $choices as $question_id => $question ) {
+	$choices_json .= 'question_' . absint( $question_id ) . ':[';
 
-		$choices_json .= '],';
+	foreach ( $question as $choice ) {
+		$choices_json .= "{choice_id: " . absint( $choice->ID ) . ", "
+					   . "question_id: " . absint( $choice->question_id ) . ", "
+					   . "choice_text: '" . esc_js( $choice->choice_text ) . "', "
+					   . "correct: " . absint( $choice->correct ) . ", "
+					   . "menu_order: " . absint( $choice->menu_order ) . "},";
 	}
+
+	$choices_json .= '],';
 }
 
 $choices_json .= '}';
