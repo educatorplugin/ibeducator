@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-entries-table.php';
-$entries_table = new EDR_Entries_Table();
+$entries_table = new Edr_Entries_Table();
 $entries_table->prepare_items();
 ?>
 

@@ -307,8 +307,18 @@ class IB_Educator_Quiz_Admin {
 			return;
 		}
 
+		if ( isset( $_POST['_edr_attempts'] ) ) {
+			$attempts_number = absint( $_POST['_edr_attempts'] );
+
+			if ( ! $attempts_number ) {
+				$attempts_number = 1;
+			}
+
+			update_post_meta( $post_id, '_edr_attempts', $attempts_number );
+		}
+
 		$has_quiz = 0;
-		$questions = IB_Educator::get_instance()->get_questions( array( 'lesson_id' => $post_id ) );
+		$questions = Edr_Manager::get( 'quizzes' )->get_questions( $post_id );
 
 		if ( ! empty( $questions ) ) {
 			$has_quiz = 1;
@@ -360,27 +370,29 @@ class IB_Educator_Quiz_Admin {
 	 */
 	public static function quiz_grade() {
 		global $wpdb;
-		$api = IB_Educator::get_instance();
 		$entry_id = isset( $_POST['entry_id'] ) ? absint( $_POST['entry_id'] ) : 0;
 		$lesson_id = isset( $_POST['lesson_id'] ) ? absint( $_POST['lesson_id'] ) : 0;
 
 		// Verify nonce.
 		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'ibedu_edit_progress_' . $entry_id ) ) {
-			exit;
+			exit();
 		}
 
 		// Verify capabilities.
 		if ( ! current_user_can( 'edit_ib_educator_lesson', $lesson_id ) ) {
-			exit;
+			exit();
 		}
 
-		$quiz_grade = $api->get_quiz_grade( $lesson_id, $entry_id );
+		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quiz_grade = $quizzes->get_grade( $lesson_id, $entry_id );
 
-		if ( ! $quiz_grade ) exit;
+		if ( ! $quiz_grade ) {
+			exit();
+		}
 
 		$grade = isset( $_POST['grade'] ) ? floatval( $_POST['grade'] ) : 0;
 
-		$api->update_quiz_grade( $quiz_grade->ID, array(
+		$quizzes->update_grade( $quiz_grade->ID, array(
 			'grade'  => $grade,
 			'status' => 'approved',
 		) );
@@ -408,6 +420,6 @@ class IB_Educator_Quiz_Admin {
 
 		echo json_encode( array( 'status' => 'success' ) );
 
-		exit;
+		exit();
 	}
 }
