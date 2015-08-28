@@ -3,7 +3,7 @@ Contributors: educatorteam, dmytro.d
 Donate link: http://educatorplugin.com
 Tags: learning management system, lms, learning, online courses
 Requires at least: 4.0
-Tested up to: 4.2
+Tested up to: 4.3
 Stable tag: 1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -63,7 +63,7 @@ Coming soon.
 
 == Changelog ==
 
-= 1.6.0 =
+= 1.6 =
 * Added: set the maximum number of quiz attempts a student can take per quiz.
 * Deprecated a list of methods in IB_Educator class: get_questions, get_choices, get_question_choices, add_choice, update_choice, delete_choice, delete_choices, add_student_answer, get_student_answers, add_quiz_grade, update_quiz_grade, is_quiz_submitted, get_quiz_grade, and check_quiz_pending. These methods were moved to the new Edr_Quizzes class (this class can be retrieved by calling Edr_Manager::get( 'quizzes' )).
 
