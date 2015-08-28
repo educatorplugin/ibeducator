@@ -35,70 +35,76 @@ class IB_Educator_Actions {
 		}
 
 		$lesson_id = get_the_ID();
-		$user_id = get_current_user_id();
-		$api = IB_Educator::get_instance();
 
 		// Verify nonce.
 		check_admin_referer( 'ibedu_submit_quiz_' . $lesson_id );
 
+		$quizzes = Edr_Manager::get( 'quizzes' );
+
 		// Get questions.
-		$questions = $api->get_questions( array( 'lesson_id' => $lesson_id ) );
+		$questions = $quizzes->get_questions( $lesson_id );
 		
-		if ( ! $questions ) {
+		if ( empty( $questions ) ) {
 			return;
 		}
 
-		$num_questions = count( $questions );
-		$num_answers = 0;
-
-		if ( ! isset( $_POST['answers'] ) ) {
-			// The student has to submit the answers to all questions.
+		if ( ! isset( $_POST['answers'] ) || ! is_array( $_POST['answers'] ) ) {
+			// No answers.
 			ib_edu_message( 'quiz', 'empty-answers' );
+
 			return;
-		} elseif ( is_array( $_POST['answers'] ) ) {
-			// Count answers.
-			foreach ( $_POST['answers'] as $answer ) {
-				if ( ! empty( $answer ) ) {
-					++$num_answers;
+		} else {
+			foreach ( $questions as $question ) {
+				if ( empty( $_POST['answers'][ $question->ID ] ) ) {
+					// Not all questions were answered.
+					ib_edu_message( 'quiz', 'empty-answers' );
+
+					return;
 				}
 			}
-
-			if ( $num_answers != $num_questions ) {
-				// Not all questions were answered.
-				ib_edu_message( 'quiz', 'empty-answers' );
-				return;
-			}
 		}
+
+		// Get current user id.
+		$user_id = get_current_user_id();
 		
 		// Get entry.
-		$entry = $api->get_entry( array(
+		$entry = IB_Educator::get_instance()->get_entry( array(
 			'user_id'      => $user_id,
 			'course_id'    => ib_edu_get_course_id( $lesson_id ),
-			'entry_status' => 'inprogress'
+			'entry_status' => 'inprogress',
 		) );
 
 		if ( ! $entry ) {
 			return;
 		}
 
-		if ( $api->is_quiz_submitted( $lesson_id, $entry->ID ) ) {
-			// Quiz has been submitted already.
+		$max_attempts_number = $quizzes->get_max_attempts_number( $lesson_id );
+		$attempts_number = $quizzes->get_attempts_number( $entry->ID, $lesson_id );
+
+		// Check if the student exceeded the number of allowed attempts.
+		if ( $attempts_number >= $max_attempts_number ) {
+			return;
+		}
+
+		// Add initial grade data to the database.
+		$grade_id = $quizzes->add_grade( array(
+			'lesson_id' => $lesson_id,
+			'entry_id'  => $entry->ID,
+			'grade'     => 0,
+			'status'    => 'pending',
+		) );
+
+		if ( ! $grade_id ) {
 			return;
 		}
 
 		$user_answer = '';
-		$answered = 0;
 		$correct = 0;
 		$automatic_grade = true;
-		$choices = $api->get_choices( $lesson_id, true );
+		$choices = $quizzes->get_choices( $lesson_id, true );
 
 		// Check answers to the quiz questions.
 		foreach ( $questions as $question ) {
-			if ( ! isset( $_POST['answers'][ $question->ID ] ) ) {
-				// Student has to submit an answer.
-				continue;
-			}
-
 			// Every question type needs a specific way to check for the valid answer.
 			switch ( $question->question_type ) {
 				// Multiple Choice Question.
@@ -109,16 +115,13 @@ class IB_Educator_Actions {
 						$choice = $choices[ $question->ID ][ $user_answer ];
 
 						// Add answer to database.
-						$added = $api->add_student_answer( array(
+						$added = $quizzes->add_answer( array(
 							'question_id' => $question->ID,
+							'grade_id'    => $grade_id,
 							'entry_id'    => $entry->ID,
 							'correct'     => $choice->correct,
 							'choice_id'   => $choice->ID
 						) );
-
-						if ( 1 == $added ) {
-							++$answered;
-						}
 
 						if ( 1 == $choice->correct ) {
 							++$correct;
@@ -141,40 +144,28 @@ class IB_Educator_Actions {
 					}
 
 					// Add answer to database.
-					$added = $api->add_student_answer( array(
+					$added = $quizzes->add_answer( array(
 						'question_id' => $question->ID,
+						'grade_id'    => $grade_id,
 						'entry_id'    => $entry->ID,
 						'correct'     => -1,
 						'answer_text' => $user_answer
 					) );
-
-					if ( 1 == $added ) {
-						++$answered;
-					}
 					
 					break;
 			}
 		}
 
-		if ( $answered == $num_questions ) {
-			$grade_data = array(
-				'lesson_id' => $lesson_id,
-				'entry_id'  => $entry->ID,
-			);
-
-			if ( $automatic_grade ) {
-				$grade_data['grade'] = round( $correct / $answered * 100 );
-				$grade_data['status'] = 'approved';
-			} else {
-				$grade_data['grade'] = 0;
-				$grade_data['status'] = 'pending';
-			}
-
-			$api->add_quiz_grade( $grade_data );
-
-			wp_redirect( ib_edu_get_endpoint_url( 'edu-message', 'quiz-submitted', get_permalink() ) );
-			exit;
+		if ( $automatic_grade ) {
+			$quizzes->update_grade( $grade_id, array(
+				'grade'  => round( $correct / count( $questions ) * 100 ),
+				'status' => 'approved',
+			) );
 		}
+
+		wp_redirect( ib_edu_get_endpoint_url( 'edu-message', 'quiz-submitted', get_permalink() ) );
+
+		exit();
 	}
 
 	/**

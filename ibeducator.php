@@ -39,6 +39,7 @@ define( 'IBEDUCATOR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 register_activation_hook( __FILE__, array( 'IB_Educator_Main', 'plugin_activation' ) );
 register_deactivation_hook( __FILE__, array( 'IB_Educator_Main', 'plugin_deactivation' ) );
 
+require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-autoloader.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-payment.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-entry.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-question.php';

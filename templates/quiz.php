@@ -1,10 +1,11 @@
 <?php
 $api = IB_Educator::get_instance();
+$lesson_id = get_the_ID();
 
 // Get entry data for the current student. Entry status must be "inprogress".
 $entry = $api->get_entry( array(
 	'user_id'      => get_current_user_id(),
-	'course_id'    => ib_edu_get_course_id( get_the_ID() ),
+	'course_id'    => ib_edu_get_course_id( $lesson_id ),
 	'entry_status' => 'inprogress'
 ) );
 
@@ -12,14 +13,19 @@ if ( ! $entry ) {
 	return;
 }
 
-$lesson_id = get_the_ID();
-$questions = $api->get_questions( array( 'lesson_id' => $lesson_id ) );
+$quizzes = Edr_Manager::get( 'quizzes' );
+$max_attempts_number = $quizzes->get_max_attempts_number( $lesson_id );
+$attempts_number = $quizzes->get_attempts_number( $entry->ID, $lesson_id );
+$questions = $quizzes->get_questions( $lesson_id );
 ?>
 
-<?php if ( $questions ) : ?>
+<?php if ( ! empty( $questions ) ) : ?>
 	<?php
 		$message = get_query_var( 'edu-message' );
-		if ( ! $message ) $message = ib_edu_message( 'quiz' );
+
+		if ( ! $message ) {
+			$message = ib_edu_message( 'quiz' );
+		}
 
 		if ( $message ) {
 			switch ( $message ) {
@@ -33,14 +39,27 @@ $questions = $api->get_questions( array( 'lesson_id' => $lesson_id ) );
 			}
 		}
 
-		$quiz_submitted = $api->is_quiz_submitted( $lesson_id, $entry->ID );
+		$do_quiz = $attempts_number < $max_attempts_number;
+		$grade = $quizzes->get_grade( $lesson_id, $entry->ID );
+		$form_action = ib_edu_get_endpoint_url( 'edu-action', 'submit-quiz', get_permalink() );
+
+		if ( $grade && $do_quiz ) {
+			$do_quiz = isset( $_GET['try_again'] ) && 'true' == $_GET['try_again'];
+
+			if ( $do_quiz ) {
+				$form_action = add_query_arg( 'try_again', 'true', $form_action );
+			}
+		}
+
+		if ( $do_quiz ) {
+			$answers = isset( $_POST['answers'] ) && is_array( $_POST['answers'] ) ? $_POST['answers'] : array();
+		} else {
+			$answers = $quizzes->get_answers( $grade->ID );
+		}
 	?>
 
 	<section id="ib-edu-quiz" class="<?php echo ( $quiz_submitted ) ? 'ib-edu-quiz-complete' : 'ib-edu-quiz-inprogress'; ?>">
-		<?php if ( $quiz_submitted ) : ?>
-			<?php
-				$grade = $api->get_quiz_grade( $lesson_id, $entry->ID );
-			?>
+		<?php if ( ! $do_quiz && $grade ) : ?>
 			<section class="ib-edu-quiz-grade">
 				<h3><?php _e( 'Quiz Grade', 'ibeducator' ); ?></h3>
 				<p class="grade">
@@ -55,40 +74,44 @@ $questions = $api->get_questions( array( 'lesson_id' => $lesson_id ) );
 			</section>
 		<?php endif; ?>
 
-		<?php
-			if ( ! $quiz_submitted ) {
-				$answers = isset( $_POST['answers'] ) && is_array( $_POST['answers'] ) ? $_POST['answers'] : array();
-			} else {
-				$answers = $api->get_student_answers( $lesson_id, $entry->ID );
-
-				if ( ! $answers ) {
-					$answers = array();
-				}
-			}
-		?>
 		<h3 class="ib-edu-quiz-title"><?php _e( 'Quiz', 'ibeducator' ); ?></h3>
 
-		<form id="ib-edu-quiz-form" class="ib-edu-form" method="post" action="<?php echo esc_url( ib_edu_get_endpoint_url( 'edu-action', 'submit-quiz', get_permalink() ) ); ?>">
+		<div class="edr-attempts">
+			<p class="attempt-num">
+				<?php
+					$current_attempt = ( $do_quiz ) ? $attempts_number + 1 : $attempts_number;
+
+					printf( __( 'Attempt %1$d of %2$d', 'ibeducator' ), $current_attempt, $max_attempts_number );
+				?>
+			</p>
+			<?php if ( ! $do_quiz && $attempts_number < $max_attempts_number ) : ?>
+				<p class="try-again">
+					<a href="<?php echo esc_url( add_query_arg( 'try_again', 'true', get_permalink() ) ); ?>#ib-edu-quiz"><?php _e( 'Try again', 'ibeducator' ); ?></a>
+				</p>
+			<?php endif; ?>
+		</div>
+
+		<form id="ib-edu-quiz-form" class="ib-edu-form" method="post" action="<?php echo esc_url( $form_action ); ?>">
 			<?php wp_nonce_field( 'ibedu_submit_quiz_' . $lesson_id ); ?>
 			<input type="hidden" name="submit_quiz" value="1">
 
 			<div class="ib-edu-questions">
 				<?php
-					$choices = $api->get_choices( $lesson_id, true );
+					$choices = $quizzes->get_choices( $lesson_id, true );
 
 					foreach ( $questions as $question ) {
 						if ( 'multiplechoice' == $question->question_type ) {
 							// Multiple Choice Question.
 
 							// Check if this question has the answer choices.
-							if ( ! $choices || ! isset( $choices[ $question->ID ] ) ) {
+							if ( ! isset( $choices[ $question->ID ] ) ) {
 								continue;
 							}
 							
 							$answers_html = '';
 
 							// Output the answers.
-							if ( ! $quiz_submitted ) {
+							if ( $do_quiz ) {
 								foreach ( $choices[ $question->ID ] as $choice ) {
 									$checked = '';
 
@@ -133,7 +156,7 @@ $questions = $api->get_questions( array( 'lesson_id' => $lesson_id ) );
 							echo '<div class="ib-edu-question">';
 							echo '<div class="label">' . esc_html( $question->question ) . '</div>';
 
-							if ( ! $quiz_submitted ) {
+							if ( $do_quiz ) {
 								$user_answer = isset( $answers[ $question->ID ] ) ? stripslashes( $answers[ $question->ID ] ) : '';
 
 								echo '<div class="ib-edu-question-answer">'
@@ -155,7 +178,7 @@ $questions = $api->get_questions( array( 'lesson_id' => $lesson_id ) );
 				?>
 			</div>
 
-			<?php if ( ! $quiz_submitted ) : ?>
+			<?php if ( $do_quiz ) : ?>
 				<div class="ib-edu-buttons">
 					<button class="ib-edu-button" type="submit"><?php _e( 'Submit', 'ibeducator' ); ?></button>
 				</div>

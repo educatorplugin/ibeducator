@@ -58,7 +58,8 @@ class IB_Educator_Quiz_Admin {
 	 * @return array Saved choices.
 	 */
 	protected static function save_question_choices( $question_id, $choices ) {
-		$api = IB_Educator::get_instance();
+		global $wpdb;
+		$quizzes = Edr_Manager::get( 'quizzes' );
 		$choice_ids = array();
 
 		foreach ( $choices as $choice ) {
@@ -69,13 +70,12 @@ class IB_Educator_Quiz_Admin {
 
 		// Delete choices that are not sent by the user.
 		if ( ! empty( $choice_ids ) ) {
-			global $wpdb;
 			$tables = ib_edu_table_names();
 			$wpdb->query( $wpdb->prepare( "DELETE FROM " . $tables['choices'] . " WHERE question_id=%d AND ID NOT IN (" . implode( ',', $choice_ids ) . ")", $question_id ) );
 		}
 
 		// Add choices to the question.
-		$current_choices = $api->get_question_choices( $question_id );
+		$current_choices = $quizzes->get_question_choices( $question_id );
 		$saved_choices = array();
 
 		foreach ( $choices as $choice ) {
@@ -87,10 +87,10 @@ class IB_Educator_Quiz_Admin {
 			);
 
 			if ( $current_choices && isset( $current_choices[ $choice_data['ID'] ] ) ) {
-				$api->update_choice( $choice_data['ID'], $choice_data );
+				$quizzes->update_choice( $choice_data['ID'], $choice_data );
 			} else {
 				$choice_data['question_id'] = $question_id;
-				$choice_data['ID'] = $api->add_choice( $choice_data );
+				$choice_data['ID'] = $quizzes->add_choice( $choice_data );
 			}
 
 			$choice_data['choice_id'] = $choice_data['ID'];
@@ -105,8 +105,6 @@ class IB_Educator_Quiz_Admin {
 	 * AJAX: process quiz question admin requests.
 	 */
 	public static function quiz_question() {
-		$api = IB_Educator::get_instance();
-
 		switch ( $_SERVER['REQUEST_METHOD'] ) {
 			case 'POST':
 				$response = array(
@@ -273,10 +271,13 @@ class IB_Educator_Quiz_Admin {
 				}
 
 				if ( $question->ID ) {
+					$quizzes = Edr_Manager::get( 'quizzes' );
+
 					// First, delete question choices.
 					$choices_deleted = true;
+
 					if ( 'multiplechoice' == $question->question_type ) {
-						$choices_deleted = $api->delete_choices( $question->ID );
+						$choices_deleted = $quizzes->delete_choices( $question->ID );
 					}
 
 					if ( false !== $choices_deleted ) {
@@ -307,8 +308,18 @@ class IB_Educator_Quiz_Admin {
 			return;
 		}
 
+		if ( isset( $_POST['_edr_attempts'] ) ) {
+			$attempts_number = absint( $_POST['_edr_attempts'] );
+
+			if ( ! $attempts_number ) {
+				$attempts_number = 1;
+			}
+
+			update_post_meta( $post_id, '_edr_attempts', $attempts_number );
+		}
+
 		$has_quiz = 0;
-		$questions = IB_Educator::get_instance()->get_questions( array( 'lesson_id' => $post_id ) );
+		$questions = Edr_Manager::get( 'quizzes' )->get_questions( $post_id );
 
 		if ( ! empty( $questions ) ) {
 			$has_quiz = 1;
@@ -360,27 +371,29 @@ class IB_Educator_Quiz_Admin {
 	 */
 	public static function quiz_grade() {
 		global $wpdb;
-		$api = IB_Educator::get_instance();
 		$entry_id = isset( $_POST['entry_id'] ) ? absint( $_POST['entry_id'] ) : 0;
 		$lesson_id = isset( $_POST['lesson_id'] ) ? absint( $_POST['lesson_id'] ) : 0;
 
 		// Verify nonce.
 		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'ibedu_edit_progress_' . $entry_id ) ) {
-			exit;
+			exit();
 		}
 
 		// Verify capabilities.
 		if ( ! current_user_can( 'edit_ib_educator_lesson', $lesson_id ) ) {
-			exit;
+			exit();
 		}
 
-		$quiz_grade = $api->get_quiz_grade( $lesson_id, $entry_id );
+		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quiz_grade = $quizzes->get_grade( $lesson_id, $entry_id );
 
-		if ( ! $quiz_grade ) exit;
+		if ( ! $quiz_grade ) {
+			exit();
+		}
 
 		$grade = isset( $_POST['grade'] ) ? floatval( $_POST['grade'] ) : 0;
 
-		$api->update_quiz_grade( $quiz_grade->ID, array(
+		$quizzes->update_grade( $quiz_grade->ID, array(
 			'grade'  => $grade,
 			'status' => 'approved',
 		) );
@@ -408,6 +421,6 @@ class IB_Educator_Quiz_Admin {
 
 		echo json_encode( array( 'status' => 'success' ) );
 
-		exit;
+		exit();
 	}
 }

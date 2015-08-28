@@ -3,7 +3,7 @@
 /**
  * Admin for the course syllabus feature.
  */
-class EDR_Syllabus_Admin {
+class Edr_Syllabus_Admin {
 	/**
 	 * Constructor.
 	 */

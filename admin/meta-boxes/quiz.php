@@ -1,6 +1,26 @@
 <?php
+	$quizzes = Edr_Manager::get( 'quizzes' );
 	$lesson_id = (int) $post->ID;
+	$attempts_number = get_post_meta( $lesson_id, '_edr_attempts', true );
+
+	if ( ! $attempts_number ) {
+		$attempts_number = 1;
+	}
 ?>
+
+<h2><?php _e( 'Settings', 'ibeducator' ); ?></h2>
+
+<div class="ib-edu-field">
+	<div class="ib-edu-label">
+		<label for="edr-attempts-number"><?php _e( 'Number of attempts', 'ibeducator' ); ?></label>
+	</div>
+	<div class="ib-edu-control">
+		<input type="number" id="edr-attempts-number" name="_edr_attempts" value="<?php echo intval( $attempts_number ); ?>">
+	</div>
+</div>
+
+<h2><?php _e( 'Questions', 'ibeducator' ); ?></h2>
+
 <div id="ib-edu-quiz">
 	<div id="ib-edu-questions"></div>
 	<div id="ib-edu-quiz-buttons">
@@ -83,46 +103,40 @@
 </script>
 
 <?php
-	$api = IB_Educator::get_instance();
+// Create questions JSON.
+$questions_js = '[';
+$questions = $quizzes->get_questions( array( 'lesson_id' => $lesson_id ) );
 
-	// Create questions JSON.
-	$questions_js = '[';
-	$questions = $api->get_questions( array( 'lesson_id' => $lesson_id ) );
+foreach ( $questions as $question ) {
+	$questions_js .= "{id: " . absint( $question->ID ) . ", "
+				   . "question: '" . esc_js( $question->question ) . "', "
+				   . "question_type: '" . esc_js( $question->question_type ) . "', "
+				   . "menu_order: " . absint( $question->menu_order ) . '},';
+}
 
-	if ( $questions ) {
-		foreach ( $questions as $question ) {
-			$questions_js .= "{id: " . absint( $question->ID ) . ", "
-						   . "question: '" . esc_js( $question->question ) . "', "
-						   . "question_type: '" . esc_js( $question->question_type ) . "', "
-						   . "menu_order: " . absint( $question->menu_order ) . '},';
-		}
+$questions_js .= ']';
+
+// Create answers (choices) JSON.
+$choices_json = '{';
+$choices = $quizzes->get_choices( $lesson_id, true );
+
+foreach ( $choices as $question_id => $question ) {
+	$choices_json .= 'question_' . absint( $question_id ) . ':[';
+
+	foreach ( $question as $choice ) {
+		$choices_json .= "{choice_id: " . absint( $choice->ID ) . ", "
+					   . "question_id: " . absint( $choice->question_id ) . ", "
+					   . "choice_text: '" . esc_js( $choice->choice_text ) . "', "
+					   . "correct: " . absint( $choice->correct ) . ", "
+					   . "menu_order: " . absint( $choice->menu_order ) . "},";
 	}
 
-	$questions_js .= ']';
+	$choices_json .= '],';
+}
 
-	// Create answers (choices) JSON.
-	$choices_json = '{';
-	$choices = $api->get_choices( $lesson_id, true );
-
-	if ( $choices ) {
-		foreach ( $choices as $question_id => $question ) {
-			$choices_json .= 'question_' . absint( $question_id ) . ':[';
-			
-			foreach ( $question as $choice ) {
-				$choices_json .= "{choice_id: " . absint( $choice->ID ) . ", "
-							   . "question_id: " . absint( $choice->question_id ) . ", "
-							   . "choice_text: '" . esc_js( $choice->choice_text ) . "', "
-							   . "correct: " . absint( $choice->correct ) . ", "
-							   . "menu_order: " . absint( $choice->menu_order ) . "},";
-			}
-
-			$choices_json .= '],';
-		}
-	}
-
-	$choices_json .= '}';
+$choices_json .= '}';
 ?>
 <script>
-var educatorQuizQuestions = <?php echo $questions_js; ?>;
-var educatorQuizChoices = <?php echo $choices_json; ?>;
+	var educatorQuizQuestions = <?php echo $questions_js; ?>;
+	var educatorQuizChoices = <?php echo $choices_json; ?>;
 </script>

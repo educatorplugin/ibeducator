@@ -263,12 +263,14 @@ CREATE TABLE $this->choices (
 CREATE TABLE $this->answers (
   ID bigint(20) unsigned NOT NULL auto_increment,
   question_id bigint(20) unsigned NOT NULL,
+  grade_id bigint(20) unsigned NOT NULL,
   entry_id bigint(20) unsigned NOT NULL,
   choice_id bigint(20) unsigned NOT NULL,
   correct tinyint(2) NOT NULL default -1,
   answer_text text default NULL,
   PRIMARY KEY  (ID),
-  KEY entry_id (entry_id)
+  KEY entry_id (entry_id),
+  KEY grade_id (grade_id)
 ) $charset_collate;
 CREATE TABLE $this->grades (
   ID bigint(20) unsigned NOT NULL auto_increment,

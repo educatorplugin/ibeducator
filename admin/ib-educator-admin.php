@@ -44,7 +44,7 @@ class IB_Educator_Admin {
 		IB_Educator_Admin_Post_Types::init();
 		IB_Educator_Admin_Meta::init();
 		IB_Educator_Quiz_Admin::init();
-		new EDR_Syllabus_Admin();
+		new Edr_Syllabus_Admin();
 	}
 
 	/**
