@@ -52,8 +52,7 @@ class Edr_Quizzes {
 	public function get_attempts_number( $entry_id, $lesson_id ) {
 		global $wpdb;
 
-		$query = 'SELECT count(1) FROM ' . $this->tbl_grades
-			   . ' WHERE entry_id = %d AND lesson_id = %d';
+		$query = 'SELECT count(1) FROM ' . $this->tbl_grades . ' WHERE entry_id = %d AND lesson_id = %d';
 
 		$attempts_number = $wpdb->get_var( $wpdb->prepare( $query, $entry_id, $lesson_id ) );
 
@@ -296,7 +295,7 @@ class Edr_Quizzes {
 	 */
 	public function get_answers( $grade_id ) {
 		global $wpdb;
-		$query = 'SELECT question_id, ID, entry_id, question_id, choice_id, correct, answer_text FROM ' . $this->tbl_answers
+		$query = 'SELECT question_id, ID, grade_id, entry_id, question_id, choice_id, correct, answer_text FROM ' . $this->tbl_answers
 			   . ' WHERE grade_id = %d';
 
 		return $wpdb->get_results( $wpdb->prepare( $query, $grade_id ), OBJECT_K );
