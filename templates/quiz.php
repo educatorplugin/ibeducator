@@ -41,9 +41,14 @@ $questions = $quizzes->get_questions( $lesson_id );
 
 		$do_quiz = $attempts_number < $max_attempts_number;
 		$grade = $quizzes->get_grade( $lesson_id, $entry->ID );
+		$form_action = ib_edu_get_endpoint_url( 'edu-action', 'submit-quiz', get_permalink() );
 
 		if ( $grade && $do_quiz ) {
 			$do_quiz = isset( $_GET['try_again'] ) && 'true' == $_GET['try_again'];
+
+			if ( $do_quiz ) {
+				$form_action = add_query_arg( 'try_again', 'true', $form_action );
+			}
 		}
 
 		if ( $do_quiz ) {
@@ -86,7 +91,7 @@ $questions = $quizzes->get_questions( $lesson_id );
 			<?php endif; ?>
 		</div>
 
-		<form id="ib-edu-quiz-form" class="ib-edu-form" method="post" action="<?php echo esc_url( ib_edu_get_endpoint_url( 'edu-action', 'submit-quiz', get_permalink() ) ); ?>">
+		<form id="ib-edu-quiz-form" class="ib-edu-form" method="post" action="<?php echo esc_url( $form_action ); ?>">
 			<?php wp_nonce_field( 'ibedu_submit_quiz_' . $lesson_id ); ?>
 			<input type="hidden" name="submit_quiz" value="1">
 
