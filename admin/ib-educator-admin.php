@@ -118,11 +118,10 @@ class IB_Educator_Admin {
 		}
 
 		if ( $entries_hook ) {
-			// Set screen options for the entries admin page.
 			add_action( "load-$entries_hook", array( __CLASS__, 'add_entries_screen_options' ) );
 		}
 
-		add_submenu_page(
+		$members_hook = add_submenu_page(
 			'ib_educator_admin',
 			__( 'Educator Members', 'ibeducator' ),
 			__( 'Members', 'ibeducator' ),
@@ -130,6 +129,10 @@ class IB_Educator_Admin {
 			'ib_educator_members',
 			array( __CLASS__, 'admin_members' )
 		);
+
+		if ( $members_hook ) {
+			add_action( "load-$members_hook", array( __CLASS__, 'add_members_screen_options' ) );
+		}
 	}
 
 	/**
@@ -244,6 +247,25 @@ class IB_Educator_Admin {
 	}
 
 	/**
+	 * Add screen options to the members admin page.
+	 */
+	public static function add_members_screen_options() {
+		$screen = get_current_screen();
+
+		if ( ! $screen || 'educator_page_ib_educator_members' != $screen->id || isset( $_GET['edu-action'] ) ) {
+			return;
+		}
+
+		$args = array(
+			'option'  => 'members_per_page',
+			'label'   => __( 'Members per page', 'ibeducator' ),
+			'default' => 10,
+		);
+
+		add_screen_option( 'per_page', $args );
+	}
+
+	/**
 	 * Output Educator members page.
 	 */
 	public static function admin_members() {
@@ -286,7 +308,7 @@ class IB_Educator_Admin {
 	 * @return mixed
 	 */
 	public static function set_screen_option( $result, $option, $value ) {
-		if ( 'payments_per_page' == $option || 'entries_per_page' == $option ) {
+		if ( in_array( $option, array( 'payments_per_page', 'entries_per_page', 'members_per_page' ) ) ) {
 			$result = (int) $value;
 		}
 
