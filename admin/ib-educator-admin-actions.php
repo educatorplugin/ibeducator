@@ -456,7 +456,7 @@ class IB_Educator_Admin_Actions {
 		}
 
 		// Get entry.
-		$entry_id = isset( $_GET['entry_id'] ) ? intval( $_GET['entry_id'] ) : 0;
+		$entry_id = isset( $_GET['entry_id'] ) ? intval( $_GET['entry_id'] ) : null;
 
 		if ( ! $entry_id ) {
 			return;
@@ -467,6 +467,38 @@ class IB_Educator_Admin_Actions {
 		// Delete entry if it was found.
 		if ( $entry->ID && $entry->delete() ) {
 			wp_redirect( admin_url( 'admin.php?page=ib_educator_entries&edr-message=entry_deleted' ) );
+
+			exit();
+		}
+	}
+
+	/**
+	 * Delete a payment.
+	 */
+	public static function delete_payment() {
+		// Verify nonce.
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'edr_delete_payment' ) ) {
+			return;
+		}
+
+		// Check permissions.
+		if ( ! current_user_can( 'manage_educator' ) ) {
+			return;
+		}
+
+		// Get entry.
+		$payment_id = isset( $_GET['payment_id'] ) ? intval( $_GET['payment_id'] ) : null;
+
+		if ( ! $payment_id ) {
+			return;
+		}
+
+		$payment = IB_Educator_Payment::get_instance( $payment_id );
+
+		// Delete payment if it was found.
+		if ( $payment->ID && $payment->delete() ) {
+			wp_redirect( admin_url( 'admin.php?page=ib_educator_payments&edr-message=payment_deleted' ) );
+
 			exit();
 		}
 	}

@@ -436,51 +436,52 @@ class IB_Educator {
 	public function get_payments( $args, $output_type = null ) {
 		global $wpdb;
 
-		if ( null === $output_type ) $output_type = OBJECT;
+		if ( is_null( $output_type ) ) {
+			$output_type = OBJECT;
+		}
 
-		$sql = "SELECT * FROM {$this->payments} WHERE 1";
+		$sql = 'SELECT * FROM ' . $this->payments . ' WHERE 1';
 
 		// Filter by payment_id.
 		if ( isset( $args['payment_id'] ) ) {
 			if ( is_array( $args['payment_id'] ) ) {
 				$sql .= ' AND ID IN (' . implode( ',', array_map( 'absint', $args['payment_id'] ) ) . ')';
 			} else {
-				$sql .= ' AND ID=' . absint( $args['payment_id'] );
+				$sql .= $wpdb->prepare( ' AND ID = %d', $args['payment_id'] );
 			}
 		}
 
 		// Filter by user_id.
 		if ( isset( $args['user_id'] ) ) {
-			$sql .= ' AND user_id=' . absint( $args['user_id'] );
+			$sql .= $wpdb->prepare( ' AND user_id = %d', $args['user_id'] );
 		}
 
 		// Filter by course_id.
 		if ( isset( $args['course_id'] ) ) {
-			$sql .= ' AND course_id=' . absint( $args['course_id'] );
+			$sql .= $wpdb->prepare( ' AND course_id = %d', $args['course_id'] );
 		}
 
 		// Filter by payment_type.
 		if ( isset( $args['payment_type'] ) ) {
-			$sql .= " AND payment_type='" . esc_sql( $args['payment_type'] ) . "'";
+			$sql .= $wpdb->prepare( ' AND payment_type = %s', $args['payment_type'] );
 		}
 
 		// Filter by object_id.
 		if ( isset( $args['object_id'] ) ) {
-			$sql .= ' AND object_id=' . absint( $args['object_id'] );
+			$sql .= $wpdb->prepare( ' AND object_id = %d', $args['object_id'] );
 		}
 
 		// Filter by payment status.
 		if ( isset( $args['payment_status'] ) && is_array( $args['payment_status'] ) ) {
-			// Escape SQL.
-			foreach ( $args['payment_status'] as $key => $payment_status ) {
-				$args['payment_status'][ $key ] = esc_sql( $payment_status );
-			}
-
-			$sql .= " AND payment_status IN ('" . implode( "', '", $args['payment_status'] ) . "')";
+			$sql .= $wpdb->prepare(
+				' AND payment_status IN (' . implode( ',', array_fill( 0, count( $args['payment_status'] ), '%s' ) ) . ')',
+				$args['payment_status']
+			);
 		}
 
 		// With or without pagination
-		$has_pagination = isset( $args['page'] ) && isset( $args['per_page'] ) && is_numeric( $args['page'] ) && is_numeric( $args['per_page'] );
+		$has_pagination = ( isset( $args['page'] ) && isset( $args['per_page'] )
+			&& is_numeric( $args['page'] ) && is_numeric( $args['per_page'] ) );
 		$pagination_sql = '';
 
 		if ( $has_pagination ) {
@@ -490,7 +491,7 @@ class IB_Educator {
 
 		$payments = $wpdb->get_results( $sql . ' ORDER BY payment_date DESC' . $pagination_sql, $output_type );
 
-		if ( $payments ) {
+		if ( ! empty( $payments ) ) {
 			$payments = array_map( array( 'IB_Educator_Payment', 'get_instance' ), $payments );
 		}
 

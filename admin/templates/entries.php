@@ -1,5 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) exit();
 
 require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-entries-table.php';
 $entries_table = new Edr_Entries_Table();
@@ -20,11 +20,11 @@ $entries_table->prepare_items();
 </div>
 
 <script>
-(function($) {
-	$('table.entries').on('click', 'a.delete-entry', function(e) {
-		if (!confirm( '<?php _e( 'Are you sure you want to delete this item?', 'ibeducator' ); ?>')) {
-			e.preventDefault();
-		}
-	});
-})(jQuery);
+	(function($) {
+		$('table.entries').on('click', 'a.delete-entry', function(e) {
+			if (!confirm( '<?php _e( 'Are you sure you want to delete this item?', 'ibeducator' ); ?>')) {
+				e.preventDefault();
+			}
+		});
+	})(jQuery);
 </script>
