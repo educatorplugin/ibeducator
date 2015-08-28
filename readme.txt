@@ -63,6 +63,10 @@ Coming soon.
 
 == Changelog ==
 
+= 1.6.0 =
+* Added: set the maximum number of quiz attempts a student can take per quiz.
+* Deprecated a list of methods in IB_Educator class: get_questions, get_choices, get_question_choices, add_choice, update_choice, delete_choice, delete_choices, add_student_answer, get_student_answers, add_quiz_grade, update_quiz_grade, is_quiz_submitted, get_quiz_grade, and check_quiz_pending. These methods were moved to the new Edr_Quizzes class (this class can be retrieved by calling Edr_Manager::get( 'quizzes' )).
+
 = 1.5.0 =
 * Added the Syllabus manager. Now, it is possible to group lessons on the course page.
 * Fixed the shortcode that displays the student's courses. This shortcode has used the default posts_per_page setting. Now it displays all entries.
