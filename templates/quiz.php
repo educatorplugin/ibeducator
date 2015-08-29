@@ -58,7 +58,7 @@ $questions = $quizzes->get_questions( $lesson_id );
 		}
 	?>
 
-	<section id="ib-edu-quiz" class="<?php echo ( $quiz_submitted ) ? 'ib-edu-quiz-complete' : 'ib-edu-quiz-inprogress'; ?>">
+	<section id="ib-edu-quiz" class="<?php echo ( $grade ) ? 'ib-edu-quiz-complete' : 'ib-edu-quiz-inprogress'; ?>">
 		<?php if ( ! $do_quiz && $grade ) : ?>
 			<section class="ib-edu-quiz-grade">
 				<h3><?php _e( 'Quiz Grade', 'ibeducator' ); ?></h3>
