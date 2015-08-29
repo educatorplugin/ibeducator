@@ -117,62 +117,61 @@ class IB_Educator_Quiz_Admin {
 				// Input given?
 				if ( ! $input || ! isset( $input->lesson_id ) || ! is_numeric( $input->lesson_id ) ) {
 					status_header( 400 );
-					exit;
+
+					exit();
 				}
 
 				// Verify nonce.
 				if ( ! isset( $input->_wpnonce ) || ! wp_verify_nonce( $input->_wpnonce, 'ibedu_quiz_' . $input->lesson_id ) ) {
 					status_header( 403 );
-					exit;
+
+					exit();
 				}
 				
 				// Verify capabilities.
 				if ( ! current_user_can( 'edit_ib_educator_lesson', $input->lesson_id ) ) {
-					exit;
+					exit();
 				}
 
-				// Verify nonce.
-				if ( $input ) {
-					$question = IB_Educator_Question::get_instance();
+				// Process input.
+				$question = IB_Educator_Question::get_instance();
 
-					if ( isset( $input->lesson_id ) && is_numeric( $input->lesson_id ) ) {
-						$question->lesson_id = $input->lesson_id;
-					} else {
-						$response['errors'][] = 'lesson_id';
-					}
-
-					if ( isset( $input->question ) && ! empty( $input->question ) ) {
-						$question->question = $input->question;
-					} else {
-						$response['errors'][] = 'question';
-					}
-
-					if ( isset( $input->question_type ) && ! empty( $input->question_type ) ) {
-						$question->question_type = $input->question_type;
-					} else {
-						$response['errors'][] = 'question_type';
-					}
-
-					if ( isset( $input->menu_order ) && is_numeric( $input->menu_order ) ) {
-						$question->menu_order = $input->menu_order;
-					} else {
-						$response['errors'][] = 'order';
-					}
-
-					if ( ! count( $response['errors'] ) ) {
-						$question->save();
-
-						if ( $question->ID && isset( $input->choices ) && is_array( $input->choices ) ) {
-							$response['choices'] = self::save_question_choices( $question->ID, $input->choices );
-						}
-
-						$response['status'] = 'success';
-						$response['id'] = $question->ID;
-					}
+				if ( isset( $input->lesson_id ) && is_numeric( $input->lesson_id ) ) {
+					$question->lesson_id = $input->lesson_id;
+				} else {
+					$response['errors'][] = 'lesson_id';
 				}
 
-				if ( count( $response['errors'] ) ) {
+				if ( isset( $input->question ) && ! empty( $input->question ) ) {
+					$question->question = $input->question;
+				} else {
+					$response['errors'][] = 'question';
+				}
+
+				if ( isset( $input->question_type ) && ! empty( $input->question_type ) ) {
+					$question->question_type = $input->question_type;
+				} else {
+					$response['errors'][] = 'question_type';
+				}
+
+				if ( isset( $input->menu_order ) && is_numeric( $input->menu_order ) ) {
+					$question->menu_order = $input->menu_order;
+				} else {
+					$response['errors'][] = 'order';
+				}
+
+				if ( ! count( $response['errors'] ) ) {
+					$question->save();
+
+					if ( $question->ID && isset( $input->choices ) && is_array( $input->choices ) ) {
+						$response['choices'] = self::save_question_choices( $question->ID, $input->choices );
+					}
+
+					$response['status'] = 'success';
+					$response['id'] = $question->ID;
+				} else {
 					$response['status'] = 'error';
+
 					status_header( 400 );
 				}
 
@@ -190,7 +189,8 @@ class IB_Educator_Quiz_Admin {
 				// Input given?
 				if ( ! $question_id || ! $input ) {
 					status_header( 400 );
-					exit;
+
+					exit();
 				}
 
 				$question = IB_Educator_Question::get_instance( $question_id );
@@ -198,18 +198,20 @@ class IB_Educator_Quiz_Admin {
 				// Question found?
 				if ( ! $question->ID ) {
 					status_header( 400 );
-					exit;
+
+					exit();
 				}
 
 				// Verify nonce.
 				if ( ! isset( $input->_wpnonce ) || ! wp_verify_nonce( $input->_wpnonce, 'ibedu_quiz_' . $question->lesson_id ) ) {
 					status_header( 403 );
-					exit;
+
+					exit();
 				}
 
 				// Verify capabilities.
 				if ( ! current_user_can( 'edit_ib_educator_lesson', $question->lesson_id ) ) {
-					exit;
+					exit();
 				}
 
 				if ( isset( $input->question ) && ! empty( $input->question ) ) {
@@ -226,11 +228,9 @@ class IB_Educator_Quiz_Admin {
 					}
 
 					$response['status'] = 'success';
-				}
-
-				// Incorrect input?
-				if ( count( $response['errors'] ) ) {
+				} else {
 					$response['status'] = 'error';
+
 					status_header( 400 );
 				}
 
@@ -246,7 +246,8 @@ class IB_Educator_Quiz_Admin {
 				// Input given?
 				if ( ! $question_id ) {
 					status_header( 400 );
-					exit;
+
+					exit();
 				}
 
 				$question = IB_Educator_Question::get_instance( $question_id );
@@ -254,7 +255,8 @@ class IB_Educator_Quiz_Admin {
 				// Question found?
 				if ( ! $question->ID ) {
 					status_header( 400 );
-					exit;
+
+					exit();
 				}
 
 				// Verify nonce.
@@ -262,12 +264,13 @@ class IB_Educator_Quiz_Admin {
 				
 				if ( ! isset( $input->_wpnonce ) || ! wp_verify_nonce( $input->_wpnonce, 'ibedu_quiz_' . $question->lesson_id ) ) {
 					status_header( 403 );
-					exit;
+
+					exit();
 				}
 
 				// Verify capabilities.
 				if ( ! current_user_can( 'edit_ib_educator_lesson', $question->lesson_id ) ) {
-					exit;
+					exit();
 				}
 
 				if ( $question->ID ) {
@@ -289,7 +292,7 @@ class IB_Educator_Quiz_Admin {
 				break;
 		}
 
-		exit;
+		exit();
 	}
 
 	/**
