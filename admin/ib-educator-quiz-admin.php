@@ -21,7 +21,7 @@ class IB_Educator_Quiz_Admin {
 
 		if ( 'post' == $screen->base && 'ib_educator_lesson' == $screen->post_type ) {
 			wp_enqueue_style( 'ib-educator-quiz', IBEDUCATOR_PLUGIN_URL . 'admin/css/quiz.css', array(), '1.0' );
-			wp_enqueue_script( 'ib-educator-quiz', IBEDUCATOR_PLUGIN_URL . 'admin/js/quiz.js', array( 'jquery', 'underscore', 'backbone' ), '1.0' );
+			wp_enqueue_script( 'ib-educator-quiz', IBEDUCATOR_PLUGIN_URL . 'admin/js/quiz.js', array( 'jquery', 'underscore', 'backbone' ), '1.1' );
 			wp_localize_script( 'ib-educator-quiz', 'educatorQuizText', array(
 				'confirm_delete' => __( 'Are you sure you want to delete this item?', 'ibeducator' ),
 			) );
@@ -71,7 +71,8 @@ class IB_Educator_Quiz_Admin {
 		// Delete choices that are not sent by the user.
 		if ( ! empty( $choice_ids ) ) {
 			$tables = ib_edu_table_names();
-			$wpdb->query( $wpdb->prepare( "DELETE FROM " . $tables['choices'] . " WHERE question_id=%d AND ID NOT IN (" . implode( ',', $choice_ids ) . ")", $question_id ) );
+			$query = 'DELETE FROM ' . $tables['choices'] . ' WHERE question_id = %d AND ID NOT IN (' . implode( ',', $choice_ids ) . ')';
+			$wpdb->query( $wpdb->prepare( $query, $question_id ) );
 		}
 
 		// Add choices to the question.
@@ -80,10 +81,10 @@ class IB_Educator_Quiz_Admin {
 
 		foreach ( $choices as $choice ) {
 			$choice_data = array(
-				'ID'          => ( ! isset( $choice->choice_id ) ) ? 0 : absint( $choice->choice_id ),
-				'choice_text' => ( ! isset( $choice->choice_text ) ) ? '' : esc_html( $choice->choice_text ),
-				'correct'     => ( ! isset( $choice->correct ) ) ? 0 : absint( $choice->correct ),
-				'menu_order'  => ( ! isset( $choice->menu_order ) ) ? 0 : absint( $choice->menu_order ),
+				'ID'          => isset( $choice->choice_id ) ? intval( $choice->choice_id ) : 0,
+				'choice_text' => isset( $choice->choice_text ) ? esc_html( $choice->choice_text ) : '',
+				'correct'     => isset( $choice->correct ) ? intval( $choice->correct ) : 0,
+				'menu_order'  => isset( $choice->menu_order ) ? intval( $choice->menu_order ) : 0,
 			);
 
 			if ( $current_choices && isset( $current_choices[ $choice_data['ID'] ] ) ) {
@@ -154,6 +155,12 @@ class IB_Educator_Quiz_Admin {
 					$response['errors'][] = 'question_type';
 				}
 
+				if ( isset( $input->question_content ) ) {
+					$question->question_content = apply_filters( 'edr_add_question_pre_content', $input->question_content );
+				} else {
+					$response['errors'][] = 'question_content';
+				}
+
 				if ( isset( $input->menu_order ) && is_numeric( $input->menu_order ) ) {
 					$question->menu_order = $input->menu_order;
 				} else {
@@ -165,6 +172,12 @@ class IB_Educator_Quiz_Admin {
 
 					if ( $question->ID && isset( $input->choices ) && is_array( $input->choices ) ) {
 						$response['choices'] = self::save_question_choices( $question->ID, $input->choices );
+					}
+
+					if ( ! get_post_meta( $question->lesson_id, '_ibedu_quiz', true ) ) {
+						// Set default settings for the quiz.
+						update_post_meta( $question->lesson_id, '_ibedu_quiz', 1 );
+						update_post_meta( $question->lesson_id, '_edr_attempts', 1 );
 					}
 
 					$response['status'] = 'success';
@@ -218,6 +231,12 @@ class IB_Educator_Quiz_Admin {
 					$question->question = $input->question;
 				} else {
 					$response['errors'][] = 'question';
+				}
+
+				if ( isset( $input->question_content ) ) {
+					$question->question_content = apply_filters( 'edr_edit_question_pre_content', $input->question_content );
+				} else {
+					$response['errors'][] = 'question_content';
 				}
 
 				if ( ! count( $response['errors'] ) ) {

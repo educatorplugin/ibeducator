@@ -1,5 +1,4 @@
 (function($) {
-
 	'use strict';
 
 	$(document).ready(function() {
@@ -47,6 +46,7 @@
 				lesson_id: 0,
 				question: '',
 				question_type: '',
+				question_content: '',
 				is_true: null,
 				menu_order: 0
 			},
@@ -223,7 +223,7 @@
 			},
 
 			onKeyPress: function(e) {
-				if (e.which === 13) {
+				if (e.which === 13 && e.target.nodeName !== 'TEXTAREA') {
 					e.stopPropagation();
 
 					if (!this.$el.find('button.save-question').attr('disabled')) {
@@ -398,6 +398,7 @@
 				// Setup question data.
 				var newData = {};
 				newData.question = this.$el.find('input.question-text').val();
+				newData.question_content = this.$el.find('.question-content-input').val();
 				newData.menu_order = this.$el.index();
 				
 				// Save question choices to database.
@@ -469,6 +470,7 @@
 				// Setup question data.
 				var newData = {};
 				newData.question = this.$el.find('input.question-text').val();
+				newData.question_content = this.$el.find('.question-content-input').val();
 				newData.menu_order = this.$el.index();
 
 				// Send request to the server.

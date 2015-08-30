@@ -246,6 +246,7 @@ CREATE TABLE $this->questions (
   lesson_id bigint(20) unsigned NOT NULL,
   question text default NULL,
   question_type enum('','multiplechoice', 'writtenanswer'),
+  question_content longtext default NULL,
   menu_order int(10) NOT NULL default 0,
   PRIMARY KEY  (ID),
   KEY lesson_id (lesson_id)

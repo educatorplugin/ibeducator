@@ -5,6 +5,7 @@ class IB_Educator_Question {
 	public $lesson_id = 0;
 	public $question = '';
 	public $question_type = '';
+	public $question_content = '';
 	public $menu_order = 0;
 	protected $table_name;
 
@@ -15,10 +16,11 @@ class IB_Educator_Question {
 	 * @return IB_Educator_Payment
 	 */
 	public static function get_instance( $data = null ) {
+		global $wpdb;
+
 		if ( is_numeric( $data ) ) {
-			global $wpdb;
 			$tables = ib_edu_table_names();
-			$data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $tables['questions'] . " WHERE ID = %d", $data ) );
+			$data = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . $tables['questions'] . ' WHERE ID = %d', $data ) );
 		}
 
 		return new self( $data );
@@ -38,6 +40,7 @@ class IB_Educator_Question {
 			$this->lesson_id = $data->lesson_id;
 			$this->question = $data->question;
 			$this->question_type = $data->question_type;
+			$this->question_content = $data->question_content;
 			$this->menu_order = $data->menu_order;
 		}
 	}
@@ -51,12 +54,13 @@ class IB_Educator_Question {
 		global $wpdb;
 		$affected_rows = 0;
 		$data = array(
-			'lesson_id'     => $this->lesson_id,
-			'question'      => $this->question,
-			'question_type' => $this->question_type,
-			'menu_order'    => $this->menu_order
+			'lesson_id'        => $this->lesson_id,
+			'question'         => $this->question,
+			'question_type'    => $this->question_type,
+			'question_content' => $this->question_content,
+			'menu_order'       => $this->menu_order
 		);
-		$data_format = array( '%d', '%s', '%s', '%d' );
+		$data_format = array( '%d', '%s', '%s', '%s', '%d' );
 
 		if ( is_numeric( $this->ID ) && $this->ID > 0 ) {
 			$affected_rows = $wpdb->update(
@@ -75,7 +79,7 @@ class IB_Educator_Question {
 			$this->ID = $wpdb->insert_id;
 		}
 
-		return ( 1 === $affected_rows || 0 === $affected_rows ) ? true : false;
+		return ( 1 === $affected_rows || 0 === $affected_rows );
 	}
 
 	/**

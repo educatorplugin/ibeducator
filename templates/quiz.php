@@ -1,9 +1,8 @@
 <?php
-$api = IB_Educator::get_instance();
 $lesson_id = get_the_ID();
 
 // Get entry data for the current student. Entry status must be "inprogress".
-$entry = $api->get_entry( array(
+$entry = IB_Educator::get_instance()->get_entry( array(
 	'user_id'      => get_current_user_id(),
 	'course_id'    => ib_edu_get_course_id( $lesson_id ),
 	'entry_status' => 'inprogress'
@@ -14,8 +13,6 @@ if ( ! $entry ) {
 }
 
 $quizzes = Edr_Manager::get( 'quizzes' );
-$max_attempts_number = $quizzes->get_max_attempts_number( $lesson_id );
-$attempts_number = $quizzes->get_attempts_number( $entry->ID, $lesson_id );
 $questions = $quizzes->get_questions( $lesson_id );
 ?>
 
@@ -39,6 +36,8 @@ $questions = $quizzes->get_questions( $lesson_id );
 			}
 		}
 
+		$max_attempts_number = $quizzes->get_max_attempts_number( $lesson_id );
+		$attempts_number = $quizzes->get_attempts_number( $entry->ID, $lesson_id );
 		$do_quiz = $attempts_number < $max_attempts_number;
 		$grade = $quizzes->get_grade( $lesson_id, $entry->ID );
 		$form_action = ib_edu_get_endpoint_url( 'edu-action', 'submit-quiz', get_permalink() );
@@ -49,12 +48,6 @@ $questions = $quizzes->get_questions( $lesson_id );
 			if ( $do_quiz ) {
 				$form_action = add_query_arg( 'try_again', 'true', $form_action );
 			}
-		}
-
-		if ( $do_quiz ) {
-			$answers = isset( $_POST['answers'] ) && is_array( $_POST['answers'] ) ? $_POST['answers'] : array();
-		} else {
-			$answers = $quizzes->get_answers( $grade->ID );
 		}
 	?>
 
@@ -97,82 +90,42 @@ $questions = $quizzes->get_questions( $lesson_id );
 
 			<div class="ib-edu-questions">
 				<?php
-					$choices = $quizzes->get_choices( $lesson_id, true );
+					if ( $do_quiz ) {
+						$answers = ( isset( $_POST['answers'] ) && is_array( $_POST['answers'] ) )
+							? $_POST['answers'] : array();
+					} elseif ( $grade ) {
+						$answers = $quizzes->get_answers( $grade->ID );
+					} else {
+						$answers = array();
+					}
+
+					$choices = null;
 
 					foreach ( $questions as $question ) {
-						if ( 'multiplechoice' == $question->question_type ) {
-							// Multiple Choice Question.
+						$answer = isset( $answers[ $question->ID ] ) ? $answers[ $question->ID ] : null;
 
-							// Check if this question has the answer choices.
-							if ( ! isset( $choices[ $question->ID ] ) ) {
-								continue;
-							}
-							
-							$answers_html = '';
-
-							// Output the answers.
-							if ( $do_quiz ) {
-								foreach ( $choices[ $question->ID ] as $choice ) {
-									$checked = '';
-
-									if ( isset( $answers[ $question->ID ] ) && $choice->ID == $answers[ $question->ID ] ) {
-										$checked = ' checked="checked"';
-									}
-
-									$answers_html .= '<li><label><input type="radio" name="answers[' . absint( $question->ID ) . ']" value="' . esc_attr( $choice->ID ) .'"' . $checked . '> ' . esc_html( $choice->choice_text ) . '</label></li>';
-								}
-							} else {
-								$user_answer = isset( $answers[ $question->ID ] ) ? $answers[ $question->ID ] : null;
-
-								if ( null === $user_answer ) {
-									// This question was probably added after this quiz submission.
-									continue;
+						switch ( $question->question_type ) {
+							// Multiple choice question.
+							case 'multiplechoice':
+								if ( is_null( $choices ) ) {
+									$choices = $quizzes->get_choices( $lesson_id, true );
 								}
 
-								foreach ( $choices[ $question->ID ] as $choice ) {
-									$choice_class = '';
-									$check = '';
-
-									if ( 1 == $choice->correct ) {
-										// Correct answer.
-										$choice_class = 'correct';
-										$check = '<span class="custom-radio correct checked"></span>';
-									} else if ( $user_answer && $choice->ID == $user_answer->choice_id && ! $choice->correct ) {
-										// The student's answer is wrong.
-										$choice_class = 'wrong';
-										$check = '<span class="custom-radio wrong checked"></span>';
-									}
-
-									$answers_html .= '<li' . ( ! empty( $choice_class ) ? ' class="' . $choice_class . '"' : '' ) . '><label>' . $check . esc_html( $choice->choice_text ) . '</label></li>';
+								if ( isset( $choices[ $question->ID ] ) ) {
+									edr_question_multiple_choice( $question, $answer, $do_quiz, $choices[ $question->ID ] );
 								}
-							}
 
-							echo '<div class="ib-edu-question">';
-							echo '<div class="label">' . esc_html( $question->question ) . '</div>';
-							echo '<ul class="ib-edu-answers">' . $answers_html . '</ul></div>';
-						} else if ( 'writtenanswer' == $question->question_type ) {
-							// Written Answer Question.
+								break;
 
-							echo '<div class="ib-edu-question">';
-							echo '<div class="label">' . esc_html( $question->question ) . '</div>';
-
-							if ( $do_quiz ) {
-								$user_answer = isset( $answers[ $question->ID ] ) ? stripslashes( $answers[ $question->ID ] ) : '';
-
-								echo '<div class="ib-edu-question-answer">'
-									. '<textarea name="answers[' . absint( $question->ID ) . ']" cols="50" rows="3">'
-									. esc_textarea( $user_answer )
-									. '</textarea>'
-									. '</div>';
-							} else {
-								$user_answer = isset( $answers[ $question->ID ] ) ? $answers[ $question->ID ] : null;
-
-								if ( $user_answer ) {
-									echo '<div class="ib-edu-question-answer">' . esc_html( $user_answer->answer_text ) . '</div>';
+							// Written answer question.
+							case 'writtenanswer':
+								if ( is_string( $answer ) ) {
+									$answer = stripslashes( $answer );
 								}
-							}
 
-							echo '</div>';
+								edr_question_written_answer( $question, $answer, $do_quiz );
+
+								break;
 						}
 					}
 				?>

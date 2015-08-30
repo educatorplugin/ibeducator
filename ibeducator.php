@@ -47,6 +47,7 @@ require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-countries.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-post-types.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-view.php';
+require IBEDUCATOR_PLUGIN_DIR . 'includes/formatting.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/functions.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-memberships.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-main.php';
@@ -55,6 +56,7 @@ require_once IBEDUCATOR_PLUGIN_DIR . 'includes/shortcodes.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-tax.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-account.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-ajax-actions.php';
+require IBEDUCATOR_PLUGIN_DIR . 'includes/filters.php';
 
 // Setup the post types and taxonomies.
 IB_Educator_Post_Types::init();
