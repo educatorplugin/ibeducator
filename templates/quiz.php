@@ -37,6 +37,11 @@ $questions = $quizzes->get_questions( $lesson_id );
 		}
 
 		$max_attempts_number = $quizzes->get_max_attempts_number( $lesson_id );
+
+		if ( ! is_numeric( $max_attempts_number ) ) {
+			$max_attempts_number = 1;
+		}
+
 		$attempts_number = $quizzes->get_attempts_number( $entry->ID, $lesson_id );
 		$do_quiz = $attempts_number < $max_attempts_number;
 		$grade = $quizzes->get_grade( $lesson_id, $entry->ID );

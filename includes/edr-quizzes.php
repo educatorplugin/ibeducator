@@ -295,7 +295,8 @@ class Edr_Quizzes {
 	 */
 	public function get_answers( $grade_id ) {
 		global $wpdb;
-		$query = 'SELECT question_id, ID, grade_id, entry_id, question_id, choice_id, correct, answer_text FROM ' . $this->tbl_answers
+		$query = 'SELECT question_id, ID, grade_id, entry_id, question_id, choice_id, correct, answer_text'
+			   . ' FROM ' . $this->tbl_answers
 			   . ' WHERE grade_id = %d';
 
 		return $wpdb->get_results( $wpdb->prepare( $query, $grade_id ), OBJECT_K );
