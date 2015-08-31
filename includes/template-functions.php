@@ -156,3 +156,98 @@ function edr_display_lessons( $course_id ) {
 	}
 }
 endif;
+
+/**
+ * Get question content.
+ *
+ * @param IB_Educator_Question $question
+ * @return string
+ */
+function edr_get_question_content( $question ) {
+	/**
+	 * Filter question content.
+	 *
+	 * @param string $question_content
+	 * @param IB_Educator_Question $question
+	 */
+	return apply_filters( 'edr_get_question_content', $question->question_content, $question );
+}
+
+/**
+ * Display a multiple choice question.
+ *
+ * @param IB_Educator_Question $question
+ * @param mixed $answer If $edit is false, must be an object, else string (user input).
+ * @param boolean $edit Display either a form or result.
+ * @param array $choices
+ */
+function edr_question_multiple_choice( $question, $answer, $edit, $choices ) {
+	echo '<div class="ib-edu-question">';
+	echo '<div class="label">' . esc_html( $question->question ) . '</div>';
+
+	if ( '' != $question->question_content ) {
+		echo '<div class="content">' . edr_get_question_content( $question ) . '</div>';
+	}
+
+	echo '<ul class="ib-edu-answers">';
+
+	if ( $edit ) {
+		foreach ( $choices as $choice ) {
+			$checked = ( $answer == $choice->ID ) ? ' checked="checked"' : '';
+
+			echo '<li><label><input type="radio" name="answers[' . intval( $question->ID )
+				. ']" value="' . intval( $choice->ID ) . '"' . $checked . '> '
+				. esc_html( $choice->choice_text ) . '</label></li>';
+		}
+	} elseif ( ! is_null( $answer ) ) {
+		foreach ( $choices as $choice ) {
+			$class = '';
+			$check = '';
+
+			if ( 1 == $choice->correct ) {
+				// Correct answer.
+				$class = 'correct';
+				$check = '<span class="custom-radio correct checked"></span>';
+			} elseif ( $choice->ID == $answer->choice_id && ! $choice->correct ) {
+				// Wrong answer.
+				$class = 'wrong';
+				$check = '<span class="custom-radio wrong checked"></span>';
+			}
+
+			$class = ( ! empty( $class ) ) ? ' class="' . $class . '"' : '';
+
+			echo '<li' . $class . '><label>' . $check . esc_html( $choice->choice_text ) . '</label></li>';
+		}
+	}
+
+	echo '</ul>';
+	echo '</div>';
+}
+
+/**
+ * Display a multiple choice question.
+ *
+ * @param IB_Educator_Question $question
+ * @param mixed $answer If $edit is false, must be an object, else string (user input).
+ * @param boolean $edit Display either a form or result.
+ */
+function edr_question_written_answer( $question, $answer, $edit ) {
+	echo '<div class="ib-edu-question">';
+	echo '<div class="label">' . esc_html( $question->question ) . '</div>';
+
+	if ( '' != $question->question_content ) {
+		echo '<div class="content">' . edr_get_question_content( $question ) . '</div>';
+	}
+
+	if ( $edit ) {
+		echo '<div class="ib-edu-question-answer">'
+			. '<textarea name="answers[' . intval( $question->ID ) . ']" cols="50" rows="3">'
+			. esc_textarea( $answer )
+			. '</textarea>'
+			. '</div>';
+	} elseif ( ! is_null( $answer ) ) {
+		echo '<div class="ib-edu-question-answer">' . esc_html( $answer->answer_text ) . '</div>';
+	}
+
+	echo '</div>';
+}

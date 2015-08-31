@@ -51,14 +51,6 @@ class IB_Educator_Install {
 	 * @param bool $inc_endpoints
 	 */
 	public function activate( $inc_post_types = true, $inc_endpoints = true ) {
-		$current_version = get_option( 'ib_educator_version' );
-
-		if ( $current_version ) {
-			if ( version_compare( $current_version, '1.4.3', '<=' ) ) {
-				$this->update_1_4_4();
-			}
-		}
-
 		// Setup the database tables.
 		$this->setup_tables();
 
@@ -87,6 +79,19 @@ class IB_Educator_Install {
 
 		// Setup tax settings.
 		$this->setup_taxes();
+
+		// Do version specific updates.
+		$current_version = get_option( 'ib_educator_version' );
+
+		if ( $current_version ) {
+			if ( version_compare( $current_version, '1.4.3', '<=' ) ) {
+				$this->update_1_4_4();
+			}
+
+			if ( version_compare( $current_version, '1.5', '<=' ) ) {
+				$this->update_1_6();
+			}
+		}
 
 		/**
 		 * Plugin activation hook.
@@ -133,7 +138,7 @@ class IB_Educator_Install {
 	 *
 	 * @return array
 	 */
-	public function get_post_type_caps() {
+	/*public function get_post_type_caps() {
 		return array(
 			'edit_{post_type}',
 			'read_{post_type}',
@@ -149,7 +154,7 @@ class IB_Educator_Install {
 			'edit_private_{post_type}s',
 			'edit_published_{post_type}s',
 		);
-	}
+	}*/
 
 	/**
 	 * Setup database tables.
@@ -246,6 +251,7 @@ CREATE TABLE $this->questions (
   lesson_id bigint(20) unsigned NOT NULL,
   question text default NULL,
   question_type enum('','multiplechoice', 'writtenanswer'),
+  question_content longtext default NULL,
   menu_order int(10) NOT NULL default 0,
   PRIMARY KEY  (ID),
   KEY lesson_id (lesson_id)
@@ -534,6 +540,27 @@ Administration',
 					if ( $update ) {
 						update_post_meta( $post->ID, '_ib_educator_membership', $meta );
 					}
+				}
+			}
+		}
+	}
+
+	public function update_1_6() {
+		global $wpdb;
+
+		$grades = $wpdb->get_results( "SELECT * FROM $this->grades" );
+
+		if ( ! empty( $grades ) ) {
+			foreach ( $grades as $grade ) {
+				$query = "SELECT ID FROM $this->questions WHERE lesson_id = %d";
+				$question_ids = $wpdb->get_col( $wpdb->prepare( $query, $grade->lesson_id ) );
+
+				if ( ! empty( $question_ids ) ) {
+					$query = 'UPDATE ' . $this->answers . ' SET grade_id = ' . intval( $grade->ID )
+						. ' WHERE entry_id = ' . intval( $grade->entry_id )
+						. ' AND question_id IN (' . implode( ',', array_map( 'intval', $question_ids ) ) . ')';
+
+					$wpdb->query( $query );
 				}
 			}
 		}

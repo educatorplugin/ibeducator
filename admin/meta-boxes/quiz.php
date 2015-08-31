@@ -46,20 +46,24 @@
 <script type="text/template" id="tpl-ib-edu-multichoiceanswer">
 <td class="column1"><div class="handle dashicons dashicons-sort"></div></td>
 <td class="column2"><input class="answer-correct" type="radio"></td>
-<td class="column3"><input class="answer-text" type="text" class="regular-text" value="<%= choice_text %>"></td>
+<td class="column3"><input class="answer-text" type="text" class="regular-text" value="<%- choice_text %>"></td>
 <td class="column4"><button class="delete-answer button button-secondary">&times;</button></td>
 </script>
 
 <!-- Template: Multiple Choice Question -->
 <script type="text/template" id="tpl-ib-edu-multiplechoicequestion">
 <a class="question-header" href="#">
-	<span class="text"><%= question %></span>
+	<span class="text"><%- question %></span>
 	<span class="question-trigger"></span>
 </a>
 <div class="question-body">
 	<div class="question-text">
 		<label><?php _e( 'Question', 'ibeducator' ); ?></label>
-		<input type="text" class="question-text" value="<%= question %>">
+		<input type="text" class="question-text" value="<%- question %>">
+	</div>
+	<div class="question-content">
+		<label><?php _e( 'Content', 'ibeducator' ); ?></label>
+		<textarea class="question-content-input"><%- question_content %></textarea>
 	</div>
 	<div class="question-answers">
 		<label><?php _e( 'Answers', 'ibeducator' ); ?></label>
@@ -87,13 +91,17 @@
 <!-- Template: Written Answer Question -->
 <script type="text/template" id="tpl-ib-edu-writtenanswerquestion">
 <a class="question-header" href="#">
-	<span class="text"><%= question %></span>
+	<span class="text"><%- question %></span>
 	<span class="question-trigger"></span>
 </a>
 <div class="question-body">
 	<div class="question-text">
 		<label><?php _e( 'Question', 'ibeducator' ); ?></label>
-		<input type="text" class="question-text" value="<%= question %>">
+		<input type="text" class="question-text" value="<%- question %>">
+	</div>
+	<div class="question-content">
+		<label><?php _e( 'Content', 'ibeducator' ); ?></label>
+		<textarea class="question-content-input"><%- question_content %></textarea>
 	</div>
 	<div class="quiz-buttons-group">
 		<button class="save-question button button-primary"><?php _e( 'Save Question', 'ibeducator' ); ?></button>
@@ -108,10 +116,11 @@ $questions_js = '[';
 $questions = $quizzes->get_questions( array( 'lesson_id' => $lesson_id ) );
 
 foreach ( $questions as $question ) {
-	$questions_js .= "{id: " . absint( $question->ID ) . ", "
-				   . "question: '" . esc_js( $question->question ) . "', "
-				   . "question_type: '" . esc_js( $question->question_type ) . "', "
-				   . "menu_order: " . absint( $question->menu_order ) . '},';
+	$questions_js .= "{id: " . intval( $question->ID ) . ","
+		. "question: '" . esc_js( $question->question ) . "',"
+		. "question_type: '" . esc_js( $question->question_type ) . "',"
+		. 'question_content: ' . json_encode( apply_filters( 'edr_edit_question_form_content', $question->question_content ) ) . ','
+		. "menu_order: " . intval( $question->menu_order ) . '},';
 }
 
 $questions_js .= ']';
@@ -121,14 +130,14 @@ $choices_json = '{';
 $choices = $quizzes->get_choices( $lesson_id, true );
 
 foreach ( $choices as $question_id => $question ) {
-	$choices_json .= 'question_' . absint( $question_id ) . ':[';
+	$choices_json .= 'question_' . intval( $question_id ) . ':[';
 
 	foreach ( $question as $choice ) {
-		$choices_json .= "{choice_id: " . absint( $choice->ID ) . ", "
-					   . "question_id: " . absint( $choice->question_id ) . ", "
-					   . "choice_text: '" . esc_js( $choice->choice_text ) . "', "
-					   . "correct: " . absint( $choice->correct ) . ", "
-					   . "menu_order: " . absint( $choice->menu_order ) . "},";
+		$choices_json .= "{choice_id: " . intval( $choice->ID ) . ", "
+			. "question_id: " . intval( $choice->question_id ) . ", "
+			. "choice_text: '" . esc_js( $choice->choice_text ) . "', "
+			. "correct: " . intval( $choice->correct ) . ", "
+			. "menu_order: " . intval( $choice->menu_order ) . "},";
 	}
 
 	$choices_json .= '],';

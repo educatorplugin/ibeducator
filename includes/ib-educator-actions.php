@@ -79,6 +79,11 @@ class IB_Educator_Actions {
 		}
 
 		$max_attempts_number = $quizzes->get_max_attempts_number( $lesson_id );
+
+		if ( ! is_numeric( $max_attempts_number ) ) {
+			$max_attempts_number = 1;
+		}
+
 		$attempts_number = $quizzes->get_attempts_number( $entry->ID, $lesson_id );
 
 		// Check if the student exceeded the number of allowed attempts.

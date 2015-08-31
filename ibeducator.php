@@ -31,8 +31,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'IBEDUCATOR_VERSION', '1.5' );
-define( 'IBEDUCATOR_DB_VERSION', '1.4.1' );
+define( 'IBEDUCATOR_VERSION', '1.6' );
+define( 'IBEDUCATOR_DB_VERSION', '1.5' );
 define( 'IBEDUCATOR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'IBEDUCATOR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -47,6 +47,7 @@ require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-countries.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-post-types.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-view.php';
+require IBEDUCATOR_PLUGIN_DIR . 'includes/formatting.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/functions.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-memberships.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-main.php';
@@ -55,6 +56,7 @@ require_once IBEDUCATOR_PLUGIN_DIR . 'includes/shortcodes.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-tax.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-account.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-ajax-actions.php';
+require IBEDUCATOR_PLUGIN_DIR . 'includes/filters.php';
 
 // Setup the post types and taxonomies.
 IB_Educator_Post_Types::init();
