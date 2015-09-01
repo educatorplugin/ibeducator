@@ -12,7 +12,7 @@ $ms = IB_Educator_Memberships::get_instance();
 $user_membership = $ms->get_user_membership( $user_id );
 
 if ( ! $user_membership ) {
-	echo '<p>' . __( 'Your account is not connected to a membership.' ) . '</p>';
+	echo '<p>' . __( 'Your account is not connected to a membership.', 'ibeducator' ) . '</p>';
 	return;
 }
 
