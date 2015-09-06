@@ -13,7 +13,7 @@ class IB_Educator_Question {
 	 * Get instance.
 	 *
 	 * @param mixed $data
-	 * @return IB_Educator_Payment
+	 * @return IB_Educator_Question
 	 */
 	public static function get_instance( $data = null ) {
 		global $wpdb;

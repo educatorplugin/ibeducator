@@ -14,25 +14,23 @@ class Edr_Manager {
 	 */
 	public static function get( $key ) {
 		if ( ! array_key_exists( $key, self::$data ) ) {
-			self::init_by_key( $key );
+			throw new Exception( 'This service does not exist.' );
+		}
+
+		if ( is_string( self::$data[ $key ] ) || is_array( self::$data[ $key ] ) ) {
+			self::$data[ $key ] = call_user_func( self::$data[ $key ] );
 		}
 
 		return self::$data[ $key ];
 	}
 
-	/**
-	 * Initialize data or service by key.
-	 *
-	 * @param string $key
-	 */
-	protected static function init_by_key( $key ) {
-		switch ( $key ) {
-			case 'quizzes':
-				self::$data['quizzes'] = new Edr_Quizzes();
-				break;
-
-			default:
-				self::$data[ $key ] = null;
-		}
+	public static function add( $key, $service ) {
+		self::$data[ $key ] = $service;
 	}
 }
+
+function edr_get_quizzes_service() {
+	return new Edr_Quizzes();
+}
+
+Edr_Manager::add( 'quizzes', 'edr_get_quizzes_service' );

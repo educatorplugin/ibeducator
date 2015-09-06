@@ -70,7 +70,13 @@ class IB_Educator_Admin_Actions {
 			}		
 
 			// Entry status.
+			$prev_status = '';
+
 			if ( isset( $_POST['entry_status'] ) && array_key_exists( $_POST['entry_status'], IB_Educator_Entry::get_statuses() ) ) {
+				if ( $entry->ID && $entry->entry_status != $_POST['entry_status'] ) {
+					$prev_status = $entry->entry_status;
+				}
+
 				$entry->entry_status = $_POST['entry_status'];
 			}
 
@@ -110,8 +116,19 @@ class IB_Educator_Admin_Actions {
 			if ( $errors->get_error_code() ) {
 				ib_edu_message( 'edit_entry_errors', $errors );
 			} elseif ( $entry->save() ) {
+				if ( $prev_status ) {
+					/**
+					 * Do something on entry status change.
+					 *
+					 * @param IB_Educator_Entry $entry
+					 * @param string $prev_status
+					 */
+					do_action( 'edr_entry_status_change', $entry, $prev_status );
+				}
+
 				wp_redirect( admin_url( 'admin.php?page=ib_educator_entries&edu-action=edit-entry&entry_id=' . $entry->ID . '&edu-message=saved' ) );
-				exit;
+
+				exit();
 			}
 		}
 	}
