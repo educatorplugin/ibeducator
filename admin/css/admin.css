@@ -57,7 +57,7 @@
 
 /* Form ---------------*/
 .ib-edu-field {
-	margin: 0 0 20px 0;
+	margin: 1em 0 1em;
 }
 
 .ib-edu-field:after {
@@ -69,7 +69,6 @@
 }
 
 .ib-edu-label {
-	color: #000;
 	float: left;
 	font-size: 14px;
 	font-weight: 600;
@@ -616,6 +615,27 @@
 
 .edr-buttons-group .remove:hover {
 	color: red;
+}
+
+/* Form blocks */
+.edr-form-blocks:after {
+	clear: both;
+	content: '';
+	display: table;
+}
+
+.edr-form-blocks {
+	margin: 1em 0 1em -20px;
+}
+
+.edr-form-blocks .block {
+	float: left;
+	margin: 0 0 0 20px;
+}
+
+.edr-form-blocks label {
+	font-weight: 600;
+	margin-right: 5px;
 }
 
 @media screen and (max-width: 782px) {
