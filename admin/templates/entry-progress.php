@@ -20,7 +20,7 @@ if ( ! current_user_can( 'edit_ib_educator_course', $entry->course_id ) ) {
 	exit();
 }
 
-$quizzes = Edr_Manager::get( 'quizzes' );
+$quizzes = Edr_Manager::get( 'edr_quizzes' );
 $quizzes_query = new WP_Query( array(
 	'post_type' => 'ib_educator_lesson',
 	'posts_per_page' => -1,

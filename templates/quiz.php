@@ -12,7 +12,7 @@ if ( ! $entry ) {
 	return;
 }
 
-$quizzes = Edr_Manager::get( 'quizzes' );
+$quizzes = Edr_Manager::get( 'edr_quizzes' );
 $questions = $quizzes->get_questions( $lesson_id );
 ?>
 

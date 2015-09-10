@@ -538,7 +538,7 @@ class IB_Educator {
 	public function get_questions( $args ) {
 		_ib_edu_deprecated_function( 'IB_Educator::get_questions', '1.6', 'Edr_Quizzes::get_questions' );
 
-		return Edr_Manager::get( 'quizzes' )->get_questions( $args['lesson_id'] );
+		return Edr_Manager::get( 'edr_quizzes' )->get_questions( $args['lesson_id'] );
 	}
 
 	/**
@@ -550,7 +550,7 @@ class IB_Educator {
 	public function get_choices( $lesson_id, $sorted = false ) {
 		_ib_edu_deprecated_function( 'IB_Educator::get_choices', '1.6', 'Edr_Quizzes::get_choices' );
 
-		return Edr_Manager::get( 'quizzes' )->get_choices( $lesson_id, $sorted );
+		return Edr_Manager::get( 'edr_quizzes' )->get_choices( $lesson_id, $sorted );
 	}
 
 	/**
@@ -562,7 +562,7 @@ class IB_Educator {
 	public function get_question_choices( $question_id ) {
 		_ib_edu_deprecated_function( 'IB_Educator::get_question_choices', '1.6', 'Edr_Quizzes::get_question_choices' );
 
-		return Edr_Manager::get( 'quizzes' )->get_question_choices( $question_id );
+		return Edr_Manager::get( 'edr_quizzes' )->get_question_choices( $question_id );
 	}
 
 	/**
@@ -574,7 +574,7 @@ class IB_Educator {
 	public function add_choice( $data ) {
 		_ib_edu_deprecated_function( 'IB_Educator::add_choice', '1.6', 'Edr_Quizzes::add_choice' );
 
-		return Edr_Manager::get( 'quizzes' )->add_choice( $data );
+		return Edr_Manager::get( 'edr_quizzes' )->add_choice( $data );
 	}
 
 	/**
@@ -586,7 +586,7 @@ class IB_Educator {
 	public function update_choice( $choice_id, $data ) {
 		_ib_edu_deprecated_function( 'IB_Educator::update_choice', '1.6', 'Edr_Quizzes::update_choice' );
 
-		return Edr_Manager::get( 'quizzes' )->update_choice( $choice_id, $data );
+		return Edr_Manager::get( 'edr_quizzes' )->update_choice( $choice_id, $data );
 	}
 
 	/**
@@ -598,7 +598,7 @@ class IB_Educator {
 	public function delete_choice( $choice_id ) {
 		_ib_edu_deprecated_function( 'IB_Educator::delete_choice', '1.6', 'Edr_Quizzes::delete_choice' );
 
-		return Edr_Manager::get( 'quizzes' )->delete_choice( $choice_id );
+		return Edr_Manager::get( 'edr_quizzes' )->delete_choice( $choice_id );
 	}
 
 	/**
@@ -610,7 +610,7 @@ class IB_Educator {
 	public function delete_choices( $question_id ) {
 		_ib_edu_deprecated_function( 'IB_Educator::delete_choices', '1.6', 'Edr_Quizzes::delete_choices' );
 
-		return Edr_Manager::get( 'quizzes' )->delete_choices( $question_id );
+		return Edr_Manager::get( 'edr_quizzes' )->delete_choices( $question_id );
 	}
 
 	/**
@@ -622,7 +622,7 @@ class IB_Educator {
 	public function add_student_answer( $data ) {
 		_ib_edu_deprecated_function( 'IB_Educator::add_student_answer', '1.6', 'Edr_Quizzes::add_answer' );
 
-		return Edr_Manager::get( 'quizzes' )->add_answer( $data );
+		return Edr_Manager::get( 'edr_quizzes' )->add_answer( $data );
 	}
 
 	/**
@@ -658,7 +658,7 @@ class IB_Educator {
 	public function add_quiz_grade( $data ) {
 		_ib_edu_deprecated_function( 'IB_Educator::add_quiz_grade', '1.6', 'Edr_Quizzes::add_grade' );
 
-		return Edr_Manager::get( 'quizzes' )->add_grade( $data );
+		return Edr_Manager::get( 'edr_quizzes' )->add_grade( $data );
 	}
 
 	/**
@@ -670,7 +670,7 @@ class IB_Educator {
 	public function update_quiz_grade( $grade_id, $data ) {
 		_ib_edu_deprecated_function( 'IB_Educator::update_quiz_grade', '1.6', 'Edr_Quizzes::update_grade' );
 
-		return Edr_Manager::get( 'quizzes' )->update_grade( $grade_id, $data );
+		return Edr_Manager::get( 'edr_quizzes' )->update_grade( $grade_id, $data );
 	}
 
 	/**
@@ -704,7 +704,7 @@ class IB_Educator {
 	public function get_quiz_grade( $lesson_id, $entry_id ) {
 		_ib_edu_deprecated_function( 'IB_Educator::get_quiz_grade', '1.6', 'Edr_Quizzes::get_grade' );
 
-		return Edr_Manager::get( 'quizzes' )->get_grade( $lesson_id, $entry_id );
+		return Edr_Manager::get( 'edr_quizzes' )->get_grade( $lesson_id, $entry_id );
 	}
 
 	/**
@@ -716,7 +716,7 @@ class IB_Educator {
 	public function check_quiz_pending( $ids ) {
 		_ib_edu_deprecated_function( 'IB_Educator::check_quiz_pending', '1.6', 'Edr_Quizzes::check_for_pending_quizzes' );
 
-		return Edr_Manager::get( 'quizzes' )->check_for_pending_quizzes( $ids );
+		return Edr_Manager::get( 'edr_quizzes' )->check_for_pending_quizzes( $ids );
 	}
 
 	/**

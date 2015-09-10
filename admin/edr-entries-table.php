@@ -44,7 +44,7 @@ class Edr_Entries_Table extends WP_List_Table {
 					$entry_ids[] = $item['ID'];
 				}
 
-				$this->pending_quiz_entries = Edr_Manager::get( 'quizzes' )->check_for_pending_quizzes( $entry_ids );
+				$this->pending_quiz_entries = Edr_Manager::get( 'edr_quizzes' )->check_for_pending_quizzes( $entry_ids );
 			} else {
 				$this->pending_quiz_entries = array();
 			}

@@ -31,7 +31,7 @@ class Test_Edr_Quizzes extends IB_Educator_Tests {
 	}
 
 	public function addQuestion( $data ) {
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 		$question = IB_Educator_Question::get_instance();
 
 		$question->lesson_id = $data['lesson_id'];
@@ -72,7 +72,7 @@ class Test_Edr_Quizzes extends IB_Educator_Tests {
 	}
 
 	public function addAttempt() {
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 		$grade_id = $quizzes->add_grade( array(
 			'lesson_id' => $this->lessons[0],
 			'entry_id'  => $this->entries['inprogress'],
@@ -96,19 +96,19 @@ class Test_Edr_Quizzes extends IB_Educator_Tests {
 	}
 
 	public function testGetMaxAttemptsNumber() {
-		$max_attempts_number = Edr_Manager::get( 'quizzes' )->get_max_attempts_number( $this->lessons[0] );
+		$max_attempts_number = Edr_Manager::get( 'edr_quizzes' )->get_max_attempts_number( $this->lessons[0] );
 
 		$this->assertEquals( 3, $max_attempts_number );
 	}
 
 	public function testGetAttemptsNumber() {
-		$attempts_number = Edr_Manager::get( 'quizzes' )->get_attempts_number( $this->entries['inprogress'], $this->lessons[0] );
+		$attempts_number = Edr_Manager::get( 'edr_quizzes' )->get_attempts_number( $this->entries['inprogress'], $this->lessons[0] );
 
 		$this->assertEquals( 1, $attempts_number );
 	}
 
 	public function testGetQuestions() {
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 		$questions = $quizzes->get_questions( $this->lessons[0] );
 
 		$this->assertEquals( array(
@@ -127,7 +127,7 @@ class Test_Edr_Quizzes extends IB_Educator_Tests {
 	}
 
 	public function testUpdateChoice() {
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 		$choices = $quizzes->get_choices( $this->lessons[0] );
 		$choice1 = reset( $choices );
 
@@ -141,7 +141,7 @@ class Test_Edr_Quizzes extends IB_Educator_Tests {
 	}
 
 	public function testAddDeleteChoice() {
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 		$questions = $quizzes->get_questions( $this->lessons[0] );
 		$question1 = reset( $questions );
 
@@ -166,7 +166,7 @@ class Test_Edr_Quizzes extends IB_Educator_Tests {
 	}
 
 	public function testDeleteChoices() {
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 
 		$new_question_id = $this->addQuestion( array(
 			'lesson_id'     => $this->lessons[0],
@@ -187,7 +187,7 @@ class Test_Edr_Quizzes extends IB_Educator_Tests {
 	}
 
 	public function testGetGrade() {
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 		$grade = $quizzes->get_grade( $this->lessons[0], $this->entries['inprogress'] );
 
 		$this->assertEquals( array(
@@ -204,14 +204,14 @@ class Test_Edr_Quizzes extends IB_Educator_Tests {
 	}
 
 	public function testCheckForPendingQuizzes() {
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 		$pending_entry_ids = $quizzes->check_for_pending_quizzes( array( $this->entries['inprogress'] ) );
 
 		$this->assertTrue( in_array( $this->entries['inprogress'], $pending_entry_ids ) );
 	}
 
 	public function testUpdateGrade() {
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 		$grade = $quizzes->get_grade( $this->lessons[0], $this->entries['inprogress'] );
 
 		$quizzes->update_grade( $grade->ID, array(
@@ -231,7 +231,7 @@ class Test_Edr_Quizzes extends IB_Educator_Tests {
 	}
 
 	public function testGetAnswers() {
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 		$grade = $quizzes->get_grade( $this->lessons[0], $this->entries['inprogress'] );
 		$answers = $quizzes->get_answers( $grade->ID );
 
@@ -239,7 +239,7 @@ class Test_Edr_Quizzes extends IB_Educator_Tests {
 	}
 
 	public function testAddAnswer() {
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 		$questions = $quizzes->get_questions( $this->lessons[0] );
 		$question1 = reset( $questions );
 		$choices = $quizzes->get_choices( $this->lessons[0], true );

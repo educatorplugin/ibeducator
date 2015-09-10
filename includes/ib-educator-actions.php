@@ -39,7 +39,7 @@ class IB_Educator_Actions {
 		// Verify nonce.
 		check_admin_referer( 'ibedu_submit_quiz_' . $lesson_id );
 
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 
 		// Get questions.
 		$questions = $quizzes->get_questions( $lesson_id );

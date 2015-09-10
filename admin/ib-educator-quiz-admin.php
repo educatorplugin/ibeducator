@@ -59,7 +59,7 @@ class IB_Educator_Quiz_Admin {
 	 */
 	protected static function save_question_choices( $question_id, $choices ) {
 		global $wpdb;
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 		$choice_ids = array();
 
 		foreach ( $choices as $choice ) {
@@ -293,7 +293,7 @@ class IB_Educator_Quiz_Admin {
 				}
 
 				if ( $question->ID ) {
-					$quizzes = Edr_Manager::get( 'quizzes' );
+					$quizzes = Edr_Manager::get( 'edr_quizzes' );
 
 					// First, delete question choices.
 					$choices_deleted = true;
@@ -341,7 +341,7 @@ class IB_Educator_Quiz_Admin {
 		}
 
 		$has_quiz = 0;
-		$questions = Edr_Manager::get( 'quizzes' )->get_questions( $post_id );
+		$questions = Edr_Manager::get( 'edr_quizzes' )->get_questions( $post_id );
 
 		if ( ! empty( $questions ) ) {
 			$has_quiz = 1;
@@ -406,7 +406,7 @@ class IB_Educator_Quiz_Admin {
 			exit();
 		}
 
-		$quizzes = Edr_Manager::get( 'quizzes' );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 		$quiz_grade = $quizzes->get_grade( $lesson_id, $entry_id );
 
 		if ( ! $quiz_grade ) {

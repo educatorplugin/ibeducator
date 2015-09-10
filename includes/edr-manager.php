@@ -33,4 +33,4 @@ function edr_get_quizzes_service() {
 	return new Edr_Quizzes();
 }
 
-Edr_Manager::add( 'quizzes', 'edr_get_quizzes_service' );
+Edr_Manager::add( 'edr_quizzes', 'edr_get_quizzes_service' );

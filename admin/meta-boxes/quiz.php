@@ -1,5 +1,5 @@
 <?php
-	$quizzes = Edr_Manager::get( 'quizzes' );
+	$quizzes = Edr_Manager::get( 'edr_quizzes' );
 	$lesson_id = (int) $post->ID;
 	$attempts_number = get_post_meta( $lesson_id, '_edr_attempts', true );
 
