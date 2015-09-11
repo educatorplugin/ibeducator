@@ -98,6 +98,12 @@ if ( $courses || $pending_courses ) {
 		 * Complete.
 		 */
 		if ( array_key_exists( 'complete', $courses['statuses'] ) ) {
+			/**
+			 * This filter can be used to add/remove headings to/from the courses list table.
+			 *
+			 * @param array $headings
+			 * @param string $entry_status
+			 */
 			$headings = apply_filters( 'edr_student_courses_headings', array(
 				'entry'  => '<th>' . __( 'Entry ID', 'ibeducator' ) . '</th>',
 				'course' => '<th>' . __( 'Course', 'ibeducator' ) . '</th>',
@@ -119,6 +125,13 @@ if ( $courses || $pending_courses ) {
 				if ( 'complete' == $entry->entry_status && isset( $courses['courses'][ $entry->course_id ] ) ) {
 					$course = $courses['courses'][ $entry->course_id ];
 
+					/**
+					 * This filter can be used to add/remove column values to/from the courses list table.
+					 *
+					 * @param array $values
+					 * @param string $entry_status
+					 * @param IB_Educator_Entry $entry
+					 */
 					$values = apply_filters( 'edr_student_courses_values', array(
 						'entry'  => '<td>' . (int) $entry->ID . '</td>',
 						'course' => '<td><a class="title" href="' . esc_url( get_permalink( $course->ID ) ) . '">' . esc_html( $course->post_title ) . '</a></td>',

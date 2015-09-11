@@ -558,7 +558,8 @@ Administration',
 				if ( ! empty( $question_ids ) ) {
 					$query = 'UPDATE ' . $this->answers . ' SET grade_id = ' . intval( $grade->ID )
 						. ' WHERE entry_id = ' . intval( $grade->entry_id )
-						. ' AND question_id IN (' . implode( ',', array_map( 'intval', $question_ids ) ) . ')';
+						. ' AND question_id IN (' . implode( ',', array_map( 'intval', $question_ids ) ) . ')'
+						. ' AND grade_id = 0';
 
 					$wpdb->query( $query );
 				}
