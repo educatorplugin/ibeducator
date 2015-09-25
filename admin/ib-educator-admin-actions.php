@@ -70,7 +70,13 @@ class IB_Educator_Admin_Actions {
 			}		
 
 			// Entry status.
+			$prev_status = '';
+
 			if ( isset( $_POST['entry_status'] ) && array_key_exists( $_POST['entry_status'], IB_Educator_Entry::get_statuses() ) ) {
+				if ( $entry->ID && $entry->entry_status != $_POST['entry_status'] ) {
+					$prev_status = $entry->entry_status;
+				}
+
 				$entry->entry_status = $_POST['entry_status'];
 			}
 
@@ -110,8 +116,19 @@ class IB_Educator_Admin_Actions {
 			if ( $errors->get_error_code() ) {
 				ib_edu_message( 'edit_entry_errors', $errors );
 			} elseif ( $entry->save() ) {
+				if ( $prev_status ) {
+					/**
+					 * Do something on entry status change.
+					 *
+					 * @param IB_Educator_Entry $entry
+					 * @param string $prev_status
+					 */
+					do_action( 'edr_entry_status_change', $entry, $prev_status );
+				}
+
 				wp_redirect( admin_url( 'admin.php?page=ib_educator_entries&edu-action=edit-entry&entry_id=' . $entry->ID . '&edu-message=saved' ) );
-				exit;
+
+				exit();
 			}
 		}
 	}
@@ -456,7 +473,7 @@ class IB_Educator_Admin_Actions {
 		}
 
 		// Get entry.
-		$entry_id = isset( $_GET['entry_id'] ) ? intval( $_GET['entry_id'] ) : 0;
+		$entry_id = isset( $_GET['entry_id'] ) ? intval( $_GET['entry_id'] ) : null;
 
 		if ( ! $entry_id ) {
 			return;
@@ -467,6 +484,38 @@ class IB_Educator_Admin_Actions {
 		// Delete entry if it was found.
 		if ( $entry->ID && $entry->delete() ) {
 			wp_redirect( admin_url( 'admin.php?page=ib_educator_entries&edr-message=entry_deleted' ) );
+
+			exit();
+		}
+	}
+
+	/**
+	 * Delete a payment.
+	 */
+	public static function delete_payment() {
+		// Verify nonce.
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'edr_delete_payment' ) ) {
+			return;
+		}
+
+		// Check permissions.
+		if ( ! current_user_can( 'manage_educator' ) ) {
+			return;
+		}
+
+		// Get entry.
+		$payment_id = isset( $_GET['payment_id'] ) ? intval( $_GET['payment_id'] ) : null;
+
+		if ( ! $payment_id ) {
+			return;
+		}
+
+		$payment = IB_Educator_Payment::get_instance( $payment_id );
+
+		// Delete payment if it was found.
+		if ( $payment->ID && $payment->delete() ) {
+			wp_redirect( admin_url( 'admin.php?page=ib_educator_payments&edr-message=payment_deleted' ) );
+
 			exit();
 		}
 	}

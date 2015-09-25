@@ -436,51 +436,52 @@ class IB_Educator {
 	public function get_payments( $args, $output_type = null ) {
 		global $wpdb;
 
-		if ( null === $output_type ) $output_type = OBJECT;
+		if ( is_null( $output_type ) ) {
+			$output_type = OBJECT;
+		}
 
-		$sql = "SELECT * FROM {$this->payments} WHERE 1";
+		$sql = 'SELECT * FROM ' . $this->payments . ' WHERE 1';
 
 		// Filter by payment_id.
 		if ( isset( $args['payment_id'] ) ) {
 			if ( is_array( $args['payment_id'] ) ) {
 				$sql .= ' AND ID IN (' . implode( ',', array_map( 'absint', $args['payment_id'] ) ) . ')';
 			} else {
-				$sql .= ' AND ID=' . absint( $args['payment_id'] );
+				$sql .= $wpdb->prepare( ' AND ID = %d', $args['payment_id'] );
 			}
 		}
 
 		// Filter by user_id.
 		if ( isset( $args['user_id'] ) ) {
-			$sql .= ' AND user_id=' . absint( $args['user_id'] );
+			$sql .= $wpdb->prepare( ' AND user_id = %d', $args['user_id'] );
 		}
 
 		// Filter by course_id.
 		if ( isset( $args['course_id'] ) ) {
-			$sql .= ' AND course_id=' . absint( $args['course_id'] );
+			$sql .= $wpdb->prepare( ' AND course_id = %d', $args['course_id'] );
 		}
 
 		// Filter by payment_type.
 		if ( isset( $args['payment_type'] ) ) {
-			$sql .= " AND payment_type='" . esc_sql( $args['payment_type'] ) . "'";
+			$sql .= $wpdb->prepare( ' AND payment_type = %s', $args['payment_type'] );
 		}
 
 		// Filter by object_id.
 		if ( isset( $args['object_id'] ) ) {
-			$sql .= ' AND object_id=' . absint( $args['object_id'] );
+			$sql .= $wpdb->prepare( ' AND object_id = %d', $args['object_id'] );
 		}
 
 		// Filter by payment status.
 		if ( isset( $args['payment_status'] ) && is_array( $args['payment_status'] ) ) {
-			// Escape SQL.
-			foreach ( $args['payment_status'] as $key => $payment_status ) {
-				$args['payment_status'][ $key ] = esc_sql( $payment_status );
-			}
-
-			$sql .= " AND payment_status IN ('" . implode( "', '", $args['payment_status'] ) . "')";
+			$sql .= $wpdb->prepare(
+				' AND payment_status IN (' . implode( ',', array_fill( 0, count( $args['payment_status'] ), '%s' ) ) . ')',
+				$args['payment_status']
+			);
 		}
 
 		// With or without pagination
-		$has_pagination = isset( $args['page'] ) && isset( $args['per_page'] ) && is_numeric( $args['page'] ) && is_numeric( $args['per_page'] );
+		$has_pagination = ( isset( $args['page'] ) && isset( $args['per_page'] )
+			&& is_numeric( $args['page'] ) && is_numeric( $args['per_page'] ) );
 		$pagination_sql = '';
 
 		if ( $has_pagination ) {
@@ -490,7 +491,7 @@ class IB_Educator {
 
 		$payments = $wpdb->get_results( $sql . ' ORDER BY payment_date DESC' . $pagination_sql, $output_type );
 
-		if ( $payments ) {
+		if ( ! empty( $payments ) ) {
 			$payments = array_map( array( 'IB_Educator_Payment', 'get_instance' ), $payments );
 		}
 
@@ -535,21 +536,9 @@ class IB_Educator {
 	 * @return false|array of IB_Educator_Question objects
 	 */
 	public function get_questions( $args ) {
-		global $wpdb;
-		$sql = "SELECT * FROM {$this->questions} WHERE 1";
+		_ib_edu_deprecated_function( 'IB_Educator::get_questions', '1.6', 'Edr_Quizzes::get_questions' );
 
-		if ( isset( $args['lesson_id'] ) ) {
-			$sql .= ' AND lesson_id=' . absint( $args['lesson_id'] );
-		}
-
-		$sql .= ' ORDER BY menu_order ASC';
-		$questions = $wpdb->get_results( $sql );
-
-		if ( $questions ) {
-			$questions = array_map( array( 'IB_Educator_Question', 'get_instance' ), $questions );
-		}
-
-		return $questions;
+		return Edr_Manager::get( 'edr_quizzes' )->get_questions( $args['lesson_id'] );
 	}
 
 	/**
@@ -559,31 +548,9 @@ class IB_Educator {
 	 * @return false|array
 	 */
 	public function get_choices( $lesson_id, $sorted = false ) {
-		global $wpdb;
-		$choices = $wpdb->get_results( $wpdb->prepare(
-			"SELECT * FROM {$this->choices} WHERE question_id IN (SELECT question_id FROM {$this->questions} WHERE lesson_id = %d) ORDER BY menu_order ASC",
-			$lesson_id
-		) );
+		_ib_edu_deprecated_function( 'IB_Educator::get_choices', '1.6', 'Edr_Quizzes::get_choices' );
 
-		if ( ! $sorted ) {
-			return $choices;
-		}
-
-		if ( $choices ) {
-			$sorted = array();
-
-			foreach ( $choices as $row ) {
-				if ( ! isset( $sorted[ $row->question_id ] ) ) {
-					$sorted[ $row->question_id ] = array();
-				}
-
-				$sorted[ $row->question_id ][ $row->ID ] = $row;
-			}
-
-			return $sorted;
-		}
-
-		return false;
+		return Edr_Manager::get( 'edr_quizzes' )->get_choices( $lesson_id, $sorted );
 	}
 
 	/**
@@ -593,15 +560,9 @@ class IB_Educator {
 	 * @return false|array
 	 */
 	public function get_question_choices( $question_id ) {
-		global $wpdb;
+		_ib_edu_deprecated_function( 'IB_Educator::get_question_choices', '1.6', 'Edr_Quizzes::get_question_choices' );
 
-		return $wpdb->get_results( $wpdb->prepare(
-			"SELECT ID, choice_text, correct, menu_order "
-			. "FROM {$this->choices} "
-			. "WHERE question_id = %d "
-			. "ORDER BY menu_order ASC",
-			$question_id
-		), OBJECT_K );
+		return Edr_Manager::get( 'edr_quizzes' )->get_question_choices( $question_id );
 	}
 
 	/**
@@ -611,20 +572,9 @@ class IB_Educator {
 	 * @return false|int
 	 */
 	public function add_choice( $data ) {
-		global $wpdb;
+		_ib_edu_deprecated_function( 'IB_Educator::add_choice', '1.6', 'Edr_Quizzes::add_choice' );
 
-		$wpdb->insert(
-			$this->choices,
-			array(
-				'question_id' => $data['question_id'],
-				'choice_text' => $data['choice_text'],
-				'correct'     => $data['correct'],
-				'menu_order'  => $data['menu_order']
-			),
-			array( '%d', '%s', '%d', '%d' )
-		);
-
-		return $wpdb->insert_id;
+		return Edr_Manager::get( 'edr_quizzes' )->add_choice( $data );
 	}
 
 	/**
@@ -634,19 +584,9 @@ class IB_Educator {
 	 * @return false|int
 	 */
 	public function update_choice( $choice_id, $data ) {
-		global $wpdb;
+		_ib_edu_deprecated_function( 'IB_Educator::update_choice', '1.6', 'Edr_Quizzes::update_choice' );
 
-		return $wpdb->update(
-			$this->choices,
-			array(
-				'choice_text' => $data['choice_text'],
-				'correct'     => $data['correct'],
-				'menu_order'  => $data['menu_order']
-			),
-			array( 'ID' => $choice_id ),
-			array( '%s', '%d', '%d' ),
-			array( '%d' )
-		);
+		return Edr_Manager::get( 'edr_quizzes' )->update_choice( $choice_id, $data );
 	}
 
 	/**
@@ -656,13 +596,9 @@ class IB_Educator {
 	 * @return false|int false on error, number of rows updated on success.
 	 */
 	public function delete_choice( $choice_id ) {
-		global $wpdb;
+		_ib_edu_deprecated_function( 'IB_Educator::delete_choice', '1.6', 'Edr_Quizzes::delete_choice' );
 
-		return $wpdb->delete(
-			$this->choices,
-			array( 'ID' => $choice_id ),
-			array( '%d' )
-		);
+		return Edr_Manager::get( 'edr_quizzes' )->delete_choice( $choice_id );
 	}
 
 	/**
@@ -672,13 +608,9 @@ class IB_Educator {
 	 * @return false|int false on error, number of rows updated on success.
 	 */
 	public function delete_choices( $question_id ) {
-		global $wpdb;
+		_ib_edu_deprecated_function( 'IB_Educator::delete_choices', '1.6', 'Edr_Quizzes::delete_choices' );
 
-		return $wpdb->delete(
-			$this->choices,
-			array( 'question_id' => $question_id ),
-			array( '%d' )
-		);
+		return Edr_Manager::get( 'edr_quizzes' )->delete_choices( $question_id );
 	}
 
 	/**
@@ -688,21 +620,9 @@ class IB_Educator {
 	 * @return false|int
 	 */
 	public function add_student_answer( $data ) {
-		global $wpdb;
-		$insert_data = array(
-			'question_id' => ! isset( $data['question_id'] ) ? 0 : $data['question_id'],
-			'entry_id'    => ! isset( $data['entry_id'] ) ? 0 : $data['entry_id'],
-			'correct'     => ! isset( $data['correct'] ) ? 0 : $data['correct'],
-			'choice_id'   => ! isset( $data['choice_id'] ) ? 0 : $data['choice_id']
-		);
-		$data_format = array( '%d', '%d', '%d', '%d' );
-		
-		if ( isset( $data['answer_text'] ) ) {
-			$insert_data['answer_text'] = $data['answer_text'];
-			$data_format[] = '%s';
-		}
+		_ib_edu_deprecated_function( 'IB_Educator::add_student_answer', '1.6', 'Edr_Quizzes::add_answer' );
 
-		return $wpdb->insert( $this->answers, $insert_data, $data_format );
+		return Edr_Manager::get( 'edr_quizzes' )->add_answer( $data );
 	}
 
 	/**
@@ -713,6 +633,8 @@ class IB_Educator {
 	 * @return false|array
 	 */
 	public function get_student_answers( $lesson_id, $entry_id ) {
+		_ib_edu_deprecated_function( 'IB_Educator::get_student_answers', '1.6', 'Edr_Quizzes::get_answers( int $grade_id )' );
+
 		global $wpdb;
 
 		return $wpdb->get_results(
@@ -734,18 +656,9 @@ class IB_Educator {
 	 * @return false|int
 	 */
 	public function add_quiz_grade( $data ) {
-		global $wpdb;
+		_ib_edu_deprecated_function( 'IB_Educator::add_quiz_grade', '1.6', 'Edr_Quizzes::add_grade' );
 
-		return $wpdb->insert(
-			$this->grades,
-			array(
-				'lesson_id' => $data['lesson_id'],
-				'entry_id'  => $data['entry_id'],
-				'grade'     => $data['grade'],
-				'status'    => $data['status'],
-			),
-			array( '%d', '%d', '%f', '%s' )
-		);
+		return Edr_Manager::get( 'edr_quizzes' )->add_grade( $data );
 	}
 
 	/**
@@ -755,31 +668,9 @@ class IB_Educator {
 	 * @return int
 	 */
 	public function update_quiz_grade( $grade_id, $data ) {
-		global $wpdb;
-		$insert_data = array();
-		$insert_format = array();
+		_ib_edu_deprecated_function( 'IB_Educator::update_quiz_grade', '1.6', 'Edr_Quizzes::update_grade' );
 
-		foreach ( $data as $key => $value ) {
-			switch ( $key ) {
-				case 'grade':
-					$insert_data[ $key ] = $value;
-					$insert_format[] = '%f';
-					break;
-
-				case 'status':
-					$insert_data[ $key ] = $value;
-					$insert_format[] = '%s';
-					break;
-			}
-		}
-
-		return $wpdb->update(
-			$this->grades,
-			$insert_data,
-			array( 'ID' => $grade_id ),
-			$insert_format,
-			array( '%d' )
-		);
+		return Edr_Manager::get( 'edr_quizzes' )->update_grade( $grade_id, $data );
 	}
 
 	/**
@@ -790,6 +681,8 @@ class IB_Educator {
 	 * @return boolean
 	 */
 	public function is_quiz_submitted( $lesson_id, $entry_id ) {
+		_ib_edu_deprecated_function( 'IB_Educator::is_quiz_submitted', '1.6', 'Edr_Quizzes::get_grade( int $lesson_id, int $entry_id )' );
+
 		global $wpdb;
 
 		$submitted = $wpdb->get_var( $wpdb->prepare(
@@ -809,13 +702,9 @@ class IB_Educator {
 	 * @return array
 	 */
 	public function get_quiz_grade( $lesson_id, $entry_id ) {
-		global $wpdb;
+		_ib_edu_deprecated_function( 'IB_Educator::get_quiz_grade', '1.6', 'Edr_Quizzes::get_grade' );
 
-		return $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$this->grades} WHERE lesson_id=%d AND entry_id=%d",
-			$lesson_id,
-			$entry_id
-		) );
+		return Edr_Manager::get( 'edr_quizzes' )->get_grade( $lesson_id, $entry_id );
 	}
 
 	/**
@@ -825,16 +714,9 @@ class IB_Educator {
 	 * @return array
 	 */
 	public function check_quiz_pending( $ids ) {
-		global $wpdb;
+		_ib_edu_deprecated_function( 'IB_Educator::check_quiz_pending', '1.6', 'Edr_Quizzes::check_for_pending_quizzes' );
 
-		if ( empty( $ids ) ) {
-			return array();
-		}
-
-		$ids = implode( ',', array_map( 'absint', $ids ) );
-		$entries = $wpdb->get_col( "SELECT entry_id FROM $this->grades WHERE status = 'pending' AND entry_id IN ($ids) GROUP BY entry_id" );
-
-		return $entries;
+		return Edr_Manager::get( 'edr_quizzes' )->check_for_pending_quizzes( $ids );
 	}
 
 	/**

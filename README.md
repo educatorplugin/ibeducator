@@ -23,3 +23,7 @@ To run PHPUnit tests:
 3. RUN: phpunit
 
 The bin/install-wp-tests.sh script installs WordPress in /tmp/wordpress-tests-lib. The test installation uses supplied database credentials (root '' localhost).
+
+## Pull Requests
+
+When creating pull requests, please set the base(destination) branch to "development".

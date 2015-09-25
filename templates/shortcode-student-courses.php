@@ -78,7 +78,6 @@ if ( $courses || $pending_courses ) {
 			echo '<tbody>';
 			
 			foreach ( $courses['entries'] as $entry ) {
-				// If the entry has status "inprogress" and course exists.
 				if ( 'inprogress' == $entry->entry_status && isset( $courses['courses'][ $entry->course_id ] ) ) {
 					$course = $courses['courses'][ $entry->course_id ];
 					$date = date_i18n( get_option( 'date_format' ), strtotime( $entry->entry_date ) );
@@ -99,22 +98,53 @@ if ( $courses || $pending_courses ) {
 		 * Complete.
 		 */
 		if ( array_key_exists( 'complete', $courses['statuses'] ) ) {
+			/**
+			 * This filter can be used to add/remove headings to/from the courses list table.
+			 *
+			 * @param array $headings
+			 * @param string $entry_status
+			 */
+			$headings = apply_filters( 'edr_student_courses_headings', array(
+				'entry'  => '<th>' . __( 'Entry ID', 'ibeducator' ) . '</th>',
+				'course' => '<th>' . __( 'Course', 'ibeducator' ) . '</th>',
+				'grade'  => '<th>' . __( 'Grade', 'ibeducator' ) . '</th>',
+			), 'complete' );
+
 			echo '<h3>' . __( 'Complete', 'ibeducator' ) . '</h3>';
 			echo '<table class="ib-edu-courses ib-edu-courses-complete">';
-			echo '<thead><tr><th style="width:20%;">' . __( 'Entry ID', 'ibeducator' ) . '</th><th style="width:50%;">' . __( 'Course', 'ibeducator' ) . '</th><th>' . __( 'Grade', 'ibeducator' ) . '</th></tr></thead>';
+			echo '<thead><tr>';
+
+			foreach ( $headings as $th ) {
+				echo $th;
+			}
+
+			echo '</tr></thead>';
 			echo '<tbody>';
 			
 			foreach ( $courses['entries'] as $entry ) {
-				// If the entry has status "inprogress" and course exists.
 				if ( 'complete' == $entry->entry_status && isset( $courses['courses'][ $entry->course_id ] ) ) {
 					$course = $courses['courses'][ $entry->course_id ];
-					?>
-					<tr>
-						<td><?php echo intval( $entry->ID ); ?></td>
-						<td><a class="title" href="<?php echo esc_url( get_permalink( $course->ID ) ); ?>"><?php echo esc_html( $course->post_title ); ?></a></td>
-						<td class="grade"><?php echo ib_edu_format_grade( $entry->grade ); ?></td>
-					</tr>
-					<?php
+
+					/**
+					 * This filter can be used to add/remove column values to/from the courses list table.
+					 *
+					 * @param array $values
+					 * @param string $entry_status
+					 * @param IB_Educator_Entry $entry
+					 */
+					$values = apply_filters( 'edr_student_courses_values', array(
+						'entry'  => '<td>' . (int) $entry->ID . '</td>',
+						'course' => '<td><a class="title" href="' . esc_url( get_permalink( $course->ID ) ) . '">' . esc_html( $course->post_title ) . '</a></td>',
+						'grade'  => '<td class="grade">' . ib_edu_format_grade( $entry->grade ) . '</td>',
+					), 'complete', $entry );
+
+					echo '<tr>';
+
+					foreach ( $values as $td ) {
+						echo $td;
+					}
+
+					echo '</tr>';
 				}
 			}
 
@@ -131,7 +161,6 @@ if ( $courses || $pending_courses ) {
 			echo '<tbody>';
 			
 			foreach ( $courses['entries'] as $entry ) {
-				// If the entry has status "inprogress" and course exists.
 				if ( 'paused' == $entry->entry_status && isset( $courses['courses'][ $entry->course_id ] ) ) {
 					$course = $courses['courses'][ $entry->course_id ];
 					?>

@@ -21,7 +21,7 @@ class IB_Educator_Quiz_Admin {
 
 		if ( 'post' == $screen->base && 'ib_educator_lesson' == $screen->post_type ) {
 			wp_enqueue_style( 'ib-educator-quiz', IBEDUCATOR_PLUGIN_URL . 'admin/css/quiz.css', array(), '1.0' );
-			wp_enqueue_script( 'ib-educator-quiz', IBEDUCATOR_PLUGIN_URL . 'admin/js/quiz.js', array( 'jquery', 'underscore', 'backbone' ), '1.0' );
+			wp_enqueue_script( 'ib-educator-quiz', IBEDUCATOR_PLUGIN_URL . 'admin/js/quiz.js', array( 'jquery', 'underscore', 'backbone' ), '1.1' );
 			wp_localize_script( 'ib-educator-quiz', 'educatorQuizText', array(
 				'confirm_delete' => __( 'Are you sure you want to delete this item?', 'ibeducator' ),
 			) );
@@ -58,7 +58,8 @@ class IB_Educator_Quiz_Admin {
 	 * @return array Saved choices.
 	 */
 	protected static function save_question_choices( $question_id, $choices ) {
-		$api = IB_Educator::get_instance();
+		global $wpdb;
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 		$choice_ids = array();
 
 		foreach ( $choices as $choice ) {
@@ -69,28 +70,28 @@ class IB_Educator_Quiz_Admin {
 
 		// Delete choices that are not sent by the user.
 		if ( ! empty( $choice_ids ) ) {
-			global $wpdb;
 			$tables = ib_edu_table_names();
-			$wpdb->query( $wpdb->prepare( "DELETE FROM " . $tables['choices'] . " WHERE question_id=%d AND ID NOT IN (" . implode( ',', $choice_ids ) . ")", $question_id ) );
+			$query = 'DELETE FROM ' . $tables['choices'] . ' WHERE question_id = %d AND ID NOT IN (' . implode( ',', $choice_ids ) . ')';
+			$wpdb->query( $wpdb->prepare( $query, $question_id ) );
 		}
 
 		// Add choices to the question.
-		$current_choices = $api->get_question_choices( $question_id );
+		$current_choices = $quizzes->get_question_choices( $question_id );
 		$saved_choices = array();
 
 		foreach ( $choices as $choice ) {
 			$choice_data = array(
-				'ID'          => ( ! isset( $choice->choice_id ) ) ? 0 : absint( $choice->choice_id ),
-				'choice_text' => ( ! isset( $choice->choice_text ) ) ? '' : esc_html( $choice->choice_text ),
-				'correct'     => ( ! isset( $choice->correct ) ) ? 0 : absint( $choice->correct ),
-				'menu_order'  => ( ! isset( $choice->menu_order ) ) ? 0 : absint( $choice->menu_order ),
+				'ID'          => isset( $choice->choice_id ) ? intval( $choice->choice_id ) : 0,
+				'choice_text' => isset( $choice->choice_text ) ? esc_html( $choice->choice_text ) : '',
+				'correct'     => isset( $choice->correct ) ? intval( $choice->correct ) : 0,
+				'menu_order'  => isset( $choice->menu_order ) ? intval( $choice->menu_order ) : 0,
 			);
 
 			if ( $current_choices && isset( $current_choices[ $choice_data['ID'] ] ) ) {
-				$api->update_choice( $choice_data['ID'], $choice_data );
+				$quizzes->update_choice( $choice_data['ID'], $choice_data );
 			} else {
 				$choice_data['question_id'] = $question_id;
-				$choice_data['ID'] = $api->add_choice( $choice_data );
+				$choice_data['ID'] = $quizzes->add_choice( $choice_data );
 			}
 
 			$choice_data['choice_id'] = $choice_data['ID'];
@@ -105,8 +106,6 @@ class IB_Educator_Quiz_Admin {
 	 * AJAX: process quiz question admin requests.
 	 */
 	public static function quiz_question() {
-		$api = IB_Educator::get_instance();
-
 		switch ( $_SERVER['REQUEST_METHOD'] ) {
 			case 'POST':
 				$response = array(
@@ -119,62 +118,73 @@ class IB_Educator_Quiz_Admin {
 				// Input given?
 				if ( ! $input || ! isset( $input->lesson_id ) || ! is_numeric( $input->lesson_id ) ) {
 					status_header( 400 );
-					exit;
+
+					exit();
 				}
 
 				// Verify nonce.
 				if ( ! isset( $input->_wpnonce ) || ! wp_verify_nonce( $input->_wpnonce, 'ibedu_quiz_' . $input->lesson_id ) ) {
 					status_header( 403 );
-					exit;
+
+					exit();
 				}
 				
 				// Verify capabilities.
 				if ( ! current_user_can( 'edit_ib_educator_lesson', $input->lesson_id ) ) {
-					exit;
+					exit();
 				}
 
-				// Verify nonce.
-				if ( $input ) {
-					$question = IB_Educator_Question::get_instance();
+				// Process input.
+				$question = IB_Educator_Question::get_instance();
 
-					if ( isset( $input->lesson_id ) && is_numeric( $input->lesson_id ) ) {
-						$question->lesson_id = $input->lesson_id;
-					} else {
-						$response['errors'][] = 'lesson_id';
-					}
-
-					if ( isset( $input->question ) && ! empty( $input->question ) ) {
-						$question->question = $input->question;
-					} else {
-						$response['errors'][] = 'question';
-					}
-
-					if ( isset( $input->question_type ) && ! empty( $input->question_type ) ) {
-						$question->question_type = $input->question_type;
-					} else {
-						$response['errors'][] = 'question_type';
-					}
-
-					if ( isset( $input->menu_order ) && is_numeric( $input->menu_order ) ) {
-						$question->menu_order = $input->menu_order;
-					} else {
-						$response['errors'][] = 'order';
-					}
-
-					if ( ! count( $response['errors'] ) ) {
-						$question->save();
-
-						if ( $question->ID && isset( $input->choices ) && is_array( $input->choices ) ) {
-							$response['choices'] = self::save_question_choices( $question->ID, $input->choices );
-						}
-
-						$response['status'] = 'success';
-						$response['id'] = $question->ID;
-					}
+				if ( isset( $input->lesson_id ) && is_numeric( $input->lesson_id ) ) {
+					$question->lesson_id = $input->lesson_id;
+				} else {
+					$response['errors'][] = 'lesson_id';
 				}
 
-				if ( count( $response['errors'] ) ) {
+				if ( isset( $input->question ) && ! empty( $input->question ) ) {
+					$question->question = $input->question;
+				} else {
+					$response['errors'][] = 'question';
+				}
+
+				if ( isset( $input->question_type ) && ! empty( $input->question_type ) ) {
+					$question->question_type = $input->question_type;
+				} else {
+					$response['errors'][] = 'question_type';
+				}
+
+				if ( isset( $input->question_content ) ) {
+					$question->question_content = apply_filters( 'edr_add_question_pre_content', $input->question_content );
+				} else {
+					$response['errors'][] = 'question_content';
+				}
+
+				if ( isset( $input->menu_order ) && is_numeric( $input->menu_order ) ) {
+					$question->menu_order = $input->menu_order;
+				} else {
+					$response['errors'][] = 'order';
+				}
+
+				if ( ! count( $response['errors'] ) ) {
+					$question->save();
+
+					if ( $question->ID && isset( $input->choices ) && is_array( $input->choices ) ) {
+						$response['choices'] = self::save_question_choices( $question->ID, $input->choices );
+					}
+
+					if ( ! get_post_meta( $question->lesson_id, '_ibedu_quiz', true ) ) {
+						// Set default settings for the quiz.
+						update_post_meta( $question->lesson_id, '_ibedu_quiz', 1 );
+						update_post_meta( $question->lesson_id, '_edr_attempts', 1 );
+					}
+
+					$response['status'] = 'success';
+					$response['id'] = $question->ID;
+				} else {
 					$response['status'] = 'error';
+
 					status_header( 400 );
 				}
 
@@ -192,7 +202,8 @@ class IB_Educator_Quiz_Admin {
 				// Input given?
 				if ( ! $question_id || ! $input ) {
 					status_header( 400 );
-					exit;
+
+					exit();
 				}
 
 				$question = IB_Educator_Question::get_instance( $question_id );
@@ -200,24 +211,32 @@ class IB_Educator_Quiz_Admin {
 				// Question found?
 				if ( ! $question->ID ) {
 					status_header( 400 );
-					exit;
+
+					exit();
 				}
 
 				// Verify nonce.
 				if ( ! isset( $input->_wpnonce ) || ! wp_verify_nonce( $input->_wpnonce, 'ibedu_quiz_' . $question->lesson_id ) ) {
 					status_header( 403 );
-					exit;
+
+					exit();
 				}
 
 				// Verify capabilities.
 				if ( ! current_user_can( 'edit_ib_educator_lesson', $question->lesson_id ) ) {
-					exit;
+					exit();
 				}
 
 				if ( isset( $input->question ) && ! empty( $input->question ) ) {
 					$question->question = $input->question;
 				} else {
 					$response['errors'][] = 'question';
+				}
+
+				if ( isset( $input->question_content ) ) {
+					$question->question_content = apply_filters( 'edr_edit_question_pre_content', $input->question_content );
+				} else {
+					$response['errors'][] = 'question_content';
 				}
 
 				if ( ! count( $response['errors'] ) ) {
@@ -228,11 +247,9 @@ class IB_Educator_Quiz_Admin {
 					}
 
 					$response['status'] = 'success';
-				}
-
-				// Incorrect input?
-				if ( count( $response['errors'] ) ) {
+				} else {
 					$response['status'] = 'error';
+
 					status_header( 400 );
 				}
 
@@ -248,7 +265,8 @@ class IB_Educator_Quiz_Admin {
 				// Input given?
 				if ( ! $question_id ) {
 					status_header( 400 );
-					exit;
+
+					exit();
 				}
 
 				$question = IB_Educator_Question::get_instance( $question_id );
@@ -256,7 +274,8 @@ class IB_Educator_Quiz_Admin {
 				// Question found?
 				if ( ! $question->ID ) {
 					status_header( 400 );
-					exit;
+
+					exit();
 				}
 
 				// Verify nonce.
@@ -264,19 +283,23 @@ class IB_Educator_Quiz_Admin {
 				
 				if ( ! isset( $input->_wpnonce ) || ! wp_verify_nonce( $input->_wpnonce, 'ibedu_quiz_' . $question->lesson_id ) ) {
 					status_header( 403 );
-					exit;
+
+					exit();
 				}
 
 				// Verify capabilities.
 				if ( ! current_user_can( 'edit_ib_educator_lesson', $question->lesson_id ) ) {
-					exit;
+					exit();
 				}
 
 				if ( $question->ID ) {
+					$quizzes = Edr_Manager::get( 'edr_quizzes' );
+
 					// First, delete question choices.
 					$choices_deleted = true;
+
 					if ( 'multiplechoice' == $question->question_type ) {
-						$choices_deleted = $api->delete_choices( $question->ID );
+						$choices_deleted = $quizzes->delete_choices( $question->ID );
 					}
 
 					if ( false !== $choices_deleted ) {
@@ -288,7 +311,7 @@ class IB_Educator_Quiz_Admin {
 				break;
 		}
 
-		exit;
+		exit();
 	}
 
 	/**
@@ -307,8 +330,18 @@ class IB_Educator_Quiz_Admin {
 			return;
 		}
 
+		if ( isset( $_POST['_edr_attempts'] ) ) {
+			$attempts_number = absint( $_POST['_edr_attempts'] );
+
+			if ( ! $attempts_number ) {
+				$attempts_number = 1;
+			}
+
+			update_post_meta( $post_id, '_edr_attempts', $attempts_number );
+		}
+
 		$has_quiz = 0;
-		$questions = IB_Educator::get_instance()->get_questions( array( 'lesson_id' => $post_id ) );
+		$questions = Edr_Manager::get( 'edr_quizzes' )->get_questions( $post_id );
 
 		if ( ! empty( $questions ) ) {
 			$has_quiz = 1;
@@ -360,27 +393,29 @@ class IB_Educator_Quiz_Admin {
 	 */
 	public static function quiz_grade() {
 		global $wpdb;
-		$api = IB_Educator::get_instance();
 		$entry_id = isset( $_POST['entry_id'] ) ? absint( $_POST['entry_id'] ) : 0;
 		$lesson_id = isset( $_POST['lesson_id'] ) ? absint( $_POST['lesson_id'] ) : 0;
 
 		// Verify nonce.
 		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'ibedu_edit_progress_' . $entry_id ) ) {
-			exit;
+			exit();
 		}
 
 		// Verify capabilities.
 		if ( ! current_user_can( 'edit_ib_educator_lesson', $lesson_id ) ) {
-			exit;
+			exit();
 		}
 
-		$quiz_grade = $api->get_quiz_grade( $lesson_id, $entry_id );
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
+		$quiz_grade = $quizzes->get_grade( $lesson_id, $entry_id );
 
-		if ( ! $quiz_grade ) exit;
+		if ( ! $quiz_grade ) {
+			exit();
+		}
 
 		$grade = isset( $_POST['grade'] ) ? floatval( $_POST['grade'] ) : 0;
 
-		$api->update_quiz_grade( $quiz_grade->ID, array(
+		$quizzes->update_grade( $quiz_grade->ID, array(
 			'grade'  => $grade,
 			'status' => 'approved',
 		) );
@@ -408,6 +443,6 @@ class IB_Educator_Quiz_Admin {
 
 		echo json_encode( array( 'status' => 'success' ) );
 
-		exit;
+		exit();
 	}
 }

@@ -57,7 +57,7 @@
 
 /* Form ---------------*/
 .ib-edu-field {
-	margin: 0 0 20px 0;
+	margin: 1em 0 1em;
 }
 
 .ib-edu-field:after {
@@ -69,7 +69,6 @@
 }
 
 .ib-edu-label {
-	color: #000;
 	float: left;
 	font-size: 14px;
 	font-weight: 600;
@@ -320,22 +319,6 @@
 	line-height: 30px;
 }
 
-/* Pagination ---------------*/
-.ib-edu-pagination a,
-.ib-edu-pagination > span {
-	background-color: #e3e3e3;
-	display: inline-block;
-	margin: 0 2px 4px;
-	padding: 3px 8px;
-	text-decoration: none;
-}
-
-.ib-edu-pagination span.current,
-.ib-edu-pagination a:hover {
-	background-color: #2ea2cc;
-	color: #fff;
-}
-
 /* Message ---------------*/
 .ib-edu-overlay {
 	height: 100%;
@@ -546,6 +529,113 @@
 .edu-tax-rates-table td.rate input,
 .edu-tax-rates-table td.priority input {
 	width: 70px;
+}
+
+/* Toggle */
+.edr-toggle .header {
+	background-color: #f9f9f9;
+	border: 1px solid #ddd;
+	color: #222;
+	min-height: 34px;
+	position: relative;
+}
+
+.edr-toggle .header .text {
+	display: block;
+	font-weight: bold;
+	padding: 8px 10px;
+}
+
+.edr-toggle .trigger {
+	color: #aaa;
+	cursor: pointer;
+	display: block;
+	height: 34px;
+	line-height: 34px;
+	position: absolute;
+	right: 0;
+	text-align: center;
+	top: 0;
+	width: 34px;
+}
+
+.edr-toggle .header .trigger:before {
+	content: '\f140';
+	display: inline;
+	font: 400 20px/1 dashicons;
+	position: relative;
+	top: 5px;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.edr-toggle .header .trigger:hover {
+	color: #777;
+}
+
+.edr-toggle.open .trigger:before {
+	content: '\f142';
+}
+
+.edr-toggle .body {
+	background: #fff;
+	border: 1px solid #ddd;
+	border-top: 0;
+	display: none;
+	padding: 15px;
+	position: relative;
+}
+
+.edr-toggle .body label {
+	display: block;
+	font-weight: bold;
+	margin: 0 0 5px;
+}
+
+.edr-toggle.open .body {
+	display: block;
+}
+
+/* Buttons group */
+.edr-buttons-group {
+	margin-top: 15px;
+}
+
+.edr-buttons-group .button,
+.edr-buttons-group > a {
+	margin-right: 5px;
+}
+
+.edr-buttons-group .remove {
+	color: #a00;
+	display: inline-block;
+	line-height: 28px;
+	text-decoration: none;
+}
+
+.edr-buttons-group .remove:hover {
+	color: red;
+}
+
+/* Form blocks */
+.edr-form-blocks:after {
+	clear: both;
+	content: '';
+	display: table;
+}
+
+.edr-form-blocks {
+	margin: 1em 0 1em -20px;
+}
+
+.edr-form-blocks .block {
+	float: left;
+	margin: 0 0 0 20px;
+}
+
+.edr-form-blocks label {
+	font-weight: 600;
+	margin-right: 5px;
 }
 
 @media screen and (max-width: 782px) {

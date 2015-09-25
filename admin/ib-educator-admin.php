@@ -14,7 +14,6 @@ class IB_Educator_Admin {
 		add_action( 'admin_init', array( __CLASS__, 'admin_actions' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_scripts_styles' ), 9 );
 		add_filter( 'set-screen-option', array( __CLASS__, 'set_screen_option' ), 10, 3 );
-		add_action( 'wp_ajax_ib_educator_delete_payment', array( __CLASS__, 'admin_payments_delete' ) );
 	}
 
 	/**
@@ -44,7 +43,7 @@ class IB_Educator_Admin {
 		IB_Educator_Admin_Post_Types::init();
 		IB_Educator_Admin_Meta::init();
 		IB_Educator_Quiz_Admin::init();
-		new EDR_Syllabus_Admin();
+		new Edr_Syllabus_Admin();
 	}
 
 	/**
@@ -84,7 +83,7 @@ class IB_Educator_Admin {
 			'ib_educator_admin'
 		);
 
-		add_submenu_page(
+		$payments_hook = add_submenu_page(
 			'ib_educator_admin',
 			__( 'Educator Payments', 'ibeducator' ),
 			__( 'Payments', 'ibeducator' ),
@@ -92,6 +91,10 @@ class IB_Educator_Admin {
 			'ib_educator_payments',
 			array( __CLASS__, 'admin_payments' )
 		);
+
+		if ( $payments_hook ) {
+			add_action( "load-$payments_hook", array( __CLASS__, 'add_payments_screen_options' ) );
+		}
 
 		$entries_hook = null;
 
@@ -115,11 +118,10 @@ class IB_Educator_Admin {
 		}
 
 		if ( $entries_hook ) {
-			// Set screen options for the entries admin page.
 			add_action( "load-$entries_hook", array( __CLASS__, 'add_entries_screen_options' ) );
 		}
 
-		add_submenu_page(
+		$members_hook = add_submenu_page(
 			'ib_educator_admin',
 			__( 'Educator Members', 'ibeducator' ),
 			__( 'Members', 'ibeducator' ),
@@ -127,6 +129,10 @@ class IB_Educator_Admin {
 			'ib_educator_members',
 			array( __CLASS__, 'admin_members' )
 		);
+
+		if ( $members_hook ) {
+			add_action( "load-$members_hook", array( __CLASS__, 'add_members_screen_options' ) );
+		}
 	}
 
 	/**
@@ -165,6 +171,10 @@ class IB_Educator_Admin {
 				case 'delete-entry':
 					IB_Educator_Admin_Actions::delete_entry();
 					break;
+
+				case 'delete-payment':
+					IB_Educator_Admin_Actions::delete_payment();
+					break;
 			}
 		}
 	}
@@ -199,6 +209,25 @@ class IB_Educator_Admin {
 	}
 
 	/**
+	 * Add screen options to the payments admin page.
+	 */
+	public static function add_payments_screen_options() {
+		$screen = get_current_screen();
+
+		if ( ! $screen || 'educator_page_ib_educator_payments' != $screen->id || isset( $_GET['edu-action'] ) ) {
+			return;
+		}
+
+		$args = array(
+			'option'  => 'payments_per_page',
+			'label'   => __( 'Payments per page', 'ibeducator' ),
+			'default' => 10,
+		);
+
+		add_screen_option( 'per_page', $args );
+	}
+
+	/**
 	 * Add screen options to the entries admin page.
 	 */
 	public static function add_entries_screen_options() {
@@ -211,6 +240,25 @@ class IB_Educator_Admin {
 		$args = array(
 			'option'  => 'entries_per_page',
 			'label'   => __( 'Entries per page', 'ibeducator' ),
+			'default' => 10,
+		);
+
+		add_screen_option( 'per_page', $args );
+	}
+
+	/**
+	 * Add screen options to the members admin page.
+	 */
+	public static function add_members_screen_options() {
+		$screen = get_current_screen();
+
+		if ( ! $screen || 'educator_page_ib_educator_members' != $screen->id || isset( $_GET['edu-action'] ) ) {
+			return;
+		}
+
+		$args = array(
+			'option'  => 'members_per_page',
+			'label'   => __( 'Members per page', 'ibeducator' ),
 			'default' => 10,
 		);
 
@@ -260,37 +308,10 @@ class IB_Educator_Admin {
 	 * @return mixed
 	 */
 	public static function set_screen_option( $result, $option, $value ) {
-		if ( 'entries_per_page' == $option ) {
+		if ( in_array( $option, array( 'payments_per_page', 'entries_per_page', 'members_per_page' ) ) ) {
 			$result = (int) $value;
 		}
 
 		return $result;
-	}
-
-	/**
-	 * AJAX: delete payment.
-	 */
-	public static function admin_payments_delete() {
-		if ( ! current_user_can( 'manage_educator' ) ) {
-			exit;
-		}
-		
-		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
-
-		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'ib_educator_delete_payment_' . $payment_id ) ) {
-			exit;
-		}
-
-		$response = '';
-		$payment = IB_Educator_Payment::get_instance( $payment_id );
-
-		if ( $payment && $payment->delete() ) {
-			$response = 'success';
-		} else {
-			$response = 'failure';
-		}
-
-		echo $response;
-		exit;
 	}
 }
