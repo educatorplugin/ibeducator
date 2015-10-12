@@ -54,6 +54,8 @@ $questions = $quizzes->get_questions( $lesson_id );
 				$form_action = add_query_arg( 'try_again', 'true', $form_action );
 			}
 		}
+
+		$form_action .= '#ib-edu-quiz';
 	?>
 
 	<section id="ib-edu-quiz" class="<?php echo ( $grade ) ? 'ib-edu-quiz-complete' : 'ib-edu-quiz-inprogress'; ?>">
