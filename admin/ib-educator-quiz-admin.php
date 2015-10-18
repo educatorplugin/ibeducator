@@ -20,10 +20,12 @@ class IB_Educator_Quiz_Admin {
 		$screen = get_current_screen();
 
 		if ( 'post' == $screen->base && 'ib_educator_lesson' == $screen->post_type ) {
-			wp_enqueue_style( 'ib-educator-quiz', IBEDUCATOR_PLUGIN_URL . 'admin/css/quiz.css', array(), '1.0' );
-			wp_enqueue_script( 'ib-educator-quiz', IBEDUCATOR_PLUGIN_URL . 'admin/js/quiz.js', array( 'jquery', 'underscore', 'backbone' ), '1.1' );
-			wp_localize_script( 'ib-educator-quiz', 'educatorQuizText', array(
-				'confirm_delete' => __( 'Are you sure you want to delete this item?', 'ibeducator' ),
+			wp_enqueue_style( 'edr-quiz', IBEDUCATOR_PLUGIN_URL . 'admin/css/quiz.css', array(), '1.0' );
+			wp_enqueue_script( 'edr-quiz', IBEDUCATOR_PLUGIN_URL . 'admin/js/quiz/quiz.min.js', array( 'jquery', 'underscore', 'backbone' ), '1.1', true );
+			wp_localize_script( 'edr-quiz', 'EdrQuiz', array(
+				'text' => array(
+					'confirmDelete' => __( 'Are you sure you want to delete this item?', 'ibeducator' ),
+				)
 			) );
 		}
 	}
