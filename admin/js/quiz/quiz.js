@@ -5,7 +5,7 @@
 	EdrQuiz.lessonId = parseInt(document.getElementById('ib-edu-quiz-lesson-id').value, 10);
 
 	// Nonce.
-	EdrQuiz.nonce = $('#ibedu_quiz_nonce').val();
+	EdrQuiz.nonce = $('#edr-quiz-nonce').val();
 
 	// Question type select element.
 	EdrQuiz.questionType = $('#ib-edu-question-type');

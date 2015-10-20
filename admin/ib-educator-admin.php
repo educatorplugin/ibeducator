@@ -23,7 +23,7 @@ class IB_Educator_Admin {
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/ib-educator-autocomplete.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/ib-educator-admin-post-types.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/ib-educator-admin-meta.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/ib-educator-quiz-admin.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-quiz-admin.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-admin-settings.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-general-settings.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-learning-settings.php';
@@ -42,7 +42,7 @@ class IB_Educator_Admin {
 		IB_Educator_Autocomplete::init();
 		IB_Educator_Admin_Post_Types::init();
 		IB_Educator_Admin_Meta::init();
-		IB_Educator_Quiz_Admin::init();
+		Edr_Quiz_Admin::init();
 		new Edr_Syllabus_Admin();
 	}
 

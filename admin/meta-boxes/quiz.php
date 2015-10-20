@@ -40,7 +40,7 @@
 </div>
 
 <input type="hidden" id="ib-edu-quiz-lesson-id" value="<?php echo $lesson_id; ?>">
-<input type="hidden" id="ibedu_quiz_nonce" value="<?php echo wp_create_nonce( 'ibedu_quiz_' . $lesson_id ); ?>">
+<input type="hidden" id="edr-quiz-nonce" value="<?php echo wp_create_nonce( 'edr_quiz_' . $lesson_id ); ?>">
 
 <!-- Template: Multiple Choice Question Answer -->
 <script type="text/template" id="tpl-ib-edu-multichoiceanswer">

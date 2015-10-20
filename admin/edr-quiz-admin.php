@@ -1,6 +1,19 @@
 <?php
 
-class IB_Educator_Quiz_Admin {
+/**
+ * Quiz back end.
+ */
+class Edr_Quiz_Admin {
+	/**
+	 * @var string
+	 */
+	protected static $has_quiz_meta_key = '_ibedu_quiz';
+
+	/**
+	 * @var string
+	 */
+	protected static $attempts_meta_key = '_edr_attempts';
+
 	/**
 	 * Initialize the quiz admin.
 	 */
@@ -8,9 +21,9 @@ class IB_Educator_Quiz_Admin {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_scripts_styles' ), 9 );
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_boxes' ) );
 		add_action( 'save_post', array( __CLASS__, 'set_quiz' ), 10, 3 );
-		add_action( 'wp_ajax_ibedu_quiz_question', array( __CLASS__, 'quiz_question' ) );
-		add_action( 'wp_ajax_ibedu_sort_questions', array( __CLASS__, 'sort_questions' ) );
-		add_action( 'wp_ajax_ibedu_quiz_grade', array( __CLASS__, 'quiz_grade' ) );
+		add_action( 'wp_ajax_edr_quiz_question', array( __CLASS__, 'quiz_question' ) );
+		add_action( 'wp_ajax_edr_sort_questions', array( __CLASS__, 'sort_questions' ) );
+		add_action( 'wp_ajax_edr_quiz_grade', array( __CLASS__, 'quiz_grade' ) );
 	}
 
 	/**
@@ -38,7 +51,7 @@ class IB_Educator_Quiz_Admin {
 		add_meta_box(
 			'ib_educator_quiz',
 			__( 'Quiz', 'ibeducator' ),
-			array( 'IB_Educator_Quiz_Admin', 'quiz_meta_box' ),
+			array( __CLASS__, 'quiz_meta_box' ),
 			'ib_educator_lesson'
 		);
 	}
@@ -125,7 +138,7 @@ class IB_Educator_Quiz_Admin {
 				}
 
 				// Verify nonce.
-				if ( ! isset( $input->_wpnonce ) || ! wp_verify_nonce( $input->_wpnonce, 'ibedu_quiz_' . $input->lesson_id ) ) {
+				if ( ! isset( $input->_wpnonce ) || ! wp_verify_nonce( $input->_wpnonce, 'edr_quiz_' . $input->lesson_id ) ) {
 					status_header( 403 );
 
 					exit();
@@ -176,10 +189,10 @@ class IB_Educator_Quiz_Admin {
 						$response['choices'] = self::save_question_choices( $question->ID, $input->choices );
 					}
 
-					if ( ! get_post_meta( $question->lesson_id, '_ibedu_quiz', true ) ) {
+					if ( ! get_post_meta( $question->lesson_id, self::$has_quiz_meta_key, true ) ) {
 						// Set default settings for the quiz.
-						update_post_meta( $question->lesson_id, '_ibedu_quiz', 1 );
-						update_post_meta( $question->lesson_id, '_edr_attempts', 1 );
+						update_post_meta( $question->lesson_id, self::$has_quiz_meta_key, 1 );
+						update_post_meta( $question->lesson_id, self::$attempts_meta_key, 1 );
 					}
 
 					$response['status'] = 'success';
@@ -218,7 +231,7 @@ class IB_Educator_Quiz_Admin {
 				}
 
 				// Verify nonce.
-				if ( ! isset( $input->_wpnonce ) || ! wp_verify_nonce( $input->_wpnonce, 'ibedu_quiz_' . $question->lesson_id ) ) {
+				if ( ! isset( $input->_wpnonce ) || ! wp_verify_nonce( $input->_wpnonce, 'edr_quiz_' . $question->lesson_id ) ) {
 					status_header( 403 );
 
 					exit();
@@ -283,7 +296,7 @@ class IB_Educator_Quiz_Admin {
 				// Verify nonce.
 				$input = json_decode( file_get_contents( 'php://input' ) );
 				
-				if ( ! isset( $input->_wpnonce ) || ! wp_verify_nonce( $input->_wpnonce, 'ibedu_quiz_' . $question->lesson_id ) ) {
+				if ( ! isset( $input->_wpnonce ) || ! wp_verify_nonce( $input->_wpnonce, 'edr_quiz_' . $question->lesson_id ) ) {
 					status_header( 403 );
 
 					exit();
@@ -339,7 +352,7 @@ class IB_Educator_Quiz_Admin {
 				$attempts_number = 1;
 			}
 
-			update_post_meta( $post_id, '_edr_attempts', $attempts_number );
+			update_post_meta( $post_id, self::$attempts_meta_key, $attempts_number );
 		}
 
 		$has_quiz = 0;
@@ -349,7 +362,7 @@ class IB_Educator_Quiz_Admin {
 			$has_quiz = 1;
 		}
 
-		update_post_meta( $post_id, '_ibedu_quiz', $has_quiz );
+		update_post_meta( $post_id, self::$has_quiz_meta_key, $has_quiz );
 	}
 
 	/**
@@ -360,7 +373,7 @@ class IB_Educator_Quiz_Admin {
 
 		$lesson_id = isset( $_POST['lesson_id'] ) ? absint( $_POST['lesson_id'] ) : 0;
 
-		if ( ! $lesson_id || ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'ibedu_quiz_' . $lesson_id ) ) {
+		if ( ! $lesson_id || ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'edr_quiz_' . $lesson_id ) ) {
 			exit;
 		}
 
@@ -399,7 +412,7 @@ class IB_Educator_Quiz_Admin {
 		$lesson_id = isset( $_POST['lesson_id'] ) ? absint( $_POST['lesson_id'] ) : 0;
 
 		// Verify nonce.
-		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'ibedu_edit_progress_' . $entry_id ) ) {
+		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'edr_edit_progress_' . $entry_id ) ) {
 			exit();
 		}
 

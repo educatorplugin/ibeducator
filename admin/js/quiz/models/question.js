@@ -32,15 +32,15 @@
 					break;
 
 				case 'create':
-					options.url += '?action=ibedu_quiz_question';
+					options.url += '?action=edr_quiz_question';
 					break;
 
 				case 'update':
-					options.url += '?action=ibedu_quiz_question&id=' + this.id;
+					options.url += '?action=edr_quiz_question&id=' + this.id;
 					break;
 
 				case 'delete':
-					options.url += '?action=ibedu_quiz_question&id=' + this.id;
+					options.url += '?action=edr_quiz_question&id=' + this.id;
 					break;
 			}
 

@@ -116,7 +116,7 @@
 			// Send.
 			$.ajax({
 				type: 'post',
-				url: ajaxurl + '?action=ibedu_sort_questions',
+				url: ajaxurl + '?action=edr_sort_questions',
 				data: {
 					lesson_id:   EdrQuiz.lessonId,
 					question_id: question_id,
