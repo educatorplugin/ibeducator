@@ -282,6 +282,7 @@ CREATE TABLE $this->grades (
   ID bigint(20) unsigned NOT NULL auto_increment,
   lesson_id bigint(20) unsigned NOT NULL,
   entry_id bigint(20) unsigned NOT NULL,
+  user_id bigint(20) unsigned NOT NULL,
   grade decimal(5,2) unsigned NOT NULL,
   status enum('pending','approved') NOT NULL default 'pending',
   PRIMARY KEY  (ID),

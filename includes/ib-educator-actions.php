@@ -36,12 +36,16 @@ class IB_Educator_Actions {
 
 		$lesson_id = get_the_ID();
 
-		// Verify nonce.
-		check_admin_referer( 'ibedu_submit_quiz_' . $lesson_id );
+		check_admin_referer( 'edr_submit_quiz_' . $lesson_id );
+
+		$user_id = get_current_user_id();
+
+		if ( ! $user_id ) {
+			return;
+		}
 
 		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 
-		// Get questions.
 		$questions = $quizzes->get_questions( $lesson_id );
 		
 		if ( empty( $questions ) ) {
@@ -64,19 +68,13 @@ class IB_Educator_Actions {
 			}
 		}
 
-		// Get current user id.
-		$user_id = get_current_user_id();
-		
-		// Get entry.
 		$entry = IB_Educator::get_instance()->get_entry( array(
 			'user_id'      => $user_id,
 			'course_id'    => ib_edu_get_course_id( $lesson_id ),
 			'entry_status' => 'inprogress',
 		) );
 
-		if ( ! $entry ) {
-			return;
-		}
+		$entry_id = ( $entry ) ? $entry->ID : 0;
 
 		$max_attempts_number = $quizzes->get_max_attempts_number( $lesson_id );
 
@@ -84,7 +82,7 @@ class IB_Educator_Actions {
 			$max_attempts_number = 1;
 		}
 
-		$attempts_number = $quizzes->get_attempts_number( $entry->ID, $lesson_id );
+		$attempts_number = $quizzes->get_attempts_number( $lesson_id, $entry_id );
 
 		// Check if the student exceeded the number of allowed attempts.
 		if ( $attempts_number >= $max_attempts_number ) {
@@ -94,7 +92,8 @@ class IB_Educator_Actions {
 		// Add initial grade data to the database.
 		$grade_id = $quizzes->add_grade( array(
 			'lesson_id' => $lesson_id,
-			'entry_id'  => $entry->ID,
+			'entry_id'  => $entry_id,
+			'user_id'   => $user_id,
 			'grade'     => 0,
 			'status'    => 'pending',
 		) );
@@ -123,7 +122,7 @@ class IB_Educator_Actions {
 						$added = $quizzes->add_answer( array(
 							'question_id' => $question->ID,
 							'grade_id'    => $grade_id,
-							'entry_id'    => $entry->ID,
+							'entry_id'    => $entry_id,
 							'correct'     => $choice->correct,
 							'choice_id'   => $choice->ID
 						) );
@@ -152,7 +151,7 @@ class IB_Educator_Actions {
 					$added = $quizzes->add_answer( array(
 						'question_id' => $question->ID,
 						'grade_id'    => $grade_id,
-						'entry_id'    => $entry->ID,
+						'entry_id'    => $entry_id,
 						'correct'     => -1,
 						'answer_text' => $user_answer
 					) );

@@ -49,12 +49,21 @@ class Edr_Quizzes {
 	 * @param int $lesson_id
 	 * @return int
 	 */
-	public function get_attempts_number( $entry_id, $lesson_id ) {
+	public function get_attempts_number( $lesson_id, $entry_id = null ) {
 		global $wpdb;
+		$query = 'SELECT count(1) FROM ' . $this->tbl_grades . ' WHERE lesson_id = %d';
+		$values = array();
+		$values[] = $lesson_id;
 
-		$query = 'SELECT count(1) FROM ' . $this->tbl_grades . ' WHERE entry_id = %d AND lesson_id = %d';
+		if ( $entry_id ) {
+			$query .= ' AND entry_id = %d';
+			$values[] = $entry_id;
+		} else {
+			$query .= ' AND user_id = %d AND entry_id = 0';
+			$values[] = get_current_user_id();
+		}
 
-		$attempts_number = $wpdb->get_var( $wpdb->prepare( $query, $entry_id, $lesson_id ) );
+		$attempts_number = $wpdb->get_var( $wpdb->prepare( $query, $values ) );
 
 		return $attempts_number;
 	}
@@ -216,13 +225,23 @@ class Edr_Quizzes {
 	 * @param int $entry_id
 	 * @return object
 	 */
-	public function get_grade( $lesson_id, $entry_id ) {
+	public function get_grade( $lesson_id, $entry_id = null ) {
 		global $wpdb;
-		$query = 'SELECT * FROM ' . $this->tbl_grades
-			   . ' WHERE lesson_id = %d AND entry_id = %d'
-			   . ' ORDER BY ID DESC';
+		$query = 'SELECT * FROM ' . $this->tbl_grades . ' WHERE lesson_id = %d';
+		$values = array();
+		$values[] = $lesson_id;
 
-		return $wpdb->get_row( $wpdb->prepare( $query, $lesson_id, $entry_id ) );
+		if ( $entry_id ) {
+			$query .= ' AND entry_id = %d';
+			$values[] = $entry_id;
+		} else {
+			$query .= ' AND user_id = %d AND entry_id = 0';
+			$values[] = get_current_user_id();
+		}
+
+		$query .= ' ORDER BY ID DESC';
+
+		return $wpdb->get_row( $wpdb->prepare( $query, $values ) );
 	}
 
 	/**
@@ -239,10 +258,11 @@ class Edr_Quizzes {
 			array(
 				'lesson_id' => $data['lesson_id'],
 				'entry_id'  => $data['entry_id'],
+				'user_id'   => isset( $data['user_id'] ) ? $data['user_id'] : 0,
 				'grade'     => $data['grade'],
 				'status'    => $data['status'],
 			),
-			array( '%d', '%d', '%f', '%s' )
+			array( '%d', '%d', '%d', '%f', '%s' )
 		);
 
 		if ( $done ) {

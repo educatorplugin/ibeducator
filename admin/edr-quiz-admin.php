@@ -30,9 +30,10 @@ class Edr_Quiz_Admin {
 	 * Enqueue scripts and stylesheets.
 	 */
 	public static function enqueue_scripts_styles() {
+		$post_types = get_option( 'edr_quiz_support', array( 'ib_educator_lesson' ) );
 		$screen = get_current_screen();
 
-		if ( 'post' == $screen->base && 'ib_educator_lesson' == $screen->post_type ) {
+		if ( 'post' == $screen->base && in_array( $screen->post_type, $post_types ) ) {
 			wp_enqueue_style( 'edr-quiz', IBEDUCATOR_PLUGIN_URL . 'admin/css/quiz.css', array(), '1.0' );
 			wp_enqueue_script( 'edr-quiz', IBEDUCATOR_PLUGIN_URL . 'admin/js/quiz/quiz.min.js', array( 'jquery', 'underscore', 'backbone' ), '1.1', true );
 			wp_localize_script( 'edr-quiz', 'EdrQuiz', array(
@@ -47,13 +48,16 @@ class Edr_Quiz_Admin {
 	 * Add meta box.
 	 */
 	public static function add_meta_boxes() {
-		// Quiz meta box.
-		add_meta_box(
-			'ib_educator_quiz',
-			__( 'Quiz', 'ibeducator' ),
-			array( __CLASS__, 'quiz_meta_box' ),
-			'ib_educator_lesson'
-		);
+		$post_types = get_option( 'edr_quiz_support', array( 'ib_educator_lesson' ) );
+
+		foreach ( $post_types as $post_type ) {
+			add_meta_box(
+				'ib_educator_quiz',
+				__( 'Quiz', 'ibeducator' ),
+				array( __CLASS__, 'quiz_meta_box' ),
+				$post_type
+			);
+		}
 	}
 
 	/**
@@ -143,20 +147,18 @@ class Edr_Quiz_Admin {
 
 					exit();
 				}
-				
+
+				$post_type = get_post_type( $input->lesson_id );
+
 				// Verify capabilities.
-				if ( ! current_user_can( 'edit_ib_educator_lesson', $input->lesson_id ) ) {
+				if ( ! current_user_can( 'edit_' . $post_type, $input->lesson_id ) ) {
 					exit();
 				}
 
 				// Process input.
 				$question = IB_Educator_Question::get_instance();
 
-				if ( isset( $input->lesson_id ) && is_numeric( $input->lesson_id ) ) {
-					$question->lesson_id = $input->lesson_id;
-				} else {
-					$response['errors'][] = 'lesson_id';
-				}
+				$question->lesson_id = $input->lesson_id;
 
 				if ( isset( $input->question ) && ! empty( $input->question ) ) {
 					$question->question = $input->question;
@@ -237,8 +239,10 @@ class Edr_Quiz_Admin {
 					exit();
 				}
 
+				$post_type = get_post_type( $question->lesson_id );
+
 				// Verify capabilities.
-				if ( ! current_user_can( 'edit_ib_educator_lesson', $question->lesson_id ) ) {
+				if ( ! current_user_can( 'edit_' . $post_type, $question->lesson_id ) ) {
 					exit();
 				}
 
@@ -302,8 +306,10 @@ class Edr_Quiz_Admin {
 					exit();
 				}
 
+				$post_type = get_post_type( $question->lesson_id );
+
 				// Verify capabilities.
-				if ( ! current_user_can( 'edit_ib_educator_lesson', $question->lesson_id ) ) {
+				if ( ! current_user_can( 'edit_' . $post_type, $question->lesson_id ) ) {
 					exit();
 				}
 
@@ -340,8 +346,10 @@ class Edr_Quiz_Admin {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
+
+		$post_types = get_option( 'edr_quiz_support', array( 'ib_educator_lesson' ) );
 		
-		if ( 'ib_educator_lesson' != $post->post_type || ! current_user_can( 'edit_ib_educator_lesson', $post_id ) ) {
+		if ( ! in_array( $post->post_type, $post_types ) || ! current_user_can( 'edit_' . $post->post_type, $post_id ) ) {
 			return;
 		}
 

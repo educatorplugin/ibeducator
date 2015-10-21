@@ -102,7 +102,7 @@ class Test_Edr_Quizzes extends IB_Educator_Tests {
 	}
 
 	public function testGetAttemptsNumber() {
-		$attempts_number = Edr_Manager::get( 'edr_quizzes' )->get_attempts_number( $this->entries['inprogress'], $this->lessons[0] );
+		$attempts_number = Edr_Manager::get( 'edr_quizzes' )->get_attempts_number( $this->lessons[0], $this->entries['inprogress'] );
 
 		$this->assertEquals( 1, $attempts_number );
 	}

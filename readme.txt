@@ -63,6 +63,9 @@ Coming soon.
 
 == Changelog ==
 
+= 1.7 =
+* Changed the order of the arguments of the "Edr_Quizzes::get_attempts_number" method. Now, this method should be used like this: get_attempts_number($lesson_id, $entry_id).
+
 = 1.6 =
 * Added: set the maximum number of quiz attempts a student can take per quiz.
 * Deprecated a list of methods in IB_Educator class: get_questions, get_choices, get_question_choices, add_choice, update_choice, delete_choice, delete_choices, add_student_answer, get_student_answers, add_quiz_grade, update_quiz_grade, is_quiz_submitted, get_quiz_grade, and check_quiz_pending. These methods were moved to the new Edr_Quizzes class (this class can be retrieved by calling Edr_Manager::get( 'edr_quizzes' )).
