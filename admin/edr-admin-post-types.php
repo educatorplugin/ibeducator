@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_Admin_Post_Types {
+class Edr_Admin_Post_Types {
 	/**
 	 * Initialize.
 	 */

@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_Admin_Meta {
+class Edr_Admin_Meta {
 	/**
 	 * Initialize.
 	 */

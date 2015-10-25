@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_Taxes_Settings extends IB_Educator_Admin_Settings {
+class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 	/**
 	 * Constructor.
 	 */

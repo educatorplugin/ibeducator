@@ -3,7 +3,7 @@
 /**
  * Educator plugin's admin setup.
  */
-class IB_Educator_Admin {
+class Edr_Admin {
 	/**
 	 * Initialize admin.
 	 */
@@ -20,28 +20,28 @@ class IB_Educator_Admin {
 	 * Include the necessary files.
 	 */
 	public static function includes() {
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/ib-educator-autocomplete.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/ib-educator-admin-post-types.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/ib-educator-admin-meta.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-autocomplete.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-admin-post-types.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-admin-meta.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-quiz-admin.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-admin-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-general-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-learning-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-payment-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-taxes-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-email-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-memberships-settings.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-general-settings.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-learning-settings.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-payment-settings.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-taxes-settings.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-email-settings.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-memberships-settings.php';
 		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-syllabus-admin.php';
 
-		new IB_Educator_General_Settings();
-		new IB_Educator_Learning_Settings();
-		new IB_Educator_Payment_Settings();
-		new IB_Educator_Taxes_Settings();
-		new IB_Educator_Email_Settings();
-		new IB_Educator_Memberships_Settings();
-		IB_Educator_Autocomplete::init();
-		IB_Educator_Admin_Post_Types::init();
-		IB_Educator_Admin_Meta::init();
+		new Edr_General_Settings();
+		new Edr_Learning_Settings();
+		new Edr_Payment_Settings();
+		new Edr_Taxes_Settings();
+		new Edr_Email_Settings();
+		new Edr_Memberships_Settings();
+		Edr_Autocomplete::init();
+		Edr_Admin_Post_Types::init();
+		Edr_Admin_Meta::init();
 		Edr_Quiz_Admin::init();
 		new Edr_Syllabus_Admin();
 	}
@@ -54,9 +54,9 @@ class IB_Educator_Admin {
 	public static function maybe_includes( $screen ) {
 		switch ( $screen->id ) {
 			case 'options-permalink':
-				include IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-permalink-settings.php';
+				include IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-permalink-settings.php';
 
-				new IB_Educator_Permalink_Settings();
+				new Edr_Permalink_Settings();
 
 				break;
 		}
@@ -149,31 +149,31 @@ class IB_Educator_Admin {
 	 */
 	public static function admin_actions() {
 		if ( isset( $_GET['edu-action'] ) ) {
-			require_once IBEDUCATOR_PLUGIN_DIR . 'admin/ib-educator-admin-actions.php';
+			require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-admin-actions.php';
 
 			switch ( $_GET['edu-action'] ) {
 				case 'edit-entry':
-					IB_Educator_Admin_Actions::edit_entry();
+					Edr_Admin_Actions::edit_entry();
 					break;
 
 				case 'edit-payment':
-					IB_Educator_Admin_Actions::edit_payment();
+					Edr_Admin_Actions::edit_payment();
 					break;
 
 				case 'edit-member':
-					IB_Educator_Admin_Actions::edit_member();
+					Edr_Admin_Actions::edit_member();
 					break;
 
 				case 'edit-payment-gateway':
-					IB_Educator_Admin_Actions::edit_payment_gateway();
+					Edr_Admin_Actions::edit_payment_gateway();
 					break;
 
 				case 'delete-entry':
-					IB_Educator_Admin_Actions::delete_entry();
+					Edr_Admin_Actions::delete_entry();
 					break;
 
 				case 'delete-payment':
-					IB_Educator_Admin_Actions::delete_payment();
+					Edr_Admin_Actions::delete_payment();
 					break;
 			}
 		}
@@ -283,7 +283,7 @@ class IB_Educator_Admin {
 	 * Enqueue scripts and styles.
 	 */
 	public static function enqueue_scripts_styles() {
-		wp_enqueue_style( 'ib-educator-admin', IBEDUCATOR_PLUGIN_URL . 'admin/css/admin.css', array(), '1.5' );
+		wp_enqueue_style( 'edr-admin', IBEDUCATOR_PLUGIN_URL . 'admin/css/admin.css', array(), '1.5' );
 
 		$screen = get_current_screen();
 

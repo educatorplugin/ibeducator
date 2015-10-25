@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_Admin_Actions {
+class Edr_Admin_Actions {
 	/**
 	 * Edit course entry.
 	 */

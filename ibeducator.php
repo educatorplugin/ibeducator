@@ -75,8 +75,8 @@ IB_Educator_Request::init();
 
 if ( is_admin() ) {
 	// Setup the Educator's admin.
-	require_once IBEDUCATOR_PLUGIN_DIR . 'admin/ib-educator-admin.php';
-	IB_Educator_Admin::init();
+	require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-admin.php';
+	Edr_Admin::init();
 
 	// Update.
 	function ib_edu_update_check() {
