@@ -68,28 +68,13 @@ class IB_Educator_Main {
 	 * Initialize payment gateways.
 	 */
 	public static function init_gateways() {
-		// Include abstract payment gateway class.
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/gateways/ib-educator-payment-gateway.php';
-
 		$gateways = apply_filters( 'ib_educator_payment_gateways', array(
-			'paypal'        => array(
-				'class' => 'IB_Educator_Gateway_Paypal',
-			),
-			'cash'          => array(
-				'class' => 'IB_Educator_Gateway_Cash',
-			),
-			'check'         => array(
-				'class' => 'IB_Educator_Gateway_Check',
-			),
-			'bank-transfer' => array(
-				'class' => 'IB_Educator_Gateway_Bank_Transfer',
-			),
-			'free'          => array(
-				'class' => 'IB_Educator_Gateway_Free',
-			),
-			'stripe'        => array(
-				'class' => 'IB_Educator_Gateway_Stripe',
-			),
+			'paypal'        => array( 'class' => 'Edr_Gateway_Paypal' ),
+			'cash'          => array( 'class' => 'Edr_Gateway_Cash' ),
+			'check'         => array( 'class' => 'Edr_Gateway_Check' ),
+			'bank-transfer' => array( 'class' => 'Edr_Gateway_Bank_Transfer' ),
+			'free'          => array( 'class' => 'Edr_Gateway_Free' ),
+			'stripe'        => array( 'class' => 'Edr_Gateway_Stripe' ),
 		) );
 
 		// Get the list of enabled gateways.
@@ -113,18 +98,13 @@ class IB_Educator_Main {
 				continue;
 			}
 
-			if ( ! isset( $gateway['file'] ) ) {
-				$gateway['file'] = IBEDUCATOR_PLUGIN_DIR . 'includes/gateways/'
-								 . strtolower( str_replace( '_', '-', substr( $gateway['class'], 20 ) ) ) . '/'
-								 . strtolower( str_replace( '_', '-', $gateway['class'] ) ) . '.php';
-			}
-
-			if ( is_readable( $gateway['file'] ) ) {
+			if ( isset( $gateway['file'] ) && is_readable( $gateway['file'] ) ) {
 				require_once $gateway['file'];
-
-				$loaded_gateway = new $gateway['class']();
-				self::$gateways[ $loaded_gateway->get_id() ] = $loaded_gateway;
 			}
+
+			$gateway_instance = new $gateway['class']();
+
+			self::$gateways[ $gateway_instance->get_id() ] = $gateway_instance;
 		}
 	}
 

@@ -34,12 +34,15 @@ class Edr_Autoloader {
 	public function autoload( $class ) {
 		$file = '';
 
-		if ( 0 === strpos( $class, 'Edr_' ) ) {
+		if ( 0 === strpos( $class, 'Edr_Gateway_' ) ) {
+			$gateway_name = str_replace( '_', '-', strtolower( substr( $class, 12 ) ) );
+			$file = $this->plugin_dir . 'includes/gateways/' . $gateway_name . '/' . $gateway_name . '.php';
+		} elseif ( 0 === strpos( $class, 'Edr_' ) ) {
 			$file = $this->plugin_dir . 'includes/' . $this->get_file_name( $class );
 		}
 
 		if ( $file && is_readable( $file ) ) {
-			include_once $file;
+			require_once $file;
 		}
 	}
 }

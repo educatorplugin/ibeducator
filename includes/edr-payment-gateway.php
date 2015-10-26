@@ -1,6 +1,6 @@
 <?php
 
-abstract class IB_Educator_Payment_Gateway {
+abstract class Edr_Payment_Gateway {
 	/**
 	 * @var string
 	 */

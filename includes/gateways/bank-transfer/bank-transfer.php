@@ -1,12 +1,12 @@
 <?php
 
-class IB_Educator_Gateway_Cash extends IB_Educator_Payment_Gateway {
+class Edr_Gateway_Bank_Transfer extends Edr_Payment_Gateway {
 	/**
 	 * Setup payment gateway.
 	 */
 	public function __construct() {
-		$this->id = 'cash';
-		$this->title = __( 'Cash', 'ibeducator' );
+		$this->id = 'bank-transfer';
+		$this->title = __( 'Bank Transfer', 'ibeducator' );
 
 		// Setup options.
 		$this->init_options( array(

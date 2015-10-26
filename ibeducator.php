@@ -43,20 +43,11 @@ require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-autoloader.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-payment.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-entry.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-question.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-countries.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-post-types.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-view.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/formatting.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/functions.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-memberships.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-memberships-run.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-main.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-request-dispatcher.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/shortcodes.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-tax-manager.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-student-account.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-ajax-actions.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/filters.php';
 
 // Setup the memberships feature.

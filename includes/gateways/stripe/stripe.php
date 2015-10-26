@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_Gateway_Stripe extends IB_Educator_Payment_Gateway {
+class Edr_Gateway_Stripe extends Edr_Payment_Gateway {
 	/**
 	 * Setup payment gateway.
 	 */

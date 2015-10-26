@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_Gateway_Paypal extends IB_Educator_Payment_Gateway {
+class Edr_Gateway_Paypal extends Edr_Payment_Gateway {
 	protected $business_email;
 	protected $live_url;
 	protected $test_url;
