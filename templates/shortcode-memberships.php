@@ -15,7 +15,7 @@ if ( $query->have_posts() ) :
 	<?php
 		while ( $query->have_posts() ) {
 			$query->the_post();
-			IB_Educator_View::template_part( 'content', 'membership' );
+			Edr_View::template_part( 'content', 'membership' );
 		}
 	?>
 	</div>

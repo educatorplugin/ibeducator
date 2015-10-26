@@ -46,7 +46,7 @@ require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-question.php'
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-countries.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-post-types.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-view.php';
+require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-view.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/formatting.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/functions.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-memberships.php';

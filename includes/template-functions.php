@@ -79,7 +79,7 @@ function edr_show_course_difficulty() {
 	$difficulty = ib_edu_get_difficulty( get_the_ID() );
 
 	if ( $difficulty ) {
-		IB_Educator_View::the_template( 'course/difficulty', array( 'difficulty' => $difficulty ) );
+		Edr_View::the_template( 'course/difficulty', array( 'difficulty' => $difficulty ) );
 	}
 }
 endif;
@@ -92,7 +92,7 @@ function edr_show_course_categories() {
 	$categories = get_the_term_list( get_the_ID(), 'ib_educator_category', '', __( ', ', 'ibeducator' ) );
 
 	if ( $categories ) {
-		IB_Educator_View::the_template( 'course/categories', array( 'categories' => $categories ) );
+		Edr_View::the_template( 'course/categories', array( 'categories' => $categories ) );
 	}
 }
 endif;
@@ -131,7 +131,7 @@ function edr_display_lessons( $course_id ) {
 			unset( $tmp );
 		}
 
-		IB_Educator_View::the_template( 'course/syllabus', array(
+		Edr_View::the_template( 'course/syllabus', array(
 			'syllabus' => $syllabus,
 			'lessons'  => $lessons,
 		) );
@@ -145,7 +145,7 @@ function edr_display_lessons( $course_id ) {
 				<?php
 					while ( $query->have_posts() ) {
 						$query->the_post();
-						IB_Educator_View::template_part( 'content', 'lesson' );
+						Edr_View::template_part( 'content', 'lesson' );
 					}
 
 					wp_reset_postdata();

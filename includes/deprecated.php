@@ -11,4 +11,5 @@ function edr_alias_deprecated() {
 	class_alias( 'Edr_Email_Agent', 'IB_Educator_Email' );
 	class_alias( 'Edr_Memberships', 'IB_Educator_Memberships' );
 	class_alias( 'Edr_Memberships_Run', 'IB_Educator_Memberships_Run' );
+	class_alias( 'Edr_View', 'IB_Educator_View' );
 }

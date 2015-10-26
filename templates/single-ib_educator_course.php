@@ -10,7 +10,7 @@
 ?>
 
 <?php while ( have_posts() ) : the_post(); ?>
-<?php IB_Educator_View::template_part( 'content', 'single-course' ); ?>
+<?php Edr_View::template_part( 'content', 'single-course' ); ?>
 <?php endwhile; ?>
 
 <?php

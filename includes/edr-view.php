@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_View {
+class Edr_View {
 	/**
 	 * Get plugin templates directory.
 	 *
