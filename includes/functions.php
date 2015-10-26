@@ -149,11 +149,6 @@ function ib_edu_get_currencies() {
 		'UAH' => __( 'Ukrainian Hryvnia', 'ibeducator' ),
 	) );
 }
-/*$currencies = ib_edu_get_currencies();
-asort( $currencies );
-foreach ( $currencies as $currency => $name ) {
-	echo "case '$currency':\n";
-}*/
 
 /**
  * Get current currency.

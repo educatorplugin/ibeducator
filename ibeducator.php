@@ -7,7 +7,7 @@ Plugin Name: Educator
 Plugin URI: http://educatorplugin.com/
 Description: Offer courses to students online.
 Author: educatorteam
-Version: 1.6
+Version: 1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: ibeducator
@@ -39,7 +39,10 @@ define( 'IBEDUCATOR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 register_activation_hook( __FILE__, array( 'IB_Educator_Main', 'plugin_activation' ) );
 register_deactivation_hook( __FILE__, array( 'IB_Educator_Main', 'plugin_deactivation' ) );
 
+// Setup autoloader.
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-autoloader.php';
+new Edr_Autoloader();
+
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-payment.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-entry.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-question.php';

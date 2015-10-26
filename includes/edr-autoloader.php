@@ -1,7 +1,5 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit();
-
 class Edr_Autoloader {
 	/**
 	 * Constructor.
@@ -46,5 +44,3 @@ class Edr_Autoloader {
 		}
 	}
 }
-
-new Edr_Autoloader();
