@@ -43,8 +43,8 @@ class IB_Educator_Main {
 	 * Plugin activation hook.
 	 */
 	public static function plugin_activation() {
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-install.php';
-		$install = new IB_Educator_Install();
+		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-install.php';
+		$install = new Edr_Install();
 		$install->activate();
 	}
 
@@ -52,8 +52,8 @@ class IB_Educator_Main {
 	 * Plugin deactivation hook.
 	 */
 	public static function plugin_deactivation() {
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-install.php';
-		$install = new IB_Educator_Install();
+		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-install.php';
+		$install = new Edr_Install();
 		$install->deactivate();
 	}
 
@@ -154,35 +154,35 @@ class IB_Educator_Main {
 		$post_id = $GLOBALS['wp_query']->post->ID;
 		$action = $GLOBALS['wp_query']->query_vars['edu-action'];
 
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-actions.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-front-actions.php';
 
 		switch ( $action ) {
 			case 'cancel-payment':
-				IB_Educator_Actions::cancel_payment();
+				Edr_Front_Actions::cancel_payment();
 				break;
 
 			case 'submit-quiz':
-				IB_Educator_Actions::submit_quiz();
+				Edr_Front_Actions::submit_quiz();
 				break;
 
 			case 'payment':
-				IB_Educator_Actions::payment();
+				Edr_Front_Actions::payment();
 				break;
 
 			case 'join':
-				IB_Educator_Actions::join();
+				Edr_Front_Actions::join();
 				break;
 
 			case 'resume-entry':
-				IB_Educator_Actions::resume_entry();
+				Edr_Front_Actions::resume_entry();
 				break;
 
 			case 'pause-membership':
-				IB_Educator_Actions::pause_membership();
+				Edr_Front_Actions::pause_membership();
 				break;
 
 			case 'resume-membership':
-				IB_Educator_Actions::resume_membership();
+				Edr_Front_Actions::resume_membership();
 				break;
 		}
 	}

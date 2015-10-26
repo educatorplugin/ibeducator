@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_Email {
+class Edr_Email_Agent {
 	/**
 	 * @var string
 	 */

@@ -155,7 +155,7 @@ class IB_Educator_Admin_Settings {
 			$value = get_option( $args['name'] );
 			$name = $args['name'];
 		}
-		$edu_countries = IB_Educator_Countries::get_instance();
+		$edu_countries = Edr_Countries::get_instance();
 		$countries = $edu_countries->get_countries();
 
 		$parts = explode( ';', $value );

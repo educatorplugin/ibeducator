@@ -131,7 +131,7 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 		$screen = get_current_screen();
 
 		if ( $screen && 'toplevel_page_ib_educator_admin' == $screen->id && isset( $_GET['tab'] ) && 'taxes' == $_GET['tab'] ) {
-			wp_enqueue_script( 'ib-educator-tax-rates', IBEDUCATOR_PLUGIN_URL . 'admin/js/tax-rates.js', array( 'backbone', 'jquery-ui-sortable' ), '1.0.0', true );
+			wp_enqueue_script( 'edr-admin-tax-rates', IBEDUCATOR_PLUGIN_URL . 'admin/js/tax-rates.js', array( 'backbone', 'jquery-ui-sortable' ), '1.0.0', true );
 		}
 	}
 
@@ -158,7 +158,7 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 						return;
 					}
 
-					$edu_tax = IB_Educator_Tax::get_instance();
+					$edu_tax = Edr_Tax_Manager::get_instance();
 
 					// Get and sanitize input.
 					$data = $edu_tax->sanitize_tax_class( $input );
@@ -186,7 +186,7 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 					return;
 				}
 
-				IB_Educator_Tax::get_instance()->delete_tax_class( $_GET['name'] );
+				Edr_Tax_Manager::get_instance()->delete_tax_class( $_GET['name'] );
 				break;
 
 			case 'rates':
@@ -200,7 +200,7 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 								return;
 							}
 
-							$edu_tax = IB_Educator_Tax::get_instance();
+							$edu_tax = Edr_Tax_Manager::get_instance();
 							$rate = $edu_tax->sanitize_tax_rate( $input );
 							$rate['ID'] = $edu_tax->update_tax_rate( $rate );
 
@@ -214,9 +214,9 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 						}
 
 						$class_name = preg_replace( '/[^a-zA-Z0-9-_]+/', '', $_GET['class_name'] );
-						$edu_tax = IB_Educator_Tax::get_instance();
+						$edu_tax = Edr_Tax_Manager::get_instance();
 						$rates = $edu_tax->get_tax_rates( $class_name );
-						$edu_countries = IB_Educator_Countries::get_instance();
+						$edu_countries = Edr_Countries::get_instance();
 						$countries = $edu_countries->get_countries();
 
 						if ( ! empty( $rates ) ) {
@@ -254,7 +254,7 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 							return;
 						}
 
-						IB_Educator_Tax::get_instance()->delete_tax_rate( $_GET['ID'] );
+						Edr_Tax_Manager::get_instance()->delete_tax_rate( $_GET['ID'] );
 						break;
 				}
 				break;
@@ -288,7 +288,7 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 	 * Render tax rates app.
 	 */
 	public function render_tax_classes() {
-		$countries = IB_Educator_Countries::get_instance()->get_countries();
+		$countries = Edr_Countries::get_instance()->get_countries();
 		?>
 		<div id="edu-tax-classes-container"></div>
 
@@ -411,7 +411,7 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 		var eduGetStatesNonce = <?php echo json_encode( wp_create_nonce( 'ib_edu_get_states' ) ); ?>;
 		var eduTaxClasses = <?php
 			$json = '[';
-			$classes = IB_Educator_Tax::get_instance()->get_tax_classes();
+			$classes = Edr_Tax_Manager::get_instance()->get_tax_classes();
 			$i = 0;
 
 			foreach ( $classes as $name => $description ) {

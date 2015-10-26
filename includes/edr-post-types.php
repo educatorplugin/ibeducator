@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_Post_Types {
+class Edr_Post_Types {
 	/**
 	 * @var null|array
 	 */

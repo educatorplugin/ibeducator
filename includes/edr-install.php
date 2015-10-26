@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_Install {
+class Edr_Install {
 	/**
 	 * @var string
 	 */
@@ -60,8 +60,8 @@ class IB_Educator_Install {
 		// Post types and taxonomies.
 		if ( $inc_post_types || $inc_endpoints ) {
 			if ( $inc_post_types ) {
-				IB_Educator_Post_Types::register_post_types();
-				IB_Educator_Post_Types::register_taxonomies();
+				Edr_Post_Types::register_post_types();
+				Edr_Post_Types::register_taxonomies();
 			}
 
 			if ( $inc_endpoints ) {

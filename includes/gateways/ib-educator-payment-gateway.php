@@ -152,9 +152,9 @@ abstract class IB_Educator_Payment_Gateway {
 			return;
 		}
 
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-form.php';
+		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-form.php';
 
-		$form = new IB_Educator_Form();
+		$form = new Edr_Form();
 		$form->add_field_class( 'ib-edu-field' );
 		$form->set_decorator( 'label_before', '<div class="ib-edu-label">' );
 		$form->set_decorator( 'label_after', '</div>' );
@@ -233,7 +233,7 @@ abstract class IB_Educator_Payment_Gateway {
 			$payment->country    = isset( $billing['country'] ) ? $billing['country'] : '';
 
 			// Calculate tax.
-			$edu_tax = IB_Educator_Tax::get_instance();
+			$edu_tax = Edr_Tax_Manager::get_instance();
 			$tax_data = $edu_tax->calculate_tax( $edu_tax->get_tax_class_for( $object_id ), $payment->amount, $payment->country, $payment->state );
 			$payment->tax = $tax_data['tax'];
 			$payment->amount = $tax_data['total'];

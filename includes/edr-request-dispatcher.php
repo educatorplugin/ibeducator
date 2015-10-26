@@ -1,11 +1,11 @@
 <?php
 
-class IB_Educator_Request {
+class Edr_Request_Dispatcher {
 	/**
 	 * Initialize.
 	 */
 	public static function init() {
-		add_action( 'parse_request', array( 'IB_Educator_Request', 'process_request' ) );
+		add_action( 'parse_request', array( __CLASS__, 'process_request' ) );
 	}
 
 	/**

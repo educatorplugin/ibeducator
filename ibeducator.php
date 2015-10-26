@@ -43,35 +43,35 @@ require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-autoloader.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-payment.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-entry.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-question.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-countries.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-post-types.php';
+require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-countries.php';
+require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-post-types.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-view.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/formatting.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/functions.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-memberships.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-main.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-request.php';
+require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-request-dispatcher.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/shortcodes.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-tax.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-account.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-ajax-actions.php';
+require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-tax-manager.php';
+require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-student-account.php';
+require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-ajax-actions.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/filters.php';
 
 // Setup the post types and taxonomies.
-IB_Educator_Post_Types::init();
+Edr_Post_Types::init();
 
 // Setup Educator.
 IB_Educator_Main::init();
 
 // Ajax actions.
-IB_Educator_AJAX_Actions::init();
+Edr_Ajax_Actions::init();
 
 // Setup account processing (e.g. payment form).
-IB_Educator_Account::init();
+Edr_Student_Account::init();
 
 // Parse incoming requests (e.g. PayPal IPN).
-IB_Educator_Request::init();
+Edr_Request_Dispatcher::init();
 
 if ( is_admin() ) {
 	// Setup the Educator's admin.
@@ -81,8 +81,8 @@ if ( is_admin() ) {
 	// Update.
 	function ib_edu_update_check() {
 		if ( get_option( 'ib_educator_version' ) != IBEDUCATOR_VERSION ) {
-			require_once 'includes/ib-educator-install.php';
-			$install = new IB_Educator_Install();
+			require_once 'includes/edr-install.php';
+			$install = new Edr_Install();
 			$install->activate( false, false );
 		}
 	}

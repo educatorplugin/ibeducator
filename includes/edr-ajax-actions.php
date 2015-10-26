@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_AJAX_Actions {
+class Edr_Ajax_Actions {
 	/**
 	 * Initialize.
 	 */
@@ -29,7 +29,7 @@ class IB_Educator_AJAX_Actions {
 		$args['country'] = $_GET['country'];
 		$args['state'] = isset( $_GET['state'] ) ? $_GET['state'] : '';
 
-		echo IB_Educator_Account::payment_info( $object, $args );
+		echo Edr_Student_Account::payment_info( $object, $args );
 		exit;
 	}
 
@@ -42,7 +42,7 @@ class IB_Educator_AJAX_Actions {
 		}
 
 		$country = preg_replace( '/[^a-z]+/i', '', $_GET['country'] );
-		$edu_countries = IB_Educator_Countries::get_instance();
+		$edu_countries = Edr_Countries::get_instance();
 		$states = $edu_countries->get_states( $country );
 
 		$json = '[';

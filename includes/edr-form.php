@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_Form {
+class Edr_Form {
 	/**
 	 * @var array
 	 */

@@ -1,8 +1,8 @@
 <?php
 
-class IB_Educator_Countries {
+class Edr_Countries {
 	/**
-	 * @var IB_Educator_Countries
+	 * @var Edr_Countries
 	 */
 	protected static $instance;
 

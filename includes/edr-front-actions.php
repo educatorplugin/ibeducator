@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_Actions {
+class Edr_Front_Actions {
 	/**
 	 * Cancel student's payment for a course.
 	 */

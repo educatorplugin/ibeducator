@@ -88,7 +88,7 @@ class IB_Educator_Test_Split_Shared_Term extends IB_Educator_Tests {
 		) );
 
 		// Update shared terms for use in memberships.
-		$install = new IB_Educator_Install();
+		$install = new Edr_Install();
 		$install->update_1_4_4();
 
 		$ms = IB_Educator_Memberships::get_instance();

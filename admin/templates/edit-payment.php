@@ -30,7 +30,7 @@ if ( $payment->ID ) {
 	}
 }
 
-$edu_countries = IB_Educator_Countries::get_instance();
+$edu_countries = Edr_Countries::get_instance();
 $lines = $payment->get_lines();
 ?>
 <div class="wrap">
@@ -398,7 +398,7 @@ $lines = $payment->get_lines();
 										<select id="ib-edu-country" class="regular-text" name="country">
 											<option value=""></option>
 											<?php
-												$countries = IB_Educator_Countries::get_instance()->get_countries();
+												$countries = Edr_Countries::get_instance()->get_countries();
 
 												foreach ( $countries as $code => $country ) {
 													echo '<option value="' . esc_attr( $code ) . '"' . selected( $payment->country, $code, false ) . '>' . esc_html( $country ) . '</option>';
