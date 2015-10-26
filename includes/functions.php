@@ -540,7 +540,7 @@ function ib_edu_get_price_widget( $course_id, $user_id, $before = '<div class="i
 	}
 
 	// Check membership.
-	$membership_access = IB_Educator_Memberships::get_instance()->membership_can_access( $course_id, $user_id );
+	$membership_access = Edr_Memberships::get_instance()->membership_can_access( $course_id, $user_id );
 
 	/**
 	 * Filter the course price widget.
@@ -669,7 +669,7 @@ function ib_edu_collect_billing_data( $object ) {
 		$price = null;
 
 		if ( 'ib_edu_membership' == $object->post_type ) {
-			$price = IB_Educator_Memberships::get_instance()->get_price( $object->ID );
+			$price = Edr_Memberships::get_instance()->get_price( $object->ID );
 		} elseif ( 'ib_educator_course' == $object->post_type ) {
 			$price = ib_edu_get_course_price( $object->ID );
 		}

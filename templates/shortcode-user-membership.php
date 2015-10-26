@@ -6,7 +6,7 @@ if ( ! $user_id ) {
 	return;
 }
 
-$ms = IB_Educator_Memberships::get_instance();
+$ms = Edr_Memberships::get_instance();
 
 // Get current user's membership data.
 $user_membership = $ms->get_user_membership( $user_id );

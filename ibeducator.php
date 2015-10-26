@@ -49,7 +49,8 @@ require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-view.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/formatting.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/functions.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-memberships.php';
+require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-memberships.php';
+require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-memberships-run.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-main.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-request-dispatcher.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/shortcodes.php';
@@ -57,6 +58,9 @@ require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-tax-manager.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-student-account.php';
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-ajax-actions.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/filters.php';
+
+// Setup the memberships feature.
+Edr_Memberships_Run::init();
 
 // Setup the post types and taxonomies.
 Edr_Post_Types::init();

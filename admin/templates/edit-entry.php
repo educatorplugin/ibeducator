@@ -130,7 +130,7 @@
 								<?php if ( 'admin' == $who ) : ?>
 									<!-- Membership -->
 									<?php
-										$ms = IB_Educator_Memberships::get_instance();
+										$ms = Edr_Memberships::get_instance();
 										$memberships = $ms->get_memberships();
 									?>
 									<div class="ib-edu-field" data-origin="membership"<?php if ( 'membership' != $input['entry_origin'] ) echo ' style="display:none;"'; ?>>

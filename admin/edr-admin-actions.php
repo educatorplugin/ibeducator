@@ -309,7 +309,7 @@ class Edr_Admin_Actions {
 
 				// Setup membership for the student.
 				if ( isset( $_POST['setup_membership'] ) && 'membership' == $payment->payment_type ) {
-					$ms = IB_Educator_Memberships::get_instance();
+					$ms = Edr_Memberships::get_instance();
 
 					// Setup membership.
 					$ms->setup_membership( $payment->user_id, $payment->object_id );
@@ -358,7 +358,7 @@ class Edr_Admin_Actions {
 				return;
 			}
 
-			$ms = IB_Educator_Memberships::get_instance();
+			$ms = Edr_Memberships::get_instance();
 			$member_id = isset( $_GET['id'] ) ? intval( $_GET['id'] ) : 0;
 			$data = array();
 			$errors = array();

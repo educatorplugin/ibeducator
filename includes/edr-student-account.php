@@ -387,7 +387,7 @@ class Edr_Student_Account {
 			if ( 'ib_educator_course' == $object->post_type ) {
 				$args['price'] = ib_edu_get_course_price( $object->ID );
 			} elseif ( 'ib_edu_membership' == $object->post_type ) {
-				$args['price'] = IB_Educator_Memberships::get_instance()->get_price( $object->ID );
+				$args['price'] = Edr_Memberships::get_instance()->get_price( $object->ID );
 			}
 		}
 
@@ -428,7 +428,7 @@ class Edr_Student_Account {
 		} elseif ( 'ib_edu_membership' == $object->post_type ) {
 			$output .= '<tbody><tr><td>' . esc_html( $object->post_title );
 			$output .= '<input type="hidden" id="payment-object-id" name="membership_id" value="' . intval( $object->ID ) . '"></td>';
-			$ms = IB_Educator_Memberships::get_instance();
+			$ms = Edr_Memberships::get_instance();
 			$membership_meta = $ms->get_membership_meta( $object->ID );
 			$output .= '<td>' . $ms->format_price( $tax_data['subtotal'], $membership_meta['duration'], $membership_meta['period'] ) . '</td></tr></tbody>';
 		}

@@ -1,5 +1,5 @@
 <?php
-$ms = IB_Educator_Memberships::get_instance();
+$ms = Edr_Memberships::get_instance();
 
 // Get membership meta.
 $meta = $ms->get_membership_meta( $post->ID );

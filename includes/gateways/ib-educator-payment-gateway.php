@@ -210,7 +210,7 @@ abstract class IB_Educator_Payment_Gateway {
 			$payment->amount = ib_edu_get_course_price( $object_id );
 		} elseif ( 'membership' == $payment_type ) {
 			$payment->object_id = $object_id;
-			$payment->amount = IB_Educator_Memberships::get_instance()->get_price( $object_id );
+			$payment->amount = Edr_Memberships::get_instance()->get_price( $object_id );
 		}
 
 		$tax_data = null;

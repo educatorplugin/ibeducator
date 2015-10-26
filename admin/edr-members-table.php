@@ -36,7 +36,7 @@ class Edr_Members_Table extends WP_List_Table {
 	 */
 	public function get_user_membership( $user_id ) {
 		if ( ! array_key_exists( $user_id, $this->user_memberships ) ) {
-			$this->user_memberships[ $user_id ] = IB_Educator_Memberships::get_instance()
+			$this->user_memberships[ $user_id ] = Edr_Memberships::get_instance()
 				->get_user_membership( $user_id );
 		}
 
@@ -128,7 +128,7 @@ class Edr_Members_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_status( $user ) {
-		$statuses = IB_Educator_Memberships::get_instance()->get_statuses();
+		$statuses = Edr_Memberships::get_instance()->get_statuses();
 		$user_membership = $this->get_user_membership( $user->ID );
 
 		if ( array_key_exists( $user_membership['status'], $statuses ) ) {
@@ -169,7 +169,7 @@ class Edr_Members_Table extends WP_List_Table {
 			$args['search'] = '*' . $_GET['member_name'] . '*';
 		}
 
-		$user_query = IB_Educator_Memberships::get_instance()->get_members( $args );
+		$user_query = Edr_Memberships::get_instance()->get_members( $args );
 
 		if ( ! empty( $user_query->results ) ) {
 			$this->set_pagination_args( array(

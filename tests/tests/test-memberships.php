@@ -12,7 +12,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 		parent::setUp();
 		$this->basicSetUp();
 
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 
 		// Add categories to courses.
 		wp_set_post_terms( $this->courses[0], array( $this->categories[0] ), 'ib_educator_category' );
@@ -57,7 +57,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 			'post_title'  => 'membership 1',
 			'post_status' => 'publish',
 		) );
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 		$meta = $ms->get_membership_meta();
 		$meta['price'] = $data['price'];
 		$meta['period'] = $data['period'];
@@ -77,7 +77,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 	 * Get price of a membership.
 	 */
 	public function testGetPrice() {
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 		$this->assertEquals( 187.32, $ms->get_price( $this->memberships['months'] ) );
 		$this->assertEquals( 1283.32, $ms->get_price( $this->memberships['expired'] ) );
 	}
@@ -86,7 +86,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 	 * Setup membership.
 	 */
 	public function testSetupMembership() {
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 		$user_membership = $ms->get_user_membership( $this->users['student1'] );
 		$meta = $ms->get_membership_meta( $this->memberships['months'] );
 		
@@ -99,7 +99,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 	 * Test access control based on memberships.
 	 */
 	public function testMembershipCanAccess() {
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 		
 		// student1 should be able to access the first course.
 		$can_access = $ms->membership_can_access( $this->courses[0], $this->users['student1'] );
@@ -125,7 +125,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 	 * Test the expiration date calculations.
 	 */
 	public function testExpirationCalculations() {
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 		$tomorrow = strtotime( '+ 1 days', strtotime( date( 'Y-m-d 23:59:59' ) ) );
 
 		// Days.
@@ -185,7 +185,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 	}
 
 	public function testModifyExpirationDate() {
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 
 		// -1 Day.
 		$expiration = $ms->modify_expiration_date( 1, 'days', '-', strtotime( '2016-01-01 23:59:59' ) );
@@ -228,7 +228,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 	 * Test "pause membership" and "resume membership" features.
 	 */
 	public function testPauseResumeMembership() {
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 		
 		// Initial state of the user's membership.
 		$initial_user_membership = $ms->get_user_membership( $this->users['student1'] );
@@ -264,7 +264,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 		$entry->entry_date = date( 'Y-m-d H:i:s' );
 		$entry->save();
 
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 
 		$ms->pause_membership_entries( $this->users['student1'] );
 
@@ -278,7 +278,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 	 * This feature is invoked by CRON on production.
 	 */
 	public function testProcessExpiredMemberships() {
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 
 		$user1 = wp_insert_user( array(
 			'user_login' => 'expired1',
@@ -318,7 +318,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 		$ms->update_user_membership( $um1 );
 		$ms->update_user_membership( $um2 );
 
-		IB_Educator_Memberships_Run::process_expired_memberships();
+		Edr_Memberships_Run::process_expired_memberships();
 		
 		$this->assertEquals( array(
 			'ID'            => $um1['ID'],
@@ -377,7 +377,7 @@ Administration',
 	public function testMembershipExpirationNotification() {
 		add_filter( 'wp_mail', array( $this, 'wp_mail_expiration_notification' ) );
 
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 
 		$user = wp_insert_user( array(
 			'user_login' => 'expired3',
@@ -399,6 +399,6 @@ Administration',
 
 		$ms->update_user_membership( $user, array( 'expiration' => date( 'Y-m-d H:i:s', $in5days ) ) );
 		$_SERVER['SERVER_NAME'] = 'localhost';
-		IB_Educator_Memberships_Run::send_expiration_notifications();
+		Edr_Memberships_Run::send_expiration_notifications();
 	}
 }

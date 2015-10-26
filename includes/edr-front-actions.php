@@ -371,7 +371,7 @@ class Edr_Front_Actions {
 		}
 
 		// Make sure the user can join this course.
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 
 		if ( ! $ms->membership_can_access( $course_id, $user_id ) ) {
 			return;
@@ -420,7 +420,7 @@ class Edr_Front_Actions {
 		$entry = IB_Educator_Entry::get_instance( $entry_id );
 		if ( ! $entry ) return;
 
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 
 		// Check if there is an "inprogress" entry for this course.
 		$api = IB_Educator::get_instance();
@@ -461,7 +461,7 @@ class Edr_Front_Actions {
 			return;
 		}
 
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 		$user_membership = $ms->get_user_membership( $user_id );
 
 		if ( $user_membership && 'active' == $user_membership['status'] ) {
@@ -488,7 +488,7 @@ class Edr_Front_Actions {
 			return;
 		}
 
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 		$user_membership = $ms->get_user_membership( $user_id );
 
 		if ( $user_membership && 'paused' == $user_membership['status'] ) {

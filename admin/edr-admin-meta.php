@@ -184,7 +184,7 @@ class Edr_Admin_Meta {
 			return;
 		}
 
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 		$meta = $ms->get_membership_meta( $post_id );
 
 		// Price.

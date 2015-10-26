@@ -200,7 +200,7 @@ class IB_Educator_Tests extends WP_UnitTestCase {
 			$data['amount'] = ib_edu_get_course_price( $input['course_id'] );
 		} elseif ( 'membership' == $input['payment_type'] ) {
 			$data['object_id'] = $input['object_id'];
-			$ms = IB_Educator_Memberships::get_instance();
+			$ms = Edr_Memberships::get_instance();
 			$data['amount'] = $ms->get_price( $input['object_id'] );
 		}
 

@@ -1,5 +1,5 @@
 <?php
-$ms = IB_Educator_Memberships::get_instance();
+$ms = Edr_Memberships::get_instance();
 $membership_id = get_the_ID();
 $membership_meta = $ms->get_membership_meta( $membership_id );
 $classes = apply_filters( 'ib_educator_membership_classes', array( 'ib-edu-membership' ) );

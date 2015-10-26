@@ -10,7 +10,7 @@ global $post;
 $api = IB_Educator::get_instance();
 $courses = $api->get_student_courses( $user_id );
 $pending_courses = $api->get_pending_courses( $user_id );
-$ms = IB_Educator_Memberships::get_instance();
+$ms = Edr_Memberships::get_instance();
 
 // Output status message.
 $message = get_query_var( 'edu-message' );

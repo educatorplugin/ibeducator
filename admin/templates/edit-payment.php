@@ -243,7 +243,7 @@ $lines = $payment->get_lines();
 
 								<!-- Membership -->
 								<?php
-									$ms = IB_Educator_Memberships::get_instance();
+									$ms = Edr_Memberships::get_instance();
 									$memberships = $ms->get_memberships();
 									$user_membership = $ms->get_user_membership( $payment->user_id );
 								?>

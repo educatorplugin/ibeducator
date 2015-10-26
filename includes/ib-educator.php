@@ -810,7 +810,7 @@ class IB_Educator {
 			}
 		} elseif ( 'membership' == $payment->payment_type ) {
 			// Setup membership.
-			$ms = IB_Educator_Memberships::get_instance();
+			$ms = Edr_Memberships::get_instance();
 			$ms->setup_membership( $payment->user_id, $payment->object_id );
 
 			$student = get_user_by( 'id', $payment->user_id );
