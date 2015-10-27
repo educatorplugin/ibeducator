@@ -32,7 +32,7 @@ class Test_Edr_Quizzes extends IB_Educator_Tests {
 
 	public function addQuestion( $data ) {
 		$quizzes = Edr_Manager::get( 'edr_quizzes' );
-		$question = IB_Educator_Question::get_instance();
+		$question = edr_get_question();
 
 		$question->lesson_id = $data['lesson_id'];
 		$question->question = $data['question'];

@@ -29,8 +29,8 @@ class Edr_Payments_Table extends WP_List_Table {
 	 * Display the filters form.
 	 */
 	public function display_payment_filters() {
-		$types = IB_Educator_Payment::get_types();
-		$statuses = IB_Educator_Payment::get_statuses();
+		$types = edr_get_payment_types();
+		$statuses = edr_get_payment_statuses();
 		?>
 		<div class="ib-edu-tablenav top">
 			<form class="ib-edu-admin-search" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" method="get">
@@ -236,7 +236,7 @@ class Edr_Payments_Table extends WP_List_Table {
 
 		foreach ( $ids as $id ) {
 			if ( 'delete' === $action ) {
-				$payment = IB_Educator_Payment::get_instance( $id );
+				$payment = edr_get_payment( $id );
 
 				if ( $payment->ID ) {
 					$payment->delete();
@@ -252,7 +252,7 @@ class Edr_Payments_Table extends WP_List_Table {
 	public function prepare_items() {
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
-		$statuses = IB_Educator_Payment::get_statuses();
+		$statuses = edr_get_payment_statuses();
 		$args = array(
 			'per_page' => $this->get_items_per_page( 'payments_per_page', 10 ),
 			'page'     => $this->get_pagenum(),

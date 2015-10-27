@@ -80,7 +80,7 @@ class Edr_Gateway_Stripe extends Edr_Payment_Gateway {
 			return;
 		}
 
-		$payment = IB_Educator_Payment::get_instance( $payment_id );
+		$payment = edr_get_payment( $payment_id );
 
 		if ( ! $payment->ID || $user->ID != $payment->user_id ) {
 			// The payment must exist and it must be associated with the current user.
@@ -197,7 +197,7 @@ class Edr_Gateway_Stripe extends Edr_Payment_Gateway {
 			exit( '0' );
 		}
 
-		$payment = IB_Educator_Payment::get_instance( $_POST['payment_id'] );
+		$payment = edr_get_payment( $_POST['payment_id'] );
 
 		if ( ! $payment->ID || $user->ID != $payment->user_id ) {
 			// The payment must exist and it must be associated with the current user.

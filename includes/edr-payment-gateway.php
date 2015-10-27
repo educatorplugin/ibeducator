@@ -198,7 +198,7 @@ abstract class Edr_Payment_Gateway {
 	 * @return IB_Educator_Payment
 	 */
 	public function create_payment( $object_id, $user_id, $payment_type, $atts = array() ) {
-		$payment = IB_Educator_Payment::get_instance();
+		$payment = edr_get_payment();
 		$payment->user_id = $user_id;
 		$payment->payment_type = $payment_type;
 		$payment->payment_status = 'pending';

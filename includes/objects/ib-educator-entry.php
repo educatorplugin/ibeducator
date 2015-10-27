@@ -35,13 +35,9 @@ class IB_Educator_Entry {
 	 * @return array
 	 */
 	public static function get_statuses() {
-		return array(
-			'pending'    => __( 'Pending', 'ibeducator' ),
-			'inprogress' => __( 'In progress', 'ibeducator' ),
-			'complete'   => __( 'Complete', 'ibeducator' ),
-			'cancelled'  => __( 'Cancelled', 'ibeducator' ),
-			'paused'     => __( 'Paused', 'ibeducator' ),
-		);
+		_ib_edu_deprecated_function( 'IB_Educator_Entry::get_statuses', '1.7', 'edr_get_entry_statuses' );
+
+		return edr_get_entry_statuses();
 	}
 
 	/**
@@ -50,10 +46,9 @@ class IB_Educator_Entry {
 	 * @return array
 	 */
 	public static function get_origins() {
-		return apply_filters( 'ib_educator_entry_origins', array(
-			'payment'    => __( 'Payment', 'ibeducator' ),
-			'membership' => __( 'Membership', 'ibeducator' ),
-		) );
+		_ib_edu_deprecated_function( 'IB_Educator_Entry::get_origins', '1.7', 'edr_get_entry_origins' );
+
+		return edr_get_entry_origins();
 	}
 
 	/**
@@ -97,8 +92,8 @@ class IB_Educator_Entry {
 					'user_id'       => $this->user_id,
 					'payment_id'    => $this->payment_id,
 					'grade'         => $this->grade,
-					'entry_origin'  => array_key_exists( $this->entry_origin, self::get_origins() ) ? $this->entry_origin : '',
-					'entry_status'  => array_key_exists( $this->entry_status, self::get_statuses() ) ? $this->entry_status : '',
+					'entry_origin'  => array_key_exists( $this->entry_origin, edr_get_entry_origins() ) ? $this->entry_origin : '',
+					'entry_status'  => array_key_exists( $this->entry_status, edr_get_entry_statuses() ) ? $this->entry_status : '',
 					'entry_date'    => $this->entry_date,
 					'complete_date' => $this->complete_date
 				),
@@ -115,8 +110,8 @@ class IB_Educator_Entry {
 					'user_id'       => $this->user_id,
 					'payment_id'    => $this->payment_id,
 					'grade'         => $this->grade,
-					'entry_origin'  => array_key_exists( $this->entry_origin, self::get_origins() ) ? $this->entry_origin : '',
-					'entry_status'  => array_key_exists( $this->entry_status, self::get_statuses() ) ? $this->entry_status : '',
+					'entry_origin'  => array_key_exists( $this->entry_origin, edr_get_entry_origins() ) ? $this->entry_origin : '',
+					'entry_status'  => array_key_exists( $this->entry_status, edr_get_entry_statuses() ) ? $this->entry_status : '',
 					'entry_date'    => $this->entry_date,
 					'complete_date' => $this->complete_date
 				),

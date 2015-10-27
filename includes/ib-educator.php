@@ -99,7 +99,7 @@ class IB_Educator {
 	 * @return IB_Educator_Payment
 	 */
 	public function add_payment( $data ) {
-		$payment = IB_Educator_Payment::get_instance();
+		$payment = edr_get_payment();
 
 		if ( ! empty( $data['course_id'] ) ) {
 			$payment->course_id = $data['course_id'];
@@ -159,7 +159,7 @@ class IB_Educator {
 		$row = $wpdb->get_row( $sql );
 
 		if ( $row ) {
-			return IB_Educator_Entry::get_instance( $row );
+			return edr_get_entry( $row );
 		}
 
 		return false;
@@ -781,7 +781,7 @@ class IB_Educator {
 			$entry = $this->get_entry( array( 'payment_id' => $payment->ID ) );
 
 			if ( ! $entry ) {
-				$entry = IB_Educator_Entry::get_instance();
+				$entry = edr_get_entry();
 				$entry->course_id = $payment->course_id;
 				$entry->user_id = $payment->user_id;
 				$entry->payment_id = $payment->ID;

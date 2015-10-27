@@ -6,7 +6,7 @@ class Edr_Admin_Actions {
 	 */
 	public static function edit_entry() {
 		$entry_id = isset( $_GET['entry_id'] ) ? absint( $_GET['entry_id'] ) : 0;
-		$entry = IB_Educator_Entry::get_instance( $entry_id );
+		$entry = edr_get_entry( $entry_id );
 
 		if ( count( $_POST ) ) {
 			// Verify nonce.
@@ -33,7 +33,7 @@ class Edr_Admin_Actions {
 				if ( empty( $_POST['payment_id'] ) ) {
 					$entry->payment_id = 0;
 				} else {
-					$payment = IB_Educator_Payment::get_instance( $_POST['payment_id'] );
+					$payment = edr_get_payment( $_POST['payment_id'] );
 
 					if ( $payment->ID ) {
 						$entry->payment_id = $payment->ID;
@@ -42,7 +42,7 @@ class Edr_Admin_Actions {
 			}
 
 			// Origin.
-			if ( 'admin' == $who && isset( $_POST['entry_origin'] ) && array_key_exists( $_POST['entry_origin'], IB_Educator_Entry::get_origins() ) ) {
+			if ( 'admin' == $who && isset( $_POST['entry_origin'] ) && array_key_exists( $_POST['entry_origin'], edr_get_entry_origins() ) ) {
 				$entry->entry_origin = $_POST['entry_origin'];
 			}
 
@@ -72,7 +72,7 @@ class Edr_Admin_Actions {
 			// Entry status.
 			$prev_status = '';
 
-			if ( isset( $_POST['entry_status'] ) && array_key_exists( $_POST['entry_status'], IB_Educator_Entry::get_statuses() ) ) {
+			if ( isset( $_POST['entry_status'] ) && array_key_exists( $_POST['entry_status'], edr_get_entry_statuses() ) ) {
 				if ( $entry->ID && $entry->entry_status != $_POST['entry_status'] ) {
 					$prev_status = $entry->entry_status;
 				}
@@ -138,7 +138,7 @@ class Edr_Admin_Actions {
 	 */
 	public static function edit_payment() {
 		$payment_id = isset( $_GET['payment_id'] ) ? absint( $_GET['payment_id'] ) : 0;
-		$payment = IB_Educator_Payment::get_instance( $payment_id );
+		$payment = edr_get_payment( $payment_id );
 		$errors = array();
 
 		if ( count( $_POST ) ) {
@@ -151,7 +151,7 @@ class Edr_Admin_Actions {
 			}
 
 			// Payment type.
-			if ( isset( $_POST['payment_type'] ) && array_key_exists( $_POST['payment_type'], IB_Educator_Payment::get_types() ) ) {
+			if ( isset( $_POST['payment_type'] ) && array_key_exists( $_POST['payment_type'], edr_get_payment_types() ) ) {
 				$payment->payment_type = $_POST['payment_type'];
 			}
 
@@ -198,7 +198,7 @@ class Edr_Admin_Actions {
 			}
 
 			// Payment status.
-			if ( isset( $_POST['payment_status'] ) && array_key_exists( $_POST['payment_status'], IB_Educator_Payment::get_statuses() ) ) {
+			if ( isset( $_POST['payment_status'] ) && array_key_exists( $_POST['payment_status'], edr_get_payment_statuses() ) ) {
 				$payment->payment_status = $_POST['payment_status'];
 			}
 
@@ -277,7 +277,7 @@ class Edr_Admin_Actions {
 				// Create entry for the student.
 				// Implemented for the "course" payment type.
 				if ( isset( $_POST['create_entry'] ) && ! $api->get_entry( array( 'payment_id' => $payment->ID ) ) ) {
-					$entry = IB_Educator_Entry::get_instance();
+					$entry = edr_get_entry();
 					$entry->course_id = $payment->course_id;
 					$entry->user_id = $payment->user_id;
 					$entry->payment_id = $payment->ID;
@@ -479,7 +479,7 @@ class Edr_Admin_Actions {
 			return;
 		}
 
-		$entry = IB_Educator_Entry::get_instance( $entry_id );
+		$entry = edr_get_entry( $entry_id );
 
 		// Delete entry if it was found.
 		if ( $entry->ID && $entry->delete() ) {
@@ -510,7 +510,7 @@ class Edr_Admin_Actions {
 			return;
 		}
 
-		$payment = IB_Educator_Payment::get_instance( $payment_id );
+		$payment = edr_get_payment( $payment_id );
 
 		// Delete payment if it was found.
 		if ( $payment->ID && $payment->delete() ) {

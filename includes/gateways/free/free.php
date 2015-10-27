@@ -25,7 +25,7 @@ class Edr_Gateway_Free extends Edr_Payment_Gateway {
 		}
 
 		// Add payment.
-		$payment = IB_Educator_Payment::get_instance();
+		$payment = edr_get_payment();
 		$payment->user_id = $user_id;
 		$payment->payment_type = $payment_type;
 		$payment->payment_status = 'complete';
@@ -52,7 +52,7 @@ class Edr_Gateway_Free extends Edr_Payment_Gateway {
 			if ( $payment->ID ) {
 				if ( 'course' == $payment->payment_type ) {
 					// Setup course entry.
-					$entry = IB_Educator_Entry::get_instance();
+					$entry = edr_get_entry();
 					$entry->course_id = $object_id;
 					$entry->user_id = $user_id;
 					$entry->payment_id = $payment->ID;

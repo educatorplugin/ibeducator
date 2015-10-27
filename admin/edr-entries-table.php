@@ -57,7 +57,7 @@ class Edr_Entries_Table extends WP_List_Table {
 	 * Display the filters form.
 	 */
 	public function display_entry_filters() {
-		$statuses = IB_Educator_Entry::get_statuses();
+		$statuses = edr_get_entry_statuses();
 		$access = '';
 
 		if ( current_user_can( 'manage_educator' ) ) {
@@ -296,7 +296,7 @@ class Edr_Entries_Table extends WP_List_Table {
 
 		foreach ( $ids as $id ) {
 			if ( 'delete' === $action ) {
-				$entry = IB_Educator_Entry::get_instance( $id );
+				$entry = edr_get_entry( $id );
 
 				if ( $entry->ID ) {
 					$entry->delete();
@@ -314,7 +314,7 @@ class Edr_Entries_Table extends WP_List_Table {
 
 		$entries = null;
 		$api = IB_Educator::get_instance();
-		$statuses = IB_Educator_Entry::get_statuses();
+		$statuses = edr_get_entry_statuses();
 		$args = array(
 			'per_page' => $this->get_items_per_page( 'entries_per_page', 10 ),
 			'page'     => $this->get_pagenum(),

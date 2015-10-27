@@ -7,9 +7,9 @@ if ( ! current_user_can( 'manage_educator' ) ) {
 }
 
 $payment_id = isset( $_GET['payment_id'] ) ? absint( $_GET['payment_id'] ) : 0;
-$payment = IB_Educator_Payment::get_instance( $payment_id );
-$payment_statuses = IB_Educator_Payment::get_statuses();
-$types = IB_Educator_Payment::get_types();
+$payment = edr_get_payment( $payment_id );
+$payment_statuses = edr_get_payment_statuses();
+$types = edr_get_payment_types();
 $api = IB_Educator::get_instance();
 $student = null;
 $post = null;

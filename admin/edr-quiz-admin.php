@@ -156,7 +156,7 @@ class Edr_Quiz_Admin {
 				}
 
 				// Process input.
-				$question = IB_Educator_Question::get_instance();
+				$question = edr_get_question();
 
 				$question->lesson_id = $input->lesson_id;
 
@@ -223,7 +223,7 @@ class Edr_Quiz_Admin {
 					exit();
 				}
 
-				$question = IB_Educator_Question::get_instance( $question_id );
+				$question = edr_get_question( $question_id );
 
 				// Question found?
 				if ( ! $question->ID ) {
@@ -288,7 +288,7 @@ class Edr_Quiz_Admin {
 					exit();
 				}
 
-				$question = IB_Educator_Question::get_instance( $question_id );
+				$question = edr_get_question( $question_id );
 
 				// Question found?
 				if ( ! $question->ID ) {
@@ -444,7 +444,7 @@ class Edr_Quiz_Admin {
 		) );
 
 		// Send notification email to the student.
-		$entry = IB_Educator_Entry::get_instance( $entry_id );
+		$entry = edr_get_entry( $entry_id );
 		$student = get_user_by( 'id', $entry->user_id );
 
 		if ( $student ) {

@@ -11,7 +11,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 		return;
 	}
 	
-	$payment = IB_Educator_Payment::get_instance( $thankyou );
+	$payment = edr_get_payment( $thankyou );
 
 	if ( ! $payment->ID || $payment->user_id != $user_id ) {
 		return;
@@ -43,7 +43,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 		<dt class="payment-status"><?php _e( 'Payment Status', 'ibeducator' ); ?></dt>
 		<dd>
 			<?php
-				$statuses = IB_Educator_Payment::get_statuses();
+				$statuses = edr_get_payment_statuses();
 
 				if ( array_key_exists( $payment->payment_status, $statuses ) ) {
 					echo esc_html( $statuses[ $payment->payment_status ] );
@@ -102,7 +102,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 		return;
 	}
 
-	$payment = IB_Educator_Payment::get_instance( $pay );
+	$payment = edr_get_payment( $pay );
 
 	// The payment must exist and it must belong to the current user.
 	if ( $payment->ID && $payment->user_id == $user_id ) {

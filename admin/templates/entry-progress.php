@@ -7,7 +7,7 @@ if ( ! $entry_id ) {
 	return;
 }
 
-$entry = IB_Educator_Entry::get_instance( $entry_id );
+$entry = edr_get_entry( $entry_id );
 
 if ( ! $entry->ID ) {
 	return;

@@ -2,7 +2,7 @@
 	if ( ! defined( 'ABSPATH' ) ) exit;
 	
 	$entry_id = isset( $_GET['entry_id'] ) ? absint( $_GET['entry_id'] ) : 0;
-	$entry = IB_Educator_Entry::get_instance( $entry_id );
+	$entry = edr_get_entry( $entry_id );
 	$who = '';
 
 	if ( current_user_can( 'manage_educator' ) ) {
@@ -18,8 +18,8 @@
 		return;
 	}
 
-	$statuses = IB_Educator_Entry::get_statuses();
-	$origins = IB_Educator_Entry::get_origins();
+	$statuses = edr_get_entry_statuses();
+	$origins = edr_get_entry_origins();
 	$student = null;
 	$course = null;
 	$input = array(

@@ -48,13 +48,9 @@ class IB_Educator_Payment {
 	 * @return array
 	 */
 	public static function get_statuses() {
-		return array(
-			'pending'             => __( 'Pending', 'ibeducator' ),
-			'complete'            => __( 'Complete', 'ibeducator' ),
-			'failed'              => __( 'Failed', 'ibeducator' ),
-			'cancelled'           => __( 'Cancelled', 'ibeducator' ),
-			//'membership_switched' => __( 'Membership Switched', 'ibeducator' ),
-		);
+		_ib_edu_deprecated_function( 'IB_Educator_Payment::get_statuses', '1.7', 'edr_get_payment_statuses' );
+
+		return edr_get_payment_statuses();
 	}
 
 	/**
@@ -63,10 +59,9 @@ class IB_Educator_Payment {
 	 * @return array
 	 */
 	public static function get_types() {
-		return array(
-			'course'     => __( 'Course', 'ibeducator' ),
-			'membership' => __( 'Membership', 'ibeducator' ),
-		);
+		_ib_edu_deprecated_function( 'IB_Educator_Payment::get_types', '1.7', 'edr_get_payment_types' );
+
+		return edr_get_payment_types();
 	}
 
 
@@ -138,7 +133,7 @@ class IB_Educator_Payment {
 			'txn_id'          => $this->txn_id,
 			'payment_type'    => $this->payment_type,
 			'payment_gateway' => $this->payment_gateway,
-			'payment_status'  => array_key_exists( $this->payment_status, self::get_statuses() ) ? $this->payment_status : '',
+			'payment_status'  => array_key_exists( $this->payment_status, edr_get_payment_statuses() ) ? $this->payment_status : '',
 			'amount'          => $this->amount,
 			'tax'             => $this->tax,
 			'currency'        => $this->currency,

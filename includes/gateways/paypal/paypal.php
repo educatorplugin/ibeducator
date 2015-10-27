@@ -90,7 +90,7 @@ class Edr_Gateway_Paypal extends Edr_Payment_Gateway {
 			return;
 		}
 
-		$payment = IB_Educator_Payment::get_instance( $payment_id );
+		$payment = edr_get_payment( $payment_id );
 
 		// The payment must exist in the database
 		// and it must belong to the current user.
@@ -264,7 +264,7 @@ class Edr_Gateway_Paypal extends Edr_Payment_Gateway {
 					return;
 				}
 
-				$payment = IB_Educator_Payment::get_instance( $payment_id );
+				$payment = edr_get_payment( $payment_id );
 
 				if ( ! $payment->ID ) {
 					return;

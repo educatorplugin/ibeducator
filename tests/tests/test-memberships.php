@@ -255,7 +255,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 	 * Pause user's entries with origin of "membership".
 	 */
 	public function testPauseMembershipEntries() {
-		$entry = IB_Educator_Entry::get_instance();
+		$entry = edr_get_entry();
 		$entry->course_id = $this->courses[0];
 		$entry->user_id = $this->users['student1'];
 		$entry->payment_id = 0;
@@ -268,7 +268,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 
 		$ms->pause_membership_entries( $this->users['student1'] );
 
-		$entry = IB_Educator_Entry::get_instance( $entry->ID );
+		$entry = edr_get_entry( $entry->ID );
 
 		$this->assertEquals( 'paused', $entry->entry_status );
 	}

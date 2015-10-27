@@ -726,6 +726,13 @@ function ib_edu_lesson_access( $lesson_id ) {
 	return get_post_meta( $lesson_id, '_ib_educator_access', true );
 }
 
+/**
+ * Get a purchase link.
+ * Currently, supports memberships only.
+ *
+ * @param array $atts
+ * @return string
+ */
 function ib_edu_purchase_link( $atts ) {
 	$atts = wp_parse_args( $atts, array(
 		'object_id' => null,
@@ -753,6 +760,89 @@ function ib_edu_purchase_link( $atts ) {
 	}
 
 	return $html;
+}
+
+/**
+ * Get a payment.
+ *
+ * @param int|null $id
+ * @return IB_Educator_Payment
+ */
+function edr_get_payment( $id = null ) {
+	return IB_Educator_Payment::get_instance( $id );
+}
+
+/**
+ * Get the available payment statuses.
+ *
+ * @return array
+ */
+function edr_get_payment_statuses() {
+	return array(
+		'pending'   => __( 'Pending', 'ibeducator' ),
+		'complete'  => __( 'Complete', 'ibeducator' ),
+		'failed'    => __( 'Failed', 'ibeducator' ),
+		'cancelled' => __( 'Cancelled', 'ibeducator' ),
+	);
+}
+
+/**
+ * Get the available payment types.
+ *
+ * @return array
+ */
+function edr_get_payment_types() {
+	return array(
+		'course'     => __( 'Course', 'ibeducator' ),
+		'membership' => __( 'Membership', 'ibeducator' ),
+	);
+}
+
+/**
+ * Get an entry.
+ *
+ * @param int|null $id
+ * @return IB_Educator_Entry
+ */
+function edr_get_entry( $id = null ) {
+	return IB_Educator_Entry::get_instance( $id );
+}
+
+/**
+ * Get the available entry statuses.
+ *
+ * @return array
+ */
+function edr_get_entry_statuses() {
+	return array(
+		'pending'    => __( 'Pending', 'ibeducator' ),
+		'inprogress' => __( 'In progress', 'ibeducator' ),
+		'complete'   => __( 'Complete', 'ibeducator' ),
+		'cancelled'  => __( 'Cancelled', 'ibeducator' ),
+		'paused'     => __( 'Paused', 'ibeducator' ),
+	);
+}
+
+/**
+ * Get the available entry origins.
+ *
+ * @return array
+ */
+function edr_get_entry_origins() {
+	return apply_filters( 'ib_educator_entry_origins', array(
+		'payment'    => __( 'Payment', 'ibeducator' ),
+		'membership' => __( 'Membership', 'ibeducator' ),
+	) );
+}
+
+/**
+ * Get a question.
+ *
+ * @param int|null $id
+ * @return IB_Educator_Question
+ */
+function edr_get_question( $id = null ) {
+	return IB_Educator_Question::get_instance( $id );
 }
 
 /**

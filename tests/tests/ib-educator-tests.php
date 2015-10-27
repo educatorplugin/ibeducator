@@ -212,8 +212,8 @@ class IB_Educator_Tests extends WP_UnitTestCase {
 	 * Add course entry.
 	 */
 	public function addEntry( $data ) {
-		$payment = IB_Educator_Payment::get_instance( $data['payment_id'] );
-		$entry = IB_Educator_Entry::get_instance();
+		$payment = edr_get_payment( $data['payment_id'] );
+		$entry = edr_get_entry();
 		$entry->course_id = $data['course_id'];
 		$entry->user_id = $payment->user_id;
 		$entry->payment_id = $payment->ID;

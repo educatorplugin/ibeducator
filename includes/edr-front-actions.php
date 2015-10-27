@@ -15,7 +15,7 @@ class Edr_Front_Actions {
 
 		if ( ! $payment_id ) return;
 
-		$payment = IB_Educator_Payment::get_instance( $payment_id );
+		$payment = edr_get_payment( $payment_id );
 
 		// User may cancel his/her pending payments only.
 		if ( 'pending' == $payment->payment_status && $payment->user_id == get_current_user_id() ) {
@@ -390,7 +390,7 @@ class Edr_Front_Actions {
 
 		$user_membership = $ms->get_user_membership( $user_id );
 
-		$entry = IB_Educator_Entry::get_instance();
+		$entry = edr_get_entry();
 		$entry->course_id    = $course_id;
 		$entry->object_id    = $user_membership['membership_id'];
 		$entry->user_id      = $user_id;
@@ -417,7 +417,7 @@ class Edr_Front_Actions {
 		$entry_id = $_POST['entry_id'];
 
 		// Get entry.
-		$entry = IB_Educator_Entry::get_instance( $entry_id );
+		$entry = edr_get_entry( $entry_id );
 		if ( ! $entry ) return;
 
 		$ms = Edr_Memberships::get_instance();
