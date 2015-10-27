@@ -16,33 +16,40 @@ class IB_Educator_Question {
 	 * @return IB_Educator_Question
 	 */
 	public static function get_instance( $data = null ) {
-		global $wpdb;
-
-		if ( is_numeric( $data ) ) {
-			$tables = ib_edu_table_names();
-			$data = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . $tables['questions'] . ' WHERE ID = %d', $data ) );
-		}
-
 		return new self( $data );
 	}
 
 	/**
 	 * Constructor.
 	 *
-	 * @param array $data
+	 * @param mixed $data
 	 */
 	public function __construct( $data ) {
+		global $wpdb;
 		$tables = ib_edu_table_names();
 		$this->table_name = $tables['questions'];
 
-		if ( ! empty( $data ) ) {
-			$this->ID = $data->ID;
-			$this->lesson_id = $data->lesson_id;
-			$this->question = $data->question;
-			$this->question_type = $data->question_type;
-			$this->question_content = $data->question_content;
-			$this->menu_order = $data->menu_order;
+		if ( is_numeric( $data ) ) {
+			$data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $this->table_name WHERE ID = %d", $data ) );
 		}
+
+		if ( ! empty( $data ) ) {
+			$this->set_data( $data );
+		}
+	}
+
+	/**
+	 * Set data.
+	 *
+	 * @param object $data
+	 */
+	public function set_data( $data ) {
+		$this->ID = $data->ID;
+		$this->lesson_id = $data->lesson_id;
+		$this->question = $data->question;
+		$this->question_type = $data->question_type;
+		$this->question_content = $data->question_content;
+		$this->menu_order = $data->menu_order;
 	}
 
 	/**

@@ -765,11 +765,11 @@ function ib_edu_purchase_link( $atts ) {
 /**
  * Get a payment.
  *
- * @param int|null $id
+ * @param int|object|null $data
  * @return IB_Educator_Payment
  */
-function edr_get_payment( $id = null ) {
-	return IB_Educator_Payment::get_instance( $id );
+function edr_get_payment( $data = null ) {
+	return new IB_Educator_Payment( $data );
 }
 
 /**
@@ -801,11 +801,11 @@ function edr_get_payment_types() {
 /**
  * Get an entry.
  *
- * @param int|null $id
+ * @param int|object|null $data
  * @return IB_Educator_Entry
  */
-function edr_get_entry( $id = null ) {
-	return IB_Educator_Entry::get_instance( $id );
+function edr_get_entry( $data = null ) {
+	return new IB_Educator_Entry( $data );
 }
 
 /**
@@ -838,11 +838,11 @@ function edr_get_entry_origins() {
 /**
  * Get a question.
  *
- * @param int|null $id
+ * @param int|object|null $data
  * @return IB_Educator_Question
  */
-function edr_get_question( $id = null ) {
-	return IB_Educator_Question::get_instance( $id );
+function edr_get_question( $data = null ) {
+	return new IB_Educator_Question( $data );
 }
 
 /**

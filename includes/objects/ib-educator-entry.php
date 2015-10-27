@@ -20,12 +20,6 @@ class IB_Educator_Entry {
 	 * @return IB_Educator_Entry
 	 */
 	public static function get_instance( $data = null ) {
-		if ( is_numeric( $data ) && $data > 0 ) {
-			global $wpdb;
-			$tables = ib_edu_table_names();
-			$data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $tables['entries'] . " WHERE ID = %d", $data ) );
-		}
-
 		return new self( $data );
 	}
 
@@ -52,26 +46,39 @@ class IB_Educator_Entry {
 	}
 
 	/**
-	 * @constructor
+	 * Constructor
 	 *
-	 * @param array $data
+	 * @param mixed $data
 	 */
 	public function __construct( $data ) {
 		global $wpdb;
 		$tables = ib_edu_table_names();
 		$this->table_name = $tables['entries'];
 
-		if ( ! empty( $data ) ) {
-			$this->ID = $data->ID;
-			$this->course_id = $data->course_id;
-			$this->object_id = $data->object_id;
-			$this->user_id = $data->user_id;
-			$this->payment_id = $data->payment_id;
-			$this->grade = $data->grade;
-			$this->entry_origin = $data->entry_origin;
-			$this->entry_status = $data->entry_status;
-			$this->entry_date = $data->entry_date;
+		if ( is_numeric( $data ) && $data > 0 ) {
+			$data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $this->table_name WHERE ID = %d", $data ) );
 		}
+
+		if ( ! empty( $data ) ) {
+			$this->set_data( $data );
+		}
+	}
+
+	/**
+	 * Set data.
+	 *
+	 * @param object $data
+	 */
+	public function set_data( $data ) {
+		$this->ID = $data->ID;
+		$this->course_id = $data->course_id;
+		$this->object_id = $data->object_id;
+		$this->user_id = $data->user_id;
+		$this->payment_id = $data->payment_id;
+		$this->grade = $data->grade;
+		$this->entry_origin = $data->entry_origin;
+		$this->entry_status = $data->entry_status;
+		$this->entry_date = $data->entry_date;
 	}
 
 	/**
