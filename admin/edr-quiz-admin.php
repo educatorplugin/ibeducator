@@ -161,7 +161,7 @@ class Edr_Quiz_Admin {
 				$question->lesson_id = $input->lesson_id;
 
 				if ( isset( $input->question ) && ! empty( $input->question ) ) {
-					$question->question = $input->question;
+					$question->question = apply_filters( 'edr_add_question_pre_question', $input->question );
 				} else {
 					$response['errors'][] = 'question';
 				}
@@ -247,7 +247,7 @@ class Edr_Quiz_Admin {
 				}
 
 				if ( isset( $input->question ) && ! empty( $input->question ) ) {
-					$question->question = $input->question;
+					$question->question = apply_filters( 'edr_edit_question_pre_question', $input->question );
 				} else {
 					$response['errors'][] = 'question';
 				}

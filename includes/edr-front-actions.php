@@ -118,14 +118,15 @@ class Edr_Front_Actions {
 					if ( isset( $choices[ $question->ID ] ) && isset( $choices[ $question->ID ][ $user_answer ] ) ) {
 						$choice = $choices[ $question->ID ][ $user_answer ];
 
-						// Add answer to database.
-						$added = $quizzes->add_answer( array(
+						$answer_data = apply_filters( 'edr_submit_answer_pre', array(
 							'question_id' => $question->ID,
 							'grade_id'    => $grade_id,
 							'entry_id'    => $entry_id,
 							'correct'     => $choice->correct,
-							'choice_id'   => $choice->ID
-						) );
+							'choice_id'   => $choice->ID,
+						), $question );
+
+						$added = $quizzes->add_answer( $answer_data );
 
 						if ( 1 == $choice->correct ) {
 							++$correct;
@@ -147,14 +148,15 @@ class Edr_Front_Actions {
 						continue;
 					}
 
-					// Add answer to database.
-					$added = $quizzes->add_answer( array(
+					$answer_data = apply_filters( 'edr_submit_answer_pre', array(
 						'question_id' => $question->ID,
 						'grade_id'    => $grade_id,
 						'entry_id'    => $entry_id,
 						'correct'     => -1,
-						'answer_text' => $user_answer
-					) );
+						'answer_text' => $user_answer,
+					), $question );
+
+					$added = $quizzes->add_answer( $answer_data );
 					
 					break;
 			}
