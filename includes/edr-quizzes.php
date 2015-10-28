@@ -83,7 +83,7 @@ class Edr_Quizzes {
 		$questions = $wpdb->get_results( $wpdb->prepare( $query, $lesson_id ) );
 
 		if ( ! empty( $questions ) ) {
-			$questions = array_map( array( 'IB_Educator_Question', 'get_instance' ), $questions );
+			$questions = array_map( 'edr_get_question', $questions );
 		}
 
 		return $questions;

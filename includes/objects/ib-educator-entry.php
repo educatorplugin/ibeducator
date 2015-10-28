@@ -99,8 +99,8 @@ class IB_Educator_Entry {
 					'user_id'       => $this->user_id,
 					'payment_id'    => $this->payment_id,
 					'grade'         => $this->grade,
-					'entry_origin'  => array_key_exists( $this->entry_origin, edr_get_entry_origins() ) ? $this->entry_origin : '',
-					'entry_status'  => array_key_exists( $this->entry_status, edr_get_entry_statuses() ) ? $this->entry_status : '',
+					'entry_origin'  => sanitize_text_field( $this->entry_origin ),
+					'entry_status'  => sanitize_text_field( $this->entry_status ),
 					'entry_date'    => $this->entry_date,
 					'complete_date' => $this->complete_date
 				),
@@ -117,8 +117,8 @@ class IB_Educator_Entry {
 					'user_id'       => $this->user_id,
 					'payment_id'    => $this->payment_id,
 					'grade'         => $this->grade,
-					'entry_origin'  => array_key_exists( $this->entry_origin, edr_get_entry_origins() ) ? $this->entry_origin : '',
-					'entry_status'  => array_key_exists( $this->entry_status, edr_get_entry_statuses() ) ? $this->entry_status : '',
+					'entry_origin'  => sanitize_text_field( $this->entry_origin ),
+					'entry_status'  => sanitize_text_field( $this->entry_status ),
 					'entry_date'    => $this->entry_date,
 					'complete_date' => $this->complete_date
 				),

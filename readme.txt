@@ -1,5 +1,5 @@
 === Educator ===
-Contributors: educatorteam, dmytro.d
+Contributors: educatorteam
 Donate link: http://educatorplugin.com
 Tags: learning management system, lms, learning, online courses
 Requires at least: 4.3

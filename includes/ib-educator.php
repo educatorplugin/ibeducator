@@ -234,7 +234,7 @@ class IB_Educator {
 
 		if ( $entries ) {
 			if ( 'OBJECT' == $output_type ) {
-				$entries = array_map( array( 'IB_Educator_Entry', 'get_instance' ), $entries );
+				$entries = array_map( 'edr_get_entry', $entries );
 			}
 		}
 
@@ -492,7 +492,7 @@ class IB_Educator {
 		$payments = $wpdb->get_results( $sql . ' ORDER BY payment_date DESC' . $pagination_sql, $output_type );
 
 		if ( ! empty( $payments ) ) {
-			$payments = array_map( array( 'IB_Educator_Payment', 'get_instance' ), $payments );
+			$payments = array_map( 'edr_get_payment', $payments );
 		}
 
 		if ( $has_pagination ) {

@@ -140,7 +140,7 @@ class IB_Educator_Payment {
 			'txn_id'          => $this->txn_id,
 			'payment_type'    => $this->payment_type,
 			'payment_gateway' => $this->payment_gateway,
-			'payment_status'  => array_key_exists( $this->payment_status, edr_get_payment_statuses() ) ? $this->payment_status : '',
+			'payment_status'  => sanitize_text_field( $this->payment_status ),
 			'amount'          => $this->amount,
 			'tax'             => $this->tax,
 			'currency'        => $this->currency,
