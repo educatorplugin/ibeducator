@@ -22,6 +22,6 @@ require dirname( __FILE__ ) . '/ib-educator-tests.php';
 
 // Activate and setup the plugin.
 activate_plugin( 'ibeducator/ibeducator.php' );
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-install.php';
+require_once IBEDUCATOR_PLUGIN_DIR . 'includes/Edr/Install.php';
 $edr_install = new Edr_Install();
 $edr_install->activate();

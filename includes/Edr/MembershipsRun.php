@@ -1,6 +1,6 @@
 <?php
 
-class Edr_Memberships_Run {
+class Edr_MembershipsRun {
 	/**
 	 * Initialize.
 	 */

@@ -1,6 +1,6 @@
 <?php
 
-class Edr_Gateway_Stripe extends Edr_Payment_Gateway {
+class Edr_Gateway_Stripe extends Edr_Gateway_Base {
 	/**
 	 * Setup payment gateway.
 	 */

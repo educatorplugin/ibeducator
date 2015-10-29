@@ -40,7 +40,7 @@ register_activation_hook( __FILE__, array( 'IB_Educator_Main', 'plugin_activatio
 register_deactivation_hook( __FILE__, array( 'IB_Educator_Main', 'plugin_deactivation' ) );
 
 // Setup autoloader.
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-autoloader.php';
+require_once IBEDUCATOR_PLUGIN_DIR . 'includes/Edr/Autoloader.php';
 new Edr_Autoloader();
 
 require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-payment.php';
@@ -54,22 +54,22 @@ require_once IBEDUCATOR_PLUGIN_DIR . 'includes/shortcodes.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/filters.php';
 
 // Setup the memberships feature.
-Edr_Memberships_Run::init();
+Edr_MembershipsRun::init();
 
 // Setup the post types and taxonomies.
-Edr_Post_Types::init();
+Edr_PostTypes::init();
 
 // Setup Educator.
 IB_Educator_Main::init();
 
 // Ajax actions.
-Edr_Ajax_Actions::init();
+Edr_AjaxActions::init();
 
 // Setup account processing (e.g. payment form).
-Edr_Student_Account::init();
+Edr_StudentAccount::init();
 
 // Parse incoming requests (e.g. PayPal IPN).
-Edr_Request_Dispatcher::init();
+Edr_RequestDispatcher::init();
 
 if ( is_admin() ) {
 	// Setup the Educator's admin.

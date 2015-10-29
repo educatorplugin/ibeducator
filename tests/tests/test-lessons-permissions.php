@@ -256,7 +256,7 @@ EOT;
 			'comment_type' => '',
 		) );
 
-		Edr_Post_Types::clear_current_user_courses();
+		Edr_PostTypes::clear_current_user_courses();
 
 		$wp_the_query = new WP_Query();
 		$wp_the_query->query( array(
@@ -289,7 +289,7 @@ EOT;
 			'comment_type' => '',
 		) );
 
-		Edr_Post_Types::clear_current_user_courses();
+		Edr_PostTypes::clear_current_user_courses();
 
 		$wp_the_query = new WP_Query();
 		$wp_the_query->query( array(

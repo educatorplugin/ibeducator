@@ -1,6 +1,6 @@
 <?php
 
-class Edr_Ajax_Actions {
+class Edr_AjaxActions {
 	/**
 	 * Initialize.
 	 */
@@ -29,7 +29,7 @@ class Edr_Ajax_Actions {
 		$args['country'] = $_GET['country'];
 		$args['state'] = isset( $_GET['state'] ) ? $_GET['state'] : '';
 
-		echo Edr_Student_Account::payment_info( $object, $args );
+		echo Edr_StudentAccount::payment_info( $object, $args );
 		exit;
 	}
 

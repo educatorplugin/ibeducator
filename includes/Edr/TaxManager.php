@@ -1,8 +1,8 @@
 <?php
 
-class Edr_Tax_Manager {
+class Edr_TaxManager {
 	/**
-	 * @var Edr_Tax_Manager
+	 * @var Edr_TaxManager
 	 */
 	protected static $instance;
 
@@ -27,7 +27,7 @@ class Edr_Tax_Manager {
 	/**
 	 * Get insntance of this class (singleton).
 	 *
-	 * @return Edr_Tax_Manager
+	 * @return Edr_TaxManager
 	 */
 	public static function get_instance() {
 		if ( ! self::$instance ) {

@@ -1,6 +1,6 @@
 <?php
 
-class Edr_Request_Dispatcher {
+class Edr_RequestDispatcher {
 	/**
 	 * Initialize.
 	 */

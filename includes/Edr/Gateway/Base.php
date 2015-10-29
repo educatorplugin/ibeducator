@@ -1,6 +1,6 @@
 <?php
 
-abstract class Edr_Payment_Gateway {
+abstract class Edr_Gateway_Base {
 	/**
 	 * @var string
 	 */
@@ -152,8 +152,6 @@ abstract class Edr_Payment_Gateway {
 			return;
 		}
 
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-form.php';
-
 		$form = new Edr_Form();
 		$form->add_field_class( 'ib-edu-field' );
 		$form->set_decorator( 'label_before', '<div class="ib-edu-label">' );
@@ -233,7 +231,7 @@ abstract class Edr_Payment_Gateway {
 			$payment->country    = isset( $billing['country'] ) ? $billing['country'] : '';
 
 			// Calculate tax.
-			$edu_tax = Edr_Tax_Manager::get_instance();
+			$edu_tax = Edr_TaxManager::get_instance();
 			$tax_data = $edu_tax->calculate_tax( $edu_tax->get_tax_class_for( $object_id ), $payment->amount, $payment->country, $payment->state );
 			$payment->tax = $tax_data['tax'];
 			$payment->amount = $tax_data['total'];

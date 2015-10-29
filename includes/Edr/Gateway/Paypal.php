@@ -1,6 +1,6 @@
 <?php
 
-class Edr_Gateway_Paypal extends Edr_Payment_Gateway {
+class Edr_Gateway_Paypal extends Edr_Gateway_Base {
 	protected $business_email;
 	protected $live_url;
 	protected $test_url;

@@ -1,6 +1,5 @@
 <?php
 // Setup form object.
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-form.php';
 $form = new Edr_Form();
 $form->default_decorators();
 
@@ -29,7 +28,7 @@ $form->add( array(
 ) );
 
 // Tax Class.
-$edu_tax = Edr_Tax_Manager::get_instance();
+$edu_tax = Edr_TaxManager::get_instance();
 $form->set_value( '_ib_educator_tax_class', $edu_tax->get_tax_class_for( $post->ID ) );
 $form->add( array(
 	'type'    => 'select',

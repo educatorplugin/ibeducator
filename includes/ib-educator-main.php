@@ -72,7 +72,7 @@ class IB_Educator_Main {
 			'paypal'        => array( 'class' => 'Edr_Gateway_Paypal' ),
 			'cash'          => array( 'class' => 'Edr_Gateway_Cash' ),
 			'check'         => array( 'class' => 'Edr_Gateway_Check' ),
-			'bank-transfer' => array( 'class' => 'Edr_Gateway_Bank_Transfer' ),
+			'bank-transfer' => array( 'class' => 'Edr_Gateway_BankTransfer' ),
 			'free'          => array( 'class' => 'Edr_Gateway_Free' ),
 			'stripe'        => array( 'class' => 'Edr_Gateway_Stripe' ),
 		) );
@@ -134,35 +134,33 @@ class IB_Educator_Main {
 		$post_id = $GLOBALS['wp_query']->post->ID;
 		$action = $GLOBALS['wp_query']->query_vars['edu-action'];
 
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-front-actions.php';
-
 		switch ( $action ) {
 			case 'cancel-payment':
-				Edr_Front_Actions::cancel_payment();
+				Edr_FrontActions::cancel_payment();
 				break;
 
 			case 'submit-quiz':
-				Edr_Front_Actions::submit_quiz();
+				Edr_FrontActions::submit_quiz();
 				break;
 
 			case 'payment':
-				Edr_Front_Actions::payment();
+				Edr_FrontActions::payment();
 				break;
 
 			case 'join':
-				Edr_Front_Actions::join();
+				Edr_FrontActions::join();
 				break;
 
 			case 'resume-entry':
-				Edr_Front_Actions::resume_entry();
+				Edr_FrontActions::resume_entry();
 				break;
 
 			case 'pause-membership':
-				Edr_Front_Actions::pause_membership();
+				Edr_FrontActions::pause_membership();
 				break;
 
 			case 'resume-membership':
-				Edr_Front_Actions::resume_membership();
+				Edr_FrontActions::resume_membership();
 				break;
 		}
 	}

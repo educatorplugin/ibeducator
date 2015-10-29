@@ -60,8 +60,8 @@ class Edr_Install {
 		// Post types and taxonomies.
 		if ( $inc_post_types || $inc_endpoints ) {
 			if ( $inc_post_types ) {
-				Edr_Post_Types::register_post_types();
-				Edr_Post_Types::register_taxonomies();
+				Edr_PostTypes::register_post_types();
+				Edr_PostTypes::register_taxonomies();
 			}
 
 			if ( $inc_endpoints ) {

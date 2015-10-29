@@ -1,6 +1,6 @@
 <?php
 
-class Edr_Student_Account {
+class Edr_StudentAccount {
 	/**
 	 * Initialize.
 	 */
@@ -57,7 +57,6 @@ class Edr_Student_Account {
 		$has_error = self::parse_register_errors( $error_codes );
 
 		// Setup form.
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-form.php';
 		$form = new Edr_Form();
 		$form->default_decorators();
 
@@ -395,7 +394,7 @@ class Edr_Student_Account {
 		$tax_enabled = ib_edu_get_option( 'enable', 'taxes' );
 
 		if ( $tax_enabled ) {
-			$edu_tax = Edr_Tax_Manager::get_instance();
+			$edu_tax = Edr_TaxManager::get_instance();
 			$tax_data = $edu_tax->calculate_tax( $edu_tax->get_tax_class_for( $object->ID ), $args['price'], $args['country'], $args['state'] );
 		} else {
 			$tax_data = array(

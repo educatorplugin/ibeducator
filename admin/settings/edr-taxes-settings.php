@@ -158,7 +158,7 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 						return;
 					}
 
-					$edu_tax = Edr_Tax_Manager::get_instance();
+					$edu_tax = Edr_TaxManager::get_instance();
 
 					// Get and sanitize input.
 					$data = $edu_tax->sanitize_tax_class( $input );
@@ -186,7 +186,7 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 					return;
 				}
 
-				Edr_Tax_Manager::get_instance()->delete_tax_class( $_GET['name'] );
+				Edr_TaxManager::get_instance()->delete_tax_class( $_GET['name'] );
 				break;
 
 			case 'rates':
@@ -200,7 +200,7 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 								return;
 							}
 
-							$edu_tax = Edr_Tax_Manager::get_instance();
+							$edu_tax = Edr_TaxManager::get_instance();
 							$rate = $edu_tax->sanitize_tax_rate( $input );
 							$rate['ID'] = $edu_tax->update_tax_rate( $rate );
 
@@ -214,7 +214,7 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 						}
 
 						$class_name = preg_replace( '/[^a-zA-Z0-9-_]+/', '', $_GET['class_name'] );
-						$edu_tax = Edr_Tax_Manager::get_instance();
+						$edu_tax = Edr_TaxManager::get_instance();
 						$rates = $edu_tax->get_tax_rates( $class_name );
 						$edu_countries = Edr_Countries::get_instance();
 						$countries = $edu_countries->get_countries();
@@ -254,7 +254,7 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 							return;
 						}
 
-						Edr_Tax_Manager::get_instance()->delete_tax_rate( $_GET['ID'] );
+						Edr_TaxManager::get_instance()->delete_tax_rate( $_GET['ID'] );
 						break;
 				}
 				break;
@@ -411,7 +411,7 @@ class Edr_Taxes_Settings extends IB_Educator_Admin_Settings {
 		var eduGetStatesNonce = <?php echo json_encode( wp_create_nonce( 'ib_edu_get_states' ) ); ?>;
 		var eduTaxClasses = <?php
 			$json = '[';
-			$classes = Edr_Tax_Manager::get_instance()->get_tax_classes();
+			$classes = Edr_TaxManager::get_instance()->get_tax_classes();
 			$i = 0;
 
 			foreach ( $classes as $name => $description ) {

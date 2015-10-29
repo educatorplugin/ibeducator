@@ -1,12 +1,12 @@
 <?php
 
-class Edr_Gateway_Check extends Edr_Payment_Gateway {
+class Edr_Gateway_Cash extends Edr_Gateway_Base {
 	/**
 	 * Setup payment gateway.
 	 */
 	public function __construct() {
-		$this->id = 'check';
-		$this->title = __( 'Check', 'ibeducator' );
+		$this->id = 'cash';
+		$this->title = __( 'Cash', 'ibeducator' );
 
 		// Setup options.
 		$this->init_options( array(
@@ -15,7 +15,7 @@ class Edr_Gateway_Check extends Edr_Payment_Gateway {
 				'label'     => __( 'Instructions for a student', 'ibeducator' ),
 				'id'        => 'ib-edu-description',
 				'rich_text' => true,
-			)
+			),
 		) );
 
 		add_action( 'ib_educator_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
@@ -53,11 +53,17 @@ class Edr_Gateway_Check extends Edr_Payment_Gateway {
 	 * Output thank you information.
 	 */
 	public function thankyou_page() {
-		$description = $this->get_option( 'description' );
+		$payment_id = get_query_var( 'edu-thankyou' );
 
-		if ( ! empty( $description ) ) {
-			echo '<h3>' . __( 'Payment Instructions', 'ibeducator' ) . '</h3>';
-			echo '<div class="ib-edu-payment-description">' . wpautop( stripslashes( $description ) ) . '</div>';
+		if ( ! $payment_id ) {
+			echo '<p>' . __( 'You\'ve paid for this course already.' ) . '</p>';
+		} else {
+			$description = $this->get_option( 'description' );
+
+			if ( ! empty( $description ) ) {
+				echo '<h3>' . __( 'Payment Instructions', 'ibeducator' ) . '</h3>';
+				echo '<div class="ib-edu-payment-description">' . wpautop( stripslashes( $description ) ) . '</div>';
+			}
 		}
 	}
 

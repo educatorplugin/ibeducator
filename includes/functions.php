@@ -501,7 +501,7 @@ function ib_edu_send_notification( $to, $template, $subject_vars, $template_vars
 	$template_vars['login_link'] = apply_filters( 'ib_educator_login_url', wp_login_url() );
 
 	// Send email.
-	$email = new Edr_Email_Agent();
+	$email = new Edr_EmailAgent();
 	$email->set_template( $template );
 	$email->parse_subject( $subject_vars );
 	$email->parse_template( $template_vars );

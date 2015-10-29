@@ -318,7 +318,7 @@ class IB_Educator_Test_Memberships extends IB_Educator_Tests {
 		$ms->update_user_membership( $um1 );
 		$ms->update_user_membership( $um2 );
 
-		Edr_Memberships_Run::process_expired_memberships();
+		Edr_MembershipsRun::process_expired_memberships();
 		
 		$this->assertEquals( array(
 			'ID'            => $um1['ID'],
@@ -399,6 +399,6 @@ Administration',
 
 		$ms->update_user_membership( $user, array( 'expiration' => date( 'Y-m-d H:i:s', $in5days ) ) );
 		$_SERVER['SERVER_NAME'] = 'localhost';
-		Edr_Memberships_Run::send_expiration_notifications();
+		Edr_MembershipsRun::send_expiration_notifications();
 	}
 }

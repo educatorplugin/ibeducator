@@ -220,7 +220,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 					elseif ( 'ib_edu_membership' == $post->post_type ) $args['price'] = Edr_Memberships::get_instance()->get_price( $post->ID );
 
 					// Output payment summary.
-					echo '<div id="edu-payment-info" class="edu-payment-info">' . Edr_Student_Account::payment_info( $post, $args ) . '</div>';
+					echo '<div id="edu-payment-info" class="edu-payment-info">' . Edr_StudentAccount::payment_info( $post, $args ) . '</div>';
 
 					// Payment gateways.
 					$gateways = IB_Educator_Main::get_gateways();

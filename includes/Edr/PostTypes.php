@@ -1,6 +1,6 @@
 <?php
 
-class Edr_Post_Types {
+class Edr_PostTypes {
 	/**
 	 * @var null|array
 	 */
