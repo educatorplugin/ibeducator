@@ -183,7 +183,7 @@ function edr_get_question_content( $question ) {
  */
 function edr_question_multiple_choice( $question, $answer, $edit, $choices ) {
 	echo '<div class="ib-edu-question">';
-	echo '<div class="label">' . esc_html( $question->question ) . '</div>';
+	echo '<div class="label">' . apply_filters( 'edr_get_question_title', $question->question ) . '</div>';
 
 	if ( '' != $question->question_content ) {
 		echo '<div class="content">' . edr_get_question_content( $question ) . '</div>';
@@ -194,10 +194,11 @@ function edr_question_multiple_choice( $question, $answer, $edit, $choices ) {
 	if ( $edit ) {
 		foreach ( $choices as $choice ) {
 			$checked = ( $answer == $choice->ID ) ? ' checked="checked"' : '';
+			$choice_text = apply_filters( 'edr_get_choice_text', $choice->choice_text );
 
 			echo '<li><label><input type="radio" name="answers[' . intval( $question->ID )
 				. ']" value="' . intval( $choice->ID ) . '"' . $checked . '> '
-				. esc_html( $choice->choice_text ) . '</label></li>';
+				. $choice_text . '</label></li>';
 		}
 	} elseif ( ! is_null( $answer ) ) {
 		foreach ( $choices as $choice ) {
@@ -215,8 +216,9 @@ function edr_question_multiple_choice( $question, $answer, $edit, $choices ) {
 			}
 
 			$class = ( ! empty( $class ) ) ? ' class="' . $class . '"' : '';
+			$choice_text = apply_filters( 'edr_get_choice_text', $choice->choice_text );
 
-			echo '<li' . $class . '><label>' . $check . esc_html( $choice->choice_text ) . '</label></li>';
+			echo '<li' . $class . '><label>' . $check . $choice_text . '</label></li>';
 		}
 	}
 
@@ -233,7 +235,7 @@ function edr_question_multiple_choice( $question, $answer, $edit, $choices ) {
  */
 function edr_question_written_answer( $question, $answer, $edit ) {
 	echo '<div class="ib-edu-question">';
-	echo '<div class="label">' . esc_html( $question->question ) . '</div>';
+	echo '<div class="label">' . apply_filters( 'edr_get_question_title', $question->question ) . '</div>';
 
 	if ( '' != $question->question_content ) {
 		echo '<div class="content">' . edr_get_question_content( $question ) . '</div>';

@@ -99,9 +99,10 @@ class Edr_Quiz_Admin {
 		$saved_choices = array();
 
 		foreach ( $choices as $choice ) {
+			$choice_text = isset( $choice->choice_text ) ? $choice->choice_text : '';
 			$choice_data = array(
 				'ID'          => isset( $choice->choice_id ) ? intval( $choice->choice_id ) : 0,
-				'choice_text' => isset( $choice->choice_text ) ? esc_html( $choice->choice_text ) : '',
+				'choice_text' => apply_filters( 'edr_edit_choice_pre_text', $choice_text ),
 				'correct'     => isset( $choice->correct ) ? intval( $choice->correct ) : 0,
 				'menu_order'  => isset( $choice->menu_order ) ? intval( $choice->menu_order ) : 0,
 			);

@@ -117,7 +117,7 @@ $questions = $quizzes->get_questions( array( 'lesson_id' => $lesson_id ) );
 
 foreach ( $questions as $question ) {
 	$questions_js .= "{id: " . intval( $question->ID ) . ","
-		. "question: '" . esc_js( $question->question ) . "',"
+		. "question: " . json_encode( $question->question ) . ","
 		. "question_type: '" . esc_js( $question->question_type ) . "',"
 		. 'question_content: ' . json_encode( apply_filters( 'edr_edit_question_form_content', $question->question_content ) ) . ','
 		. "menu_order: " . intval( $question->menu_order ) . '},';
@@ -135,7 +135,7 @@ foreach ( $choices as $question_id => $question ) {
 	foreach ( $question as $choice ) {
 		$choices_json .= "{choice_id: " . intval( $choice->ID ) . ", "
 			. "question_id: " . intval( $choice->question_id ) . ", "
-			. "choice_text: '" . esc_js( $choice->choice_text ) . "', "
+			. "choice_text: " . json_encode( $choice->choice_text ) . ", "
 			. "correct: " . intval( $choice->correct ) . ", "
 			. "menu_order: " . intval( $choice->menu_order ) . "},";
 	}
