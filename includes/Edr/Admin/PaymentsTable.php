@@ -11,7 +11,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 /**
  * Payments list table.
  */
-class Edr_Payments_Table extends WP_List_Table {
+class Edr_Admin_PaymentsTable extends WP_List_Table {
 	/**
 	 * Constructor.
 	 */

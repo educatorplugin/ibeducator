@@ -1,6 +1,6 @@
 <?php
 
-class Edr_Admin_Post_Types {
+class Edr_Admin_PostTypes {
 	/**
 	 * Initialize.
 	 */

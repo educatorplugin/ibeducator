@@ -7,8 +7,7 @@ if ( ! current_user_can( 'manage_educator' ) ) {
 	exit();
 }
 
-require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-members-table.php';
-$members_table = new Edr_Members_Table();
+$members_table = new Edr_Admin_MembersTable();
 $members_table->prepare_items();
 ?>
 

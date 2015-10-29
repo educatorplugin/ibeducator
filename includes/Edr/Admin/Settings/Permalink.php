@@ -1,6 +1,6 @@
 <?php
 
-class Edr_Permalink_Settings extends IB_Educator_Admin_Settings {
+class Edr_Admin_Settings_Permalink extends Edr_Admin_Settings_Base {
 	/**
 	 * Constructor.
 	 */

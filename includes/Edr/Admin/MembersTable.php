@@ -11,7 +11,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 /**
  * Members list table.
  */
-class Edr_Members_Table extends WP_List_Table {
+class Edr_Admin_MembersTable extends WP_List_Table {
 	/**
 	 * @var array
 	 */

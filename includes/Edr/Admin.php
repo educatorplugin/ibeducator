@@ -20,30 +20,17 @@ class Edr_Admin {
 	 * Include the necessary files.
 	 */
 	public static function includes() {
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-autocomplete.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-admin-post-types.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-admin-meta.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-quiz-admin.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/ib-educator-admin-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-general-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-learning-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-payment-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-taxes-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-email-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-memberships-settings.php';
-		require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-syllabus-admin.php';
-
-		new Edr_General_Settings();
-		new Edr_Learning_Settings();
-		new Edr_Payment_Settings();
-		new Edr_Taxes_Settings();
-		new Edr_Email_Settings();
-		new Edr_Memberships_Settings();
+		new Edr_Admin_Settings_General();
+		new Edr_Admin_Settings_Learning();
+		new Edr_Admin_Settings_Payment();
+		new Edr_Admin_Settings_Taxes();
+		new Edr_Admin_Settings_Email();
+		new Edr_Admin_Settings_Memberships();
 		Edr_Autocomplete::init();
-		Edr_Admin_Post_Types::init();
+		Edr_Admin_PostTypes::init();
 		Edr_Admin_Meta::init();
-		Edr_Quiz_Admin::init();
-		new Edr_Syllabus_Admin();
+		Edr_Admin_Quiz::init();
+		new Edr_Admin_Syllabus();
 	}
 
 	/**
@@ -54,10 +41,7 @@ class Edr_Admin {
 	public static function maybe_includes( $screen ) {
 		switch ( $screen->id ) {
 			case 'options-permalink':
-				include IBEDUCATOR_PLUGIN_DIR . 'admin/settings/edr-permalink-settings.php';
-
-				new Edr_Permalink_Settings();
-
+				new Edr_Admin_Settings_Permalink();
 				break;
 		}
 	}
@@ -149,8 +133,6 @@ class Edr_Admin {
 	 */
 	public static function admin_actions() {
 		if ( isset( $_GET['edu-action'] ) ) {
-			require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-admin-actions.php';
-
 			switch ( $_GET['edu-action'] ) {
 				case 'edit-entry':
 					Edr_Admin_Actions::edit_entry();

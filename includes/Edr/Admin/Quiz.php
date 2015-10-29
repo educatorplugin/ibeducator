@@ -3,7 +3,7 @@
 /**
  * Quiz back end.
  */
-class Edr_Quiz_Admin {
+class Edr_Admin_Quiz {
 	/**
 	 * @var string
 	 */

@@ -1,6 +1,6 @@
 <?php
 
-class IB_Educator_Admin_Settings {
+class Edr_Admin_Settings_Base {
 	/**
 	 * Output admin settings tabs.
 	 *

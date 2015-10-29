@@ -7,8 +7,7 @@ if ( ! current_user_can( 'manage_educator' ) ) {
 	exit();
 }
 
-require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-payments-table.php';
-$payments_table = new Edr_Payments_Table();
+$payments_table = new Edr_Admin_PaymentsTable();
 $payments_table->prepare_items();
 ?>
 

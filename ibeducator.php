@@ -73,7 +73,6 @@ Edr_RequestDispatcher::init();
 
 if ( is_admin() ) {
 	// Setup the Educator's admin.
-	require_once IBEDUCATOR_PLUGIN_DIR . 'admin/edr-admin.php';
 	Edr_Admin::init();
 
 	// Update.

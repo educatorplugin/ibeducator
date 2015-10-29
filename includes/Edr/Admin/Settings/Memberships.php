@@ -1,6 +1,6 @@
 <?php
 
-class Edr_Learning_Settings extends IB_Educator_Admin_Settings {
+class Edr_Admin_Settings_Memberships extends Edr_Admin_Settings_Base {
 	/**
 	 * Constructor.
 	 */
@@ -15,30 +15,30 @@ class Edr_Learning_Settings extends IB_Educator_Admin_Settings {
 	 */
 	public function register_settings() {
 		add_settings_section(
-			'ib_educator_learning_settings', // id
-			__( 'Learning', 'ibeducator' ),
+			'ib_educator_memberships_settings', // id
+			__( 'Memberships Settings', 'ibeducator' ),
 			array( $this, 'section_description' ),
-			'ib_educator_learning_page' // page
+			'ib_educator_memberships_page' // page
 		);
 
-		// Setting: 
+		// Setting: Notify a user X days before his/her membership expires.
 		add_settings_field(
-			'edu_lesson_comments',
-			__( 'Enable comments on lessons', 'ibeducator' ),
-			array( $this, 'setting_checkbox' ),
-			'ib_educator_learning_page', // page
-			'ib_educator_learning_settings', // section
+			'ib_educator_days_notify',
+			__( 'Send an email notification to a user X days before his/her membership expires', 'ibeducator' ),
+			array( $this, 'setting_text' ),
+			'ib_educator_memberships_page', // page
+			'ib_educator_memberships_settings', // section
 			array(
-				'name'           => 'lesson_comments',
-				'settings_group' => 'ib_educator_learning',
-				'default'        => 0,
-				'id'             => 'edu_lesson_comments',
+				'name'           => 'days_notify',
+				'settings_group' => 'ib_educator_memberships',
+				'default'        => 5,
+				'id'             => 'ib_educator_days_notify',
 			)
 		);
 
 		register_setting(
-			'ib_educator_learning_settings', // option group
-			'ib_educator_learning',
+			'ib_educator_memberships_settings', // option group
+			'ib_educator_memberships',
 			array( $this, 'validate' )
 		);
 	}
@@ -58,8 +58,8 @@ class Edr_Learning_Settings extends IB_Educator_Admin_Settings {
 
 		foreach ( $input as $key => $value ) {
 			switch ( $key ) {
-				case 'lesson_comments':
-					$clean[ $key ] = ( 1 == $value ) ? 1 : 0;
+				case 'days_notify':
+					$clean[ $key ] = absint( $value );
 					break;
 			}
 		}
@@ -74,7 +74,7 @@ class Edr_Learning_Settings extends IB_Educator_Admin_Settings {
 	 * @return array
 	 */
 	public function add_tab( $tabs ) {
-		$tabs['learning'] = __( 'Learning', 'ibeducator' );
+		$tabs['memberships'] = __( 'Memberships', 'ibeducator' );
 
 		return $tabs;
 	}
@@ -85,8 +85,8 @@ class Edr_Learning_Settings extends IB_Educator_Admin_Settings {
 	 * @param string $tab
 	 */
 	public function settings_page( $tab ) {
-		if ( 'learning' == $tab ) {
-			include IBEDUCATOR_PLUGIN_DIR . 'admin/templates/settings-learning.php';
+		if ( 'memberships' == $tab ) {
+			include IBEDUCATOR_PLUGIN_DIR . 'admin/templates/settings-memberships.php';
 		}
 	}
 }

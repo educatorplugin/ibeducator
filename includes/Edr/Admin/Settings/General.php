@@ -1,6 +1,6 @@
 <?php
 
-class Edr_General_Settings extends IB_Educator_Admin_Settings {
+class Edr_Admin_Settings_General extends Edr_Admin_Settings_Base {
 	/**
 	 * Constructor.
 	 */
