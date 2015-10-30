@@ -21,7 +21,7 @@ class Edr_Admin_Settings_Learning extends Edr_Admin_Settings_Base {
 			'ib_educator_learning_page' // page
 		);
 
-		// Setting: 
+		// Setting: Enable comments on lessons.
 		add_settings_field(
 			'edu_lesson_comments',
 			__( 'Enable comments on lessons', 'ibeducator' ),
@@ -36,10 +36,35 @@ class Edr_Admin_Settings_Learning extends Edr_Admin_Settings_Base {
 			)
 		);
 
+		// Setting: Enable quizzes for.
+		$post_types = get_post_types( array( 'public' => true ), 'names' );
+
+		add_settings_field(
+			'edr_quiz_support',
+			__( 'Enable quizzes for', 'ibeducator' ),
+			array( $this, 'setting_select' ),
+			'ib_educator_learning_page', // page
+			'ib_educator_learning_settings', // section
+			array(
+				'name'     => 'edr_quiz_support',
+				'default'  => array( 'ib_educator_lesson' ),
+				'choices'  => $post_types,
+				'id'       => 'edr_quiz_support',
+				'multiple' => true,
+				'description' => __( 'Select one or more post types.', 'ibeducator' ),
+			)
+		);
+
 		register_setting(
 			'ib_educator_learning_settings', // option group
 			'ib_educator_learning',
 			array( $this, 'validate' )
+		);
+
+		register_setting(
+			'ib_educator_learning_settings', // option group
+			'edr_quiz_support',
+			array( $this, 'validate_quiz_support' )
 		);
 	}
 
@@ -65,6 +90,22 @@ class Edr_Admin_Settings_Learning extends Edr_Admin_Settings_Base {
 		}
 
 		return $clean;
+	}
+
+	public function validate_quiz_support( $input ) {
+		$post_types = array();
+
+		if ( is_array( $input ) ) {
+			$available_post_types = get_post_types( array( 'public' => true ), 'names' );
+
+			foreach ( $input as $post_type ) {
+				if ( array_key_exists( $post_type, $available_post_types ) ) {
+					$post_types[] = $post_type;
+				}
+			}
+		}
+
+		return $post_types;
 	}
 
 	/**

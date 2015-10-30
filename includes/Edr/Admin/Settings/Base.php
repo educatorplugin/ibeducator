@@ -103,11 +103,32 @@ class Edr_Admin_Settings_Base {
 			$name = $args['name'];
 		}
 
-		echo '<select name="' . esc_attr( $name ) . '">';
-		echo '<option value="">&mdash; ' . __( 'Select', 'ibeducator' ) . ' &mdash;</option>';
+		$multiple = ( isset( $args['multiple'] ) && $args['multiple'] );
+		$multiple_attr = '';
+
+		if ( $multiple ) {
+			$multiple_attr = ' multiple="multiple"';
+			$name .= '[]';
+			$empty_choice = __( 'None', 'ibeducator' );
+
+			if ( ! is_array( $value ) ) {
+				$value = (array) $value;
+			}
+		} else {
+			$empty_choice = __( 'Select', 'ibeducator' );
+		}
+
+		echo '<select name="' . esc_attr( $name ) . '"' . $multiple_attr . '>';
+		echo '<option value="">&mdash; ' . $empty_choice . ' &mdash;</option>';
 
 		foreach ( $args['choices'] as $choice => $label ) {
-			echo '<option value="' . esc_attr( $choice ) . '"' . ( $choice == $value ? ' selected="selected"' : '' ) . '>' . esc_html( $label ) . '</option>';
+			if ( $multiple ) {
+				$selected = ( in_array( $choice, $value ) ) ? ' selected="selected"' : '';
+			} else {
+				$selected = ( $choice == $value ) ? ' selected="selected"' : '';
+			}
+
+			echo '<option value="' . esc_attr( $choice ) . '"' . $selected . '>' . esc_html( $label ) . '</option>';
 		}
 
 		echo '</select>';

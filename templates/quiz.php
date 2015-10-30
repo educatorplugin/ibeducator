@@ -1,9 +1,20 @@
 <?php
+$user_id = get_current_user_id();
+
+if ( $user_id == 0 ) {
+	echo '<p>';
+	printf( __( 'You must be <a href="%s">logged in</a> to take the quiz.', 'ibeducator' ),
+		esc_url( wp_login_url( get_permalink() ) ) );
+	echo '</p>';
+
+	return;
+}
+
 $lesson_id = get_the_ID();
 
 // Get entry data for the current student. Entry status must be "inprogress".
 $entry = IB_Educator::get_instance()->get_entry( array(
-	'user_id'      => get_current_user_id(),
+	'user_id'      => $user_id,
 	'course_id'    => ib_edu_get_course_id( $lesson_id ),
 	'entry_status' => 'inprogress'
 ) );
