@@ -43,7 +43,6 @@ class IB_Educator_Main {
 	 * Plugin activation hook.
 	 */
 	public static function plugin_activation() {
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-install.php';
 		$install = new Edr_Install();
 		$install->activate();
 	}
@@ -52,7 +51,6 @@ class IB_Educator_Main {
 	 * Plugin deactivation hook.
 	 */
 	public static function plugin_deactivation() {
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/edr-install.php';
 		$install = new Edr_Install();
 		$install->deactivate();
 	}

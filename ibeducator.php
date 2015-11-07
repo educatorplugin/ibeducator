@@ -40,17 +40,17 @@ register_activation_hook( __FILE__, array( 'IB_Educator_Main', 'plugin_activatio
 register_deactivation_hook( __FILE__, array( 'IB_Educator_Main', 'plugin_deactivation' ) );
 
 // Setup autoloader.
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/Edr/Autoloader.php';
+require IBEDUCATOR_PLUGIN_DIR . 'includes/Edr/Autoloader.php';
 new Edr_Autoloader();
 
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-payment.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-entry.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-question.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator.php';
+require IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-payment.php';
+require IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-entry.php';
+require IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-question.php';
+require IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/formatting.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/functions.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-main.php';
-require_once IBEDUCATOR_PLUGIN_DIR . 'includes/shortcodes.php';
+require IBEDUCATOR_PLUGIN_DIR . 'includes/functions.php';
+require IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-main.php';
+require IBEDUCATOR_PLUGIN_DIR . 'includes/shortcodes.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/filters.php';
 
 // Setup the memberships feature.
@@ -78,7 +78,6 @@ if ( is_admin() ) {
 	// Update.
 	function ib_edu_update_check() {
 		if ( get_option( 'ib_educator_version' ) != IBEDUCATOR_VERSION ) {
-			require_once 'includes/edr-install.php';
 			$install = new Edr_Install();
 			$install->activate( false, false );
 		}
