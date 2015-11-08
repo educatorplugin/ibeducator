@@ -1,4 +1,10 @@
 <?php
+/**
+ * Renders the payment page.
+ *
+ * @version 1.1.0
+ */
+
 $user_id = get_current_user_id();
 
 if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {

@@ -1,4 +1,10 @@
 <?php
+/**
+ * This template renders a quiz.
+ *
+ * @version 1.1.0
+ */
+
 $user_id = get_current_user_id();
 
 if ( $user_id == 0 ) {

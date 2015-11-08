@@ -1,4 +1,11 @@
 <?php
+/**
+ * This template renders each lesson in the lessons list on the single course page.
+ * It's used by the edr_display_lessons function.
+ *
+ * @version 1.1.0
+ */
+
 $lesson_id = get_the_ID();
 $classes = apply_filters( 'ib_educator_lesson_classes', array( 'ib-edu-lesson' ), $lesson_id );
 ?>

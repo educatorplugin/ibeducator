@@ -1,4 +1,10 @@
 <?php
+/**
+ * Renders the [memberships_page] shortcode.
+ *
+ * @version 1.1.0
+ */
+
 $query = new WP_Query( array(
 	'post_type'      => 'ib_edu_membership',
 	'posts_per_page' => -1,

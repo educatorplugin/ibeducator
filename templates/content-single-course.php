@@ -1,4 +1,10 @@
 <?php
+/**
+ * This template renders the course content in the single-ib_educator_course.php template.
+ *
+ * @version 1.1.0
+ */
+
 $api = IB_Educator::get_instance();
 $user_id = get_current_user_id();
 $course_id = get_the_ID();

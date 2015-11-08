@@ -1,4 +1,10 @@
 <?php
+/**
+ * This template renders the lesson content in the single-ib_educator_lesson.php template.
+ *
+ * @version 1.1.0
+ */
+
 $student_can_study = ib_edu_student_can_study( get_the_ID() );
 $classes = array( 'ib-edu-lesson-single' );
 

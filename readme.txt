@@ -69,6 +69,7 @@ Coming soon.
 * Refactored the quizzes management JS in order to make it easier to continue the development of this feature. Added the gulp task to build the quizzes management JS into one file.
 * Working on the ability to add quizzes to other post types (not only lessons).
 * Improved the quizzes code, added new filter hooks to make the quizzes feature easier to extend.
+* Added a description and a version number for the templates from the "templates" folder.
 * Refactored a lot of code.
 
 = 1.6 =
