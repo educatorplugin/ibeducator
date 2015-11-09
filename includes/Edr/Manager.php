@@ -24,13 +24,13 @@ class Edr_Manager {
 		return self::$data[ $key ];
 	}
 
+	/**
+	 * Add a service.
+	 *
+	 * @param string $key
+	 * @param mixed $service
+	 */
 	public static function add( $key, $service ) {
 		self::$data[ $key ] = $service;
 	}
 }
-
-function edr_get_quizzes_service() {
-	return new Edr_Quizzes();
-}
-
-Edr_Manager::add( 'edr_quizzes', 'edr_get_quizzes_service' );

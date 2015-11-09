@@ -14,6 +14,8 @@ Text Domain: ibeducator
 */
 
 /*
+Copyright (C) 2015 http://educatorplugin.com/ - contact@educatorplugin.com
+
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation; either version 2
@@ -53,6 +55,11 @@ require IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-main.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/shortcodes.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/filters.php';
 
+// Register the quizzes service.
+function edr_get_quizzes_service() { return new Edr_Quizzes(); }
+
+Edr_Manager::add( 'edr_quizzes', 'edr_get_quizzes_service' );
+
 // Setup the memberships feature.
 Edr_MembershipsRun::init();
 
@@ -75,7 +82,7 @@ if ( is_admin() ) {
 	// Setup the Educator's admin.
 	Edr_Admin::init();
 
-	// Update.
+	// Check whether to run the update script or not.
 	function ib_edu_update_check() {
 		if ( get_option( 'ib_educator_version' ) != IBEDUCATOR_VERSION ) {
 			$install = new Edr_Install();
