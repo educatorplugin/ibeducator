@@ -92,6 +92,12 @@ class Edr_Admin_Settings_Learning extends Edr_Admin_Settings_Base {
 		return $clean;
 	}
 
+	/**
+	 * Sanitize the "edr_quiz_support" option.
+	 *
+	 * @param mixed $input
+	 * @return array
+	 */
 	public function validate_quiz_support( $input ) {
 		$post_types = array();
 
