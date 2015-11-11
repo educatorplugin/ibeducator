@@ -42,7 +42,7 @@ class IB_Educator_Test_Split_Shared_Term extends IB_Educator_Tests {
 			'post_title'  => 'edu membership 1',
 			'post_status' => 'publish',
 		) );
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 		$meta = $ms->get_membership_meta();
 		$meta['price'] = '10.05';
 		$meta['period'] = '';
@@ -61,7 +61,7 @@ class IB_Educator_Test_Split_Shared_Term extends IB_Educator_Tests {
 	}
 
 	public function testSplitSharedTerm() {
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 		$meta = $ms->get_membership_meta( $this->posts[0] );
 
 		// Validate initial condition.
@@ -88,10 +88,10 @@ class IB_Educator_Test_Split_Shared_Term extends IB_Educator_Tests {
 		) );
 
 		// Update shared terms for use in memberships.
-		$install = new IB_Educator_Install();
+		$install = new Edr_Install();
 		$install->update_1_4_4();
 
-		$ms = IB_Educator_Memberships::get_instance();
+		$ms = Edr_Memberships::get_instance();
 		$meta = $ms->get_membership_meta( $this->posts[0] );
 
 		// The term_id stored in the membership's categories setting should be updated.

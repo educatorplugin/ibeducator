@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * SHORTCODE: courses.
  */
 function ib_edu_courses( $atts, $content = null ) {
-	$template = IB_Educator_View::locate_template( array( 'shortcode-courses.php' ) );
+	$template = Edr_View::locate_template( array( 'shortcode-courses.php' ) );
 
 	if ( ! $template ) {
 		return;
@@ -67,7 +67,7 @@ function ib_edu_courses( $atts, $content = null ) {
  * SHORTCODE: output student's courses.
  */
 function ib_edu_student_courses( $atts, $content = null ) {
-	$template = IB_Educator_View::locate_template( array( 'shortcode-student-courses.php' ) );
+	$template = Edr_View::locate_template( array( 'shortcode-student-courses.php' ) );
 
 	if ( ! $template ) {
 		return;
@@ -82,7 +82,7 @@ function ib_edu_student_courses( $atts, $content = null ) {
  * SHORTCODE: output payment page.
  */
 function ib_edu_payment_page( $atts, $content = null ) {
-	$template = IB_Educator_View::locate_template( array( 'shortcode-payment.php' ) );
+	$template = Edr_View::locate_template( array( 'shortcode-payment.php' ) );
 
 	if ( ! $template ) {
 		return;
@@ -97,7 +97,7 @@ function ib_edu_payment_page( $atts, $content = null ) {
  * SHORTCODE: output membership page.
  */
 function ib_edu_memberships_page( $atts, $content = null ) {
-	$template = IB_Educator_View::locate_template( array( 'shortcode-memberships.php' ) );
+	$template = Edr_View::locate_template( array( 'shortcode-memberships.php' ) );
 
 	if ( ! $template ) {
 		return;
@@ -112,7 +112,7 @@ function ib_edu_memberships_page( $atts, $content = null ) {
  * SHORTCODE: output membership page.
  */
 function ib_edu_user_membership_page( $atts, $content = null ) {
-	$template = IB_Educator_View::locate_template( array( 'shortcode-user-membership.php' ) );
+	$template = Edr_View::locate_template( array( 'shortcode-user-membership.php' ) );
 
 	if ( ! $template ) {
 		return;
@@ -127,7 +127,7 @@ function ib_edu_user_membership_page( $atts, $content = null ) {
  * SHORTCODE: output the user's payments page.
  */
 function ib_edu_user_payments_page( $atts, $content = null ) {
-	$template = IB_Educator_View::locate_template( array( 'shortcode-user-payments.php' ) );
+	$template = Edr_View::locate_template( array( 'shortcode-user-payments.php' ) );
 
 	if ( ! $template ) {
 		return;
@@ -142,7 +142,7 @@ function ib_edu_user_payments_page( $atts, $content = null ) {
  * SHORTCODE: output the course prerequisites.
  */
 function ib_edu_course_prerequisites( $atts, $content = null ) {
-	$template = IB_Educator_View::locate_template( array( 'shortcode-course-prerequisites.php' ) );
+	$template = Edr_View::locate_template( array( 'shortcode-course-prerequisites.php' ) );
 
 	if ( ! $template ) {
 		return;

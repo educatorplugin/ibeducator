@@ -1,10 +1,10 @@
 === Educator ===
-Contributors: educatorteam, dmytro.d
+Contributors: educatorteam
 Donate link: http://educatorplugin.com
 Tags: learning management system, lms, learning, online courses
 Requires at least: 4.3
 Tested up to: 4.3
-Stable tag: 1.6
+Stable tag: 1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,8 +13,6 @@ Educator is a simple learning management system plugin for WordPress.
 == Description ==
 
 You can use this plugin to offer online courses on your WordPress website.
-
-Since version 1.4.5 the Educator plugin can be integrated with WooCommerce using an additional plugin - <a href="https://wordpress.org/plugins/educator-woocommerce-integration/">Educator WooCommerce Integration</a>. Please check <a href="http://educatorplugin.com/using-woocommerce-to-sell-courses/">Using WooCommerce to Sell Courses</a> for more info.
 
 = Links: =
 
@@ -40,6 +38,12 @@ Since version 1.4.5 the Educator plugin can be integrated with WooCommerce using
 = Important Updates =
 
 * <a href="http://educatorplugin.com/term-taxonomy-splitting-in-wp-4-2-and-how-it-affects-educator/">Term Taxonomy Splitting in WP 4.2 and How It Affects Educator</a>
+* <a href="http://educatorplugin.com/updating-to-educator-1-7/">Updating to Educator 1.7 or greater</a>
+
+= Add-ons =
+
+* <a href="http://wordpress.org/plugins/educator-woocommerce-integration/" target="_blank">Educator WooCommerce Integration</a>
+* <a href="https://wordpress.org/plugins/educator-certificates/" target="_blank">Educator Certificates</a>
 
 == Installation ==
 
@@ -62,6 +66,15 @@ Coming soon.
 8. **Course Settings**
 
 == Changelog ==
+
+= 1.7 =
+* The version 1.7 introduces major improvements and changes to the plugin's code. Please read the http://educatorplugin.com/updating-to-educator-1-7/ carefully before you update this plugin.
+* Changed the order of the arguments of the "Edr_Quizzes::get_attempts_number" method. Now, this method should be used like this: get_attempts_number($lesson_id, $entry_id).
+* Refactored the quizzes management JS in order to make it easier to continue the development of this feature. Added the gulp task to build the quizzes management JS into one file.
+* Working on the ability to add quizzes to other post types (not only lessons).
+* Improved the quizzes code, added new filter hooks to make the quizzes feature easier to extend.
+* Added a description and a version number for the templates from the "templates" folder.
+* Refactored a lot of code.
 
 = 1.6 =
 * Added: set the maximum number of quiz attempts a student can take per quiz.
@@ -135,7 +148,7 @@ Coming soon.
 
 = 1.3.3 =
 * IMPORTANT security fix. This update fixes the issue where the lesson content was visible to unregistered visitors in the lessons rss/atom feed, the lessons archive and the search page. On the lessons archive and the search page it was visible only when the lesson didn't have the "more" tag (&lt;!--more--&gt;).
-* Please make sure to update the lessons' excerpts and add the more tag in appropriate places (please read http://educatorplugin.com/create-a-lesson/).
+* Please make sure to update the lessons' excerpts and add the more tag in appropriate places (please read the <a href="http://educatorplugin.com/create-a-lesson/">Create a Lesson</a> article).
 * Please apply this update as soon as possible.
 
 = 1.3.2 =

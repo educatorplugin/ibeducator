@@ -10,7 +10,7 @@ $api = IB_Educator::get_instance();
 $member_id = isset( $_GET['id'] ) ? intval( $_GET['id'] ) : 0;
 $user = null;
 $user_membership = null;
-$ms = IB_Educator_Memberships::get_instance();
+$ms = Edr_Memberships::get_instance();
 
 if ( $member_id ) {
 	$user_membership = $ms->get_user_membership( $member_id );
