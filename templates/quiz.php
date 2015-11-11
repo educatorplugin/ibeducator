@@ -26,6 +26,11 @@ $entry = IB_Educator::get_instance()->get_entry( array(
 ) );
 
 $entry_id = ( $entry ) ? $entry->ID : 0;
+
+if ( ! $entry_id && 'ib_educator_lesson' == get_post_type() ) {
+	return;
+}
+
 $quizzes = Edr_Manager::get( 'edr_quizzes' );
 $questions = $quizzes->get_questions( $lesson_id );
 ?>

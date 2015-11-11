@@ -76,6 +76,10 @@ class Edr_FrontActions {
 
 		$entry_id = ( $entry ) ? $entry->ID : 0;
 
+		if ( ! $entry_id && 'ib_educator_lesson' == get_post_type() ) {
+			return;
+		}
+
 		$max_attempts_number = $quizzes->get_max_attempts_number( $lesson_id );
 
 		if ( ! is_numeric( $max_attempts_number ) ) {
