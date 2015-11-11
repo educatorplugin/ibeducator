@@ -495,8 +495,6 @@ function ib_edu_user_can_edit_lesson( $lesson_id ) {
  * @param array $template_vars
  */
 function ib_edu_send_notification( $to, $template, $subject_vars, $template_vars ) {
-	require_once IBEDUCATOR_PLUGIN_DIR . '/includes/edr-email-agent.php';
-
 	// Set default template vars.
 	$template_vars['login_link'] = apply_filters( 'ib_educator_login_url', wp_login_url() );
 
