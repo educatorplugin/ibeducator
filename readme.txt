@@ -4,7 +4,7 @@ Donate link: http://educatorplugin.com
 Tags: learning management system, lms, learning, online courses
 Requires at least: 4.3
 Tested up to: 4.3
-Stable tag: 1.6
+Stable tag: 1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,8 +13,6 @@ Educator is a simple learning management system plugin for WordPress.
 == Description ==
 
 You can use this plugin to offer online courses on your WordPress website.
-
-Since version 1.4.5 the Educator plugin can be integrated with WooCommerce using an additional plugin - <a href="https://wordpress.org/plugins/educator-woocommerce-integration/">Educator WooCommerce Integration</a>. Please check <a href="http://educatorplugin.com/using-woocommerce-to-sell-courses/">Using WooCommerce to Sell Courses</a> for more info.
 
 = Links: =
 
@@ -40,6 +38,12 @@ Since version 1.4.5 the Educator plugin can be integrated with WooCommerce using
 = Important Updates =
 
 * <a href="http://educatorplugin.com/term-taxonomy-splitting-in-wp-4-2-and-how-it-affects-educator/">Term Taxonomy Splitting in WP 4.2 and How It Affects Educator</a>
+* <a href="http://educatorplugin.com/updating-to-educator-1-7/">Updating to Educator 1.7 or greater</a>
+
+= Add-ons =
+
+* <a href="http://wordpress.org/plugins/educator-woocommerce-integration/" target="_blank">Educator WooCommerce Integration</a>
+* <a href="https://wordpress.org/plugins/educator-certificates/" target="_blank">Educator Certificates</a>
 
 == Installation ==
 
