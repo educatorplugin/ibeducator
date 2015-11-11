@@ -7,9 +7,9 @@ if ( ! current_user_can( 'manage_educator' ) ) {
 }
 
 $payment_id = isset( $_GET['payment_id'] ) ? absint( $_GET['payment_id'] ) : 0;
-$payment = IB_Educator_Payment::get_instance( $payment_id );
-$payment_statuses = IB_Educator_Payment::get_statuses();
-$types = IB_Educator_Payment::get_types();
+$payment = edr_get_payment( $payment_id );
+$payment_statuses = edr_get_payment_statuses();
+$types = edr_get_payment_types();
 $api = IB_Educator::get_instance();
 $student = null;
 $post = null;
@@ -30,7 +30,7 @@ if ( $payment->ID ) {
 	}
 }
 
-$edu_countries = IB_Educator_Countries::get_instance();
+$edu_countries = Edr_Countries::get_instance();
 $lines = $payment->get_lines();
 ?>
 <div class="wrap">
@@ -243,7 +243,7 @@ $lines = $payment->get_lines();
 
 								<!-- Membership -->
 								<?php
-									$ms = IB_Educator_Memberships::get_instance();
+									$ms = Edr_Memberships::get_instance();
 									$memberships = $ms->get_memberships();
 									$user_membership = $ms->get_user_membership( $payment->user_id );
 								?>
@@ -398,7 +398,7 @@ $lines = $payment->get_lines();
 										<select id="ib-edu-country" class="regular-text" name="country">
 											<option value=""></option>
 											<?php
-												$countries = IB_Educator_Countries::get_instance()->get_countries();
+												$countries = Edr_Countries::get_instance()->get_countries();
 
 												foreach ( $countries as $code => $country ) {
 													echo '<option value="' . esc_attr( $code ) . '"' . selected( $payment->country, $code, false ) . '>' . esc_html( $country ) . '</option>';

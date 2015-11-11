@@ -1,4 +1,10 @@
 <?php
+/**
+ * Renders the student's payments page.
+ *
+ * @version 1.1.0
+ */
+
 $user_id = get_current_user_id();
 
 if ( ! $user_id ) {
@@ -32,7 +38,7 @@ if ( 'payment-cancelled' == $message ) {
 		</thead>
 		<tbody>
 		<?php
-			$statuses = IB_Educator_Payment::get_statuses();
+			$statuses = edr_get_payment_statuses();
 		?>
 		<?php foreach ( $payments as $payment ) : ?>
 		<tr>

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Renders each course in the shortcode-courses.php template.
+ *
+ * @version 1.1.0
+ */
+
 $classes = apply_filters( 'ib_educator_course_classes', array( 'course' ) );
 ?>
 <article id="course-<?php the_ID(); ?>" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">

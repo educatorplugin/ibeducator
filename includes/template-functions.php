@@ -79,7 +79,7 @@ function edr_show_course_difficulty() {
 	$difficulty = ib_edu_get_difficulty( get_the_ID() );
 
 	if ( $difficulty ) {
-		IB_Educator_View::the_template( 'course/difficulty', array( 'difficulty' => $difficulty ) );
+		Edr_View::the_template( 'course/difficulty', array( 'difficulty' => $difficulty ) );
 	}
 }
 endif;
@@ -92,7 +92,7 @@ function edr_show_course_categories() {
 	$categories = get_the_term_list( get_the_ID(), 'ib_educator_category', '', __( ', ', 'ibeducator' ) );
 
 	if ( $categories ) {
-		IB_Educator_View::the_template( 'course/categories', array( 'categories' => $categories ) );
+		Edr_View::the_template( 'course/categories', array( 'categories' => $categories ) );
 	}
 }
 endif;
@@ -131,7 +131,7 @@ function edr_display_lessons( $course_id ) {
 			unset( $tmp );
 		}
 
-		IB_Educator_View::the_template( 'course/syllabus', array(
+		Edr_View::the_template( 'course/syllabus', array(
 			'syllabus' => $syllabus,
 			'lessons'  => $lessons,
 		) );
@@ -145,7 +145,7 @@ function edr_display_lessons( $course_id ) {
 				<?php
 					while ( $query->have_posts() ) {
 						$query->the_post();
-						IB_Educator_View::template_part( 'content', 'lesson' );
+						Edr_View::template_part( 'content', 'lesson' );
 					}
 
 					wp_reset_postdata();
@@ -183,7 +183,7 @@ function edr_get_question_content( $question ) {
  */
 function edr_question_multiple_choice( $question, $answer, $edit, $choices ) {
 	echo '<div class="ib-edu-question">';
-	echo '<div class="label">' . esc_html( $question->question ) . '</div>';
+	echo '<div class="label">' . apply_filters( 'edr_get_question_title', $question->question ) . '</div>';
 
 	if ( '' != $question->question_content ) {
 		echo '<div class="content">' . edr_get_question_content( $question ) . '</div>';
@@ -194,10 +194,11 @@ function edr_question_multiple_choice( $question, $answer, $edit, $choices ) {
 	if ( $edit ) {
 		foreach ( $choices as $choice ) {
 			$checked = ( $answer == $choice->ID ) ? ' checked="checked"' : '';
+			$choice_text = apply_filters( 'edr_get_choice_text', $choice->choice_text );
 
 			echo '<li><label><input type="radio" name="answers[' . intval( $question->ID )
 				. ']" value="' . intval( $choice->ID ) . '"' . $checked . '> '
-				. esc_html( $choice->choice_text ) . '</label></li>';
+				. $choice_text . '</label></li>';
 		}
 	} elseif ( ! is_null( $answer ) ) {
 		foreach ( $choices as $choice ) {
@@ -215,8 +216,9 @@ function edr_question_multiple_choice( $question, $answer, $edit, $choices ) {
 			}
 
 			$class = ( ! empty( $class ) ) ? ' class="' . $class . '"' : '';
+			$choice_text = apply_filters( 'edr_get_choice_text', $choice->choice_text );
 
-			echo '<li' . $class . '><label>' . $check . esc_html( $choice->choice_text ) . '</label></li>';
+			echo '<li' . $class . '><label>' . $check . $choice_text . '</label></li>';
 		}
 	}
 
@@ -233,7 +235,7 @@ function edr_question_multiple_choice( $question, $answer, $edit, $choices ) {
  */
 function edr_question_written_answer( $question, $answer, $edit ) {
 	echo '<div class="ib-edu-question">';
-	echo '<div class="label">' . esc_html( $question->question ) . '</div>';
+	echo '<div class="label">' . apply_filters( 'edr_get_question_title', $question->question ) . '</div>';
 
 	if ( '' != $question->question_content ) {
 		echo '<div class="content">' . edr_get_question_content( $question ) . '</div>';

@@ -1,0 +1,11 @@
+{
+  "name": "educator",
+  "version": "1.7.0",
+  "private": true,
+  "main": "gulpfile.js",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0"
+  }
+}

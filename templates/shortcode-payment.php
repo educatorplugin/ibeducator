@@ -1,4 +1,10 @@
 <?php
+/**
+ * Renders the payment page.
+ *
+ * @version 1.1.0
+ */
+
 $user_id = get_current_user_id();
 
 if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
@@ -11,7 +17,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 		return;
 	}
 	
-	$payment = IB_Educator_Payment::get_instance( $thankyou );
+	$payment = edr_get_payment( $thankyou );
 
 	if ( ! $payment->ID || $payment->user_id != $user_id ) {
 		return;
@@ -43,7 +49,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 		<dt class="payment-status"><?php _e( 'Payment Status', 'ibeducator' ); ?></dt>
 		<dd>
 			<?php
-				$statuses = IB_Educator_Payment::get_statuses();
+				$statuses = edr_get_payment_statuses();
 
 				if ( array_key_exists( $payment->payment_status, $statuses ) ) {
 					echo esc_html( $statuses[ $payment->payment_status ] );
@@ -102,7 +108,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 		return;
 	}
 
-	$payment = IB_Educator_Payment::get_instance( $pay );
+	$payment = edr_get_payment( $pay );
 
 	// The payment must exist and it must belong to the current user.
 	if ( $payment->ID && $payment->user_id == $user_id ) {
@@ -217,10 +223,10 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 
 					// Get price.
 					if ( 'ib_educator_course' == $post->post_type ) $args['price'] = ib_edu_get_course_price( $post->ID );
-					elseif ( 'ib_edu_membership' == $post->post_type ) $args['price'] = IB_Educator_Memberships::get_instance()->get_price( $post->ID );
+					elseif ( 'ib_edu_membership' == $post->post_type ) $args['price'] = Edr_Memberships::get_instance()->get_price( $post->ID );
 
 					// Output payment summary.
-					echo '<div id="edu-payment-info" class="edu-payment-info">' . IB_Educator_Account::payment_info( $post, $args ) . '</div>';
+					echo '<div id="edu-payment-info" class="edu-payment-info">' . Edr_StudentAccount::payment_info( $post, $args ) . '</div>';
 
 					// Payment gateways.
 					$gateways = IB_Educator_Main::get_gateways();

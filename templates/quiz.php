@@ -1,14 +1,33 @@
 <?php
+/**
+ * This template renders a quiz.
+ *
+ * @version 1.1.0
+ */
+
+$user_id = get_current_user_id();
+
+if ( $user_id == 0 ) {
+	echo '<p>';
+	printf( __( 'You must be <a href="%s">logged in</a> to take the quiz.', 'ibeducator' ),
+		esc_url( wp_login_url( get_permalink() ) ) );
+	echo '</p>';
+
+	return;
+}
+
 $lesson_id = get_the_ID();
 
 // Get entry data for the current student. Entry status must be "inprogress".
 $entry = IB_Educator::get_instance()->get_entry( array(
-	'user_id'      => get_current_user_id(),
+	'user_id'      => $user_id,
 	'course_id'    => ib_edu_get_course_id( $lesson_id ),
 	'entry_status' => 'inprogress'
 ) );
 
-if ( ! $entry ) {
+$entry_id = ( $entry ) ? $entry->ID : 0;
+
+if ( ! $entry_id && 'ib_educator_lesson' == get_post_type() ) {
 	return;
 }
 
@@ -42,9 +61,9 @@ $questions = $quizzes->get_questions( $lesson_id );
 			$max_attempts_number = 1;
 		}
 
-		$attempts_number = $quizzes->get_attempts_number( $entry->ID, $lesson_id );
+		$grade = $quizzes->get_grade( $lesson_id, $entry_id );
+		$attempts_number = $quizzes->get_attempts_number( $lesson_id, $entry_id );
 		$do_quiz = $attempts_number < $max_attempts_number;
-		$grade = $quizzes->get_grade( $lesson_id, $entry->ID );
 		$form_action = ib_edu_get_endpoint_url( 'edu-action', 'submit-quiz', get_permalink() );
 
 		if ( $grade && $do_quiz ) {
@@ -54,6 +73,8 @@ $questions = $quizzes->get_questions( $lesson_id );
 				$form_action = add_query_arg( 'try_again', 'true', $form_action );
 			}
 		}
+
+		$form_action .= '#ib-edu-quiz';
 	?>
 
 	<section id="ib-edu-quiz" class="<?php echo ( $grade ) ? 'ib-edu-quiz-complete' : 'ib-edu-quiz-inprogress'; ?>">
@@ -90,7 +111,7 @@ $questions = $quizzes->get_questions( $lesson_id );
 		</div>
 
 		<form id="ib-edu-quiz-form" class="ib-edu-form" method="post" action="<?php echo esc_url( $form_action ); ?>">
-			<?php wp_nonce_field( 'ibedu_submit_quiz_' . $lesson_id ); ?>
+			<?php wp_nonce_field( 'edr_submit_quiz_' . $lesson_id ); ?>
 			<input type="hidden" name="submit_quiz" value="1">
 
 			<div class="ib-edu-questions">

@@ -200,7 +200,7 @@ class IB_Educator_Tests extends WP_UnitTestCase {
 			$data['amount'] = ib_edu_get_course_price( $input['course_id'] );
 		} elseif ( 'membership' == $input['payment_type'] ) {
 			$data['object_id'] = $input['object_id'];
-			$ms = IB_Educator_Memberships::get_instance();
+			$ms = Edr_Memberships::get_instance();
 			$data['amount'] = $ms->get_price( $input['object_id'] );
 		}
 
@@ -212,8 +212,8 @@ class IB_Educator_Tests extends WP_UnitTestCase {
 	 * Add course entry.
 	 */
 	public function addEntry( $data ) {
-		$payment = IB_Educator_Payment::get_instance( $data['payment_id'] );
-		$entry = IB_Educator_Entry::get_instance();
+		$payment = edr_get_payment( $data['payment_id'] );
+		$entry = edr_get_entry();
 		$entry->course_id = $data['course_id'];
 		$entry->user_id = $payment->user_id;
 		$entry->payment_id = $payment->ID;

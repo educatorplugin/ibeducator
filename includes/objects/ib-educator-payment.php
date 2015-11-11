@@ -33,12 +33,6 @@ class IB_Educator_Payment {
 	 * @return IB_Educator_Payment
 	 */
 	public static function get_instance( $data = null ) {
-		if ( is_numeric( $data ) ) {
-			global $wpdb;
-			$tables = ib_edu_table_names();
-			$data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $tables['payments'] . " WHERE ID = %d", $data ) );
-		}
-
 		return new self( $data );
 	}
 
@@ -48,13 +42,9 @@ class IB_Educator_Payment {
 	 * @return array
 	 */
 	public static function get_statuses() {
-		return array(
-			'pending'             => __( 'Pending', 'ibeducator' ),
-			'complete'            => __( 'Complete', 'ibeducator' ),
-			'failed'              => __( 'Failed', 'ibeducator' ),
-			'cancelled'           => __( 'Cancelled', 'ibeducator' ),
-			//'membership_switched' => __( 'Membership Switched', 'ibeducator' ),
-		);
+		_ib_edu_deprecated_function( 'IB_Educator_Payment::get_statuses', '1.7', 'edr_get_payment_statuses' );
+
+		return edr_get_payment_statuses();
 	}
 
 	/**
@@ -63,17 +53,16 @@ class IB_Educator_Payment {
 	 * @return array
 	 */
 	public static function get_types() {
-		return array(
-			'course'     => __( 'Course', 'ibeducator' ),
-			'membership' => __( 'Membership', 'ibeducator' ),
-		);
+		_ib_edu_deprecated_function( 'IB_Educator_Payment::get_types', '1.7', 'edr_get_payment_types' );
+
+		return edr_get_payment_types();
 	}
 
 
 	/**
-	 * @constructor
+	 * Constructor
 	 *
-	 * @param array $data
+	 * @param mixed $data
 	 */
 	public function __construct( $data ) {
 		global $wpdb;
@@ -81,30 +70,43 @@ class IB_Educator_Payment {
 		$this->table_name = $tables['payments'];
 		$this->lines_table = $tables['payment_lines'];
 
-		if ( ! empty( $data ) ) {
-			$this->ID = $data->ID;
-			$this->parent_id = $data->parent_id;
-			$this->course_id = $data->course_id;
-			$this->user_id = $data->user_id;
-			$this->object_id = $data->object_id;
-			$this->txn_id = $data->txn_id;
-			$this->payment_type = $data->payment_type;
-			$this->payment_gateway = $data->payment_gateway;
-			$this->payment_status = $data->payment_status;
-			$this->amount = $data->amount;
-			$this->tax = $data->tax;
-			$this->currency = $data->currency;
-			$this->payment_date = $data->payment_date;
-			$this->first_name = $data->first_name;
-			$this->last_name = $data->last_name;
-			$this->address = $data->address;
-			$this->address_2 = $data->address_2;
-			$this->city = $data->city;
-			$this->state = $data->state;
-			$this->postcode = $data->postcode;
-			$this->country = $data->country;
-			$this->ip = ( $data->ip ) ? inet_ntop( $data->ip ) : '';
+		if ( is_numeric( $data ) ) {
+			$data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $this->table_name WHERE ID = %d", $data ) );
 		}
+
+		if ( ! empty( $data ) ) {
+			$this->set_data( $data );
+		}
+	}
+
+	/**
+	 * Set data.
+	 *
+	 * @param object $data
+	 */
+	public function set_data( $data ) {
+		$this->ID = $data->ID;
+		$this->parent_id = $data->parent_id;
+		$this->course_id = $data->course_id;
+		$this->user_id = $data->user_id;
+		$this->object_id = $data->object_id;
+		$this->txn_id = $data->txn_id;
+		$this->payment_type = $data->payment_type;
+		$this->payment_gateway = $data->payment_gateway;
+		$this->payment_status = $data->payment_status;
+		$this->amount = $data->amount;
+		$this->tax = $data->tax;
+		$this->currency = $data->currency;
+		$this->payment_date = $data->payment_date;
+		$this->first_name = $data->first_name;
+		$this->last_name = $data->last_name;
+		$this->address = $data->address;
+		$this->address_2 = $data->address_2;
+		$this->city = $data->city;
+		$this->state = $data->state;
+		$this->postcode = $data->postcode;
+		$this->country = $data->country;
+		$this->ip = ( $data->ip ) ? inet_ntop( $data->ip ) : '';
 	}
 
 	/**
@@ -138,7 +140,7 @@ class IB_Educator_Payment {
 			'txn_id'          => $this->txn_id,
 			'payment_type'    => $this->payment_type,
 			'payment_gateway' => $this->payment_gateway,
-			'payment_status'  => array_key_exists( $this->payment_status, self::get_statuses() ) ? $this->payment_status : '',
+			'payment_status'  => sanitize_text_field( $this->payment_status ),
 			'amount'          => $this->amount,
 			'tax'             => $this->tax,
 			'currency'        => $this->currency,

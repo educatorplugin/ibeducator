@@ -7,7 +7,7 @@ if ( ! $entry_id ) {
 	return;
 }
 
-$entry = IB_Educator_Entry::get_instance( $entry_id );
+$entry = edr_get_entry( $entry_id );
 
 if ( ! $entry->ID ) {
 	return;
@@ -198,7 +198,7 @@ $course = get_post( $entry->course_id );
 			(function($) {
 				'use strict';
 
-				var nonce = '<?php echo wp_create_nonce( "ibedu_edit_progress_{$entry->ID}" ); ?>';
+				var nonce = '<?php echo wp_create_nonce( "edr_edit_progress_{$entry->ID}" ); ?>';
 
 				$('div.quiz-title').on('click', function() {
 					$(this).parent().toggleClass('open');
@@ -218,7 +218,7 @@ $course = get_post( $entry->course_id );
 						cache: false,
 						method: 'post',
 						dataType: 'json',
-						url: ajaxurl + '?action=ibedu_quiz_grade',
+						url: ajaxurl + '?action=edr_quiz_grade',
 						data: {
 							entry_id: <?php echo intval( $entry_id ); ?>,
 							lesson_id: lessonId,

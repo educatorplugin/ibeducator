@@ -99,7 +99,7 @@ class IB_Educator {
 	 * @return IB_Educator_Payment
 	 */
 	public function add_payment( $data ) {
-		$payment = IB_Educator_Payment::get_instance();
+		$payment = edr_get_payment();
 
 		if ( ! empty( $data['course_id'] ) ) {
 			$payment->course_id = $data['course_id'];
@@ -159,7 +159,7 @@ class IB_Educator {
 		$row = $wpdb->get_row( $sql );
 
 		if ( $row ) {
-			return IB_Educator_Entry::get_instance( $row );
+			return edr_get_entry( $row );
 		}
 
 		return false;
@@ -234,7 +234,7 @@ class IB_Educator {
 
 		if ( $entries ) {
 			if ( 'OBJECT' == $output_type ) {
-				$entries = array_map( array( 'IB_Educator_Entry', 'get_instance' ), $entries );
+				$entries = array_map( 'edr_get_entry', $entries );
 			}
 		}
 
@@ -492,7 +492,7 @@ class IB_Educator {
 		$payments = $wpdb->get_results( $sql . ' ORDER BY payment_date DESC' . $pagination_sql, $output_type );
 
 		if ( ! empty( $payments ) ) {
-			$payments = array_map( array( 'IB_Educator_Payment', 'get_instance' ), $payments );
+			$payments = array_map( 'edr_get_payment', $payments );
 		}
 
 		if ( $has_pagination ) {
@@ -781,7 +781,7 @@ class IB_Educator {
 			$entry = $this->get_entry( array( 'payment_id' => $payment->ID ) );
 
 			if ( ! $entry ) {
-				$entry = IB_Educator_Entry::get_instance();
+				$entry = edr_get_entry();
 				$entry->course_id = $payment->course_id;
 				$entry->user_id = $payment->user_id;
 				$entry->payment_id = $payment->ID;
@@ -810,7 +810,7 @@ class IB_Educator {
 			}
 		} elseif ( 'membership' == $payment->payment_type ) {
 			// Setup membership.
-			$ms = IB_Educator_Memberships::get_instance();
+			$ms = Edr_Memberships::get_instance();
 			$ms->setup_membership( $payment->user_id, $payment->object_id );
 
 			$student = get_user_by( 'id', $payment->user_id );

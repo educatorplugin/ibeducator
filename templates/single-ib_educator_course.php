@@ -1,4 +1,14 @@
-<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
+<?php
+/**
+ * This template renders a single course page.
+ * To override this template you should copy
+ * this file to your theme's root directory.
+ *
+ * @version 1.1.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+?>
 
 <?php get_header( 'ibeducator' ); ?>
 
@@ -10,7 +20,7 @@
 ?>
 
 <?php while ( have_posts() ) : the_post(); ?>
-<?php IB_Educator_View::template_part( 'content', 'single-course' ); ?>
+<?php Edr_View::template_part( 'content', 'single-course' ); ?>
 <?php endwhile; ?>
 
 <?php

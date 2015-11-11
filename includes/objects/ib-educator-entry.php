@@ -20,12 +20,6 @@ class IB_Educator_Entry {
 	 * @return IB_Educator_Entry
 	 */
 	public static function get_instance( $data = null ) {
-		if ( is_numeric( $data ) && $data > 0 ) {
-			global $wpdb;
-			$tables = ib_edu_table_names();
-			$data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $tables['entries'] . " WHERE ID = %d", $data ) );
-		}
-
 		return new self( $data );
 	}
 
@@ -35,13 +29,9 @@ class IB_Educator_Entry {
 	 * @return array
 	 */
 	public static function get_statuses() {
-		return array(
-			'pending'    => __( 'Pending', 'ibeducator' ),
-			'inprogress' => __( 'In progress', 'ibeducator' ),
-			'complete'   => __( 'Complete', 'ibeducator' ),
-			'cancelled'  => __( 'Cancelled', 'ibeducator' ),
-			'paused'     => __( 'Paused', 'ibeducator' ),
-		);
+		_ib_edu_deprecated_function( 'IB_Educator_Entry::get_statuses', '1.7', 'edr_get_entry_statuses' );
+
+		return edr_get_entry_statuses();
 	}
 
 	/**
@@ -50,33 +40,45 @@ class IB_Educator_Entry {
 	 * @return array
 	 */
 	public static function get_origins() {
-		return apply_filters( 'ib_educator_entry_origins', array(
-			'payment'    => __( 'Payment', 'ibeducator' ),
-			'membership' => __( 'Membership', 'ibeducator' ),
-		) );
+		_ib_edu_deprecated_function( 'IB_Educator_Entry::get_origins', '1.7', 'edr_get_entry_origins' );
+
+		return edr_get_entry_origins();
 	}
 
 	/**
-	 * @constructor
+	 * Constructor
 	 *
-	 * @param array $data
+	 * @param mixed $data
 	 */
 	public function __construct( $data ) {
 		global $wpdb;
 		$tables = ib_edu_table_names();
 		$this->table_name = $tables['entries'];
 
-		if ( ! empty( $data ) ) {
-			$this->ID = $data->ID;
-			$this->course_id = $data->course_id;
-			$this->object_id = $data->object_id;
-			$this->user_id = $data->user_id;
-			$this->payment_id = $data->payment_id;
-			$this->grade = $data->grade;
-			$this->entry_origin = $data->entry_origin;
-			$this->entry_status = $data->entry_status;
-			$this->entry_date = $data->entry_date;
+		if ( is_numeric( $data ) && $data > 0 ) {
+			$data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $this->table_name WHERE ID = %d", $data ) );
 		}
+
+		if ( ! empty( $data ) ) {
+			$this->set_data( $data );
+		}
+	}
+
+	/**
+	 * Set data.
+	 *
+	 * @param object $data
+	 */
+	public function set_data( $data ) {
+		$this->ID = $data->ID;
+		$this->course_id = $data->course_id;
+		$this->object_id = $data->object_id;
+		$this->user_id = $data->user_id;
+		$this->payment_id = $data->payment_id;
+		$this->grade = $data->grade;
+		$this->entry_origin = $data->entry_origin;
+		$this->entry_status = $data->entry_status;
+		$this->entry_date = $data->entry_date;
 	}
 
 	/**
@@ -97,8 +99,8 @@ class IB_Educator_Entry {
 					'user_id'       => $this->user_id,
 					'payment_id'    => $this->payment_id,
 					'grade'         => $this->grade,
-					'entry_origin'  => array_key_exists( $this->entry_origin, self::get_origins() ) ? $this->entry_origin : '',
-					'entry_status'  => array_key_exists( $this->entry_status, self::get_statuses() ) ? $this->entry_status : '',
+					'entry_origin'  => sanitize_text_field( $this->entry_origin ),
+					'entry_status'  => sanitize_text_field( $this->entry_status ),
 					'entry_date'    => $this->entry_date,
 					'complete_date' => $this->complete_date
 				),
@@ -115,8 +117,8 @@ class IB_Educator_Entry {
 					'user_id'       => $this->user_id,
 					'payment_id'    => $this->payment_id,
 					'grade'         => $this->grade,
-					'entry_origin'  => array_key_exists( $this->entry_origin, self::get_origins() ) ? $this->entry_origin : '',
-					'entry_status'  => array_key_exists( $this->entry_status, self::get_statuses() ) ? $this->entry_status : '',
+					'entry_origin'  => sanitize_text_field( $this->entry_origin ),
+					'entry_status'  => sanitize_text_field( $this->entry_status ),
 					'entry_date'    => $this->entry_date,
 					'complete_date' => $this->complete_date
 				),

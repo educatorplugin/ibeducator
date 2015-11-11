@@ -1,4 +1,10 @@
 <?php
+/**
+ * This template renders the lesson content in the single-ib_educator_lesson.php template.
+ *
+ * @version 1.1.0
+ */
+
 $student_can_study = ib_edu_student_can_study( get_the_ID() );
 $classes = array( 'ib-edu-lesson-single' );
 
@@ -15,7 +21,7 @@ if ( ! $student_can_study ) {
 		<?php
 			if ( $student_can_study ) {
 				the_content();
-				IB_Educator_View::template_part( 'quiz' );
+				Edr_View::template_part( 'quiz' );
 			} else {
 				echo '<p>';
 				printf(

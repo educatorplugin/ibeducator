@@ -43,8 +43,7 @@ class IB_Educator_Main {
 	 * Plugin activation hook.
 	 */
 	public static function plugin_activation() {
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-install.php';
-		$install = new IB_Educator_Install();
+		$install = new Edr_Install();
 		$install->activate();
 	}
 
@@ -52,8 +51,7 @@ class IB_Educator_Main {
 	 * Plugin deactivation hook.
 	 */
 	public static function plugin_deactivation() {
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-install.php';
-		$install = new IB_Educator_Install();
+		$install = new Edr_Install();
 		$install->deactivate();
 	}
 
@@ -68,28 +66,13 @@ class IB_Educator_Main {
 	 * Initialize payment gateways.
 	 */
 	public static function init_gateways() {
-		// Include abstract payment gateway class.
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/gateways/ib-educator-payment-gateway.php';
-
 		$gateways = apply_filters( 'ib_educator_payment_gateways', array(
-			'paypal'        => array(
-				'class' => 'IB_Educator_Gateway_Paypal',
-			),
-			'cash'          => array(
-				'class' => 'IB_Educator_Gateway_Cash',
-			),
-			'check'         => array(
-				'class' => 'IB_Educator_Gateway_Check',
-			),
-			'bank-transfer' => array(
-				'class' => 'IB_Educator_Gateway_Bank_Transfer',
-			),
-			'free'          => array(
-				'class' => 'IB_Educator_Gateway_Free',
-			),
-			'stripe'        => array(
-				'class' => 'IB_Educator_Gateway_Stripe',
-			),
+			'paypal'        => array( 'class' => 'Edr_Gateway_Paypal' ),
+			'cash'          => array( 'class' => 'Edr_Gateway_Cash' ),
+			'check'         => array( 'class' => 'Edr_Gateway_Check' ),
+			'bank-transfer' => array( 'class' => 'Edr_Gateway_BankTransfer' ),
+			'free'          => array( 'class' => 'Edr_Gateway_Free' ),
+			'stripe'        => array( 'class' => 'Edr_Gateway_Stripe' ),
 		) );
 
 		// Get the list of enabled gateways.
@@ -113,18 +96,13 @@ class IB_Educator_Main {
 				continue;
 			}
 
-			if ( ! isset( $gateway['file'] ) ) {
-				$gateway['file'] = IBEDUCATOR_PLUGIN_DIR . 'includes/gateways/'
-								 . strtolower( str_replace( '_', '-', substr( $gateway['class'], 20 ) ) ) . '/'
-								 . strtolower( str_replace( '_', '-', $gateway['class'] ) ) . '.php';
-			}
-
-			if ( is_readable( $gateway['file'] ) ) {
+			if ( isset( $gateway['file'] ) && is_readable( $gateway['file'] ) ) {
 				require_once $gateway['file'];
-
-				$loaded_gateway = new $gateway['class']();
-				self::$gateways[ $loaded_gateway->get_id() ] = $loaded_gateway;
 			}
+
+			$gateway_instance = new $gateway['class']();
+
+			self::$gateways[ $gateway_instance->get_id() ] = $gateway_instance;
 		}
 	}
 
@@ -154,35 +132,33 @@ class IB_Educator_Main {
 		$post_id = $GLOBALS['wp_query']->post->ID;
 		$action = $GLOBALS['wp_query']->query_vars['edu-action'];
 
-		require_once IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-actions.php';
-
 		switch ( $action ) {
 			case 'cancel-payment':
-				IB_Educator_Actions::cancel_payment();
+				Edr_FrontActions::cancel_payment();
 				break;
 
 			case 'submit-quiz':
-				IB_Educator_Actions::submit_quiz();
+				Edr_FrontActions::submit_quiz();
 				break;
 
 			case 'payment':
-				IB_Educator_Actions::payment();
+				Edr_FrontActions::payment();
 				break;
 
 			case 'join':
-				IB_Educator_Actions::join();
+				Edr_FrontActions::join();
 				break;
 
 			case 'resume-entry':
-				IB_Educator_Actions::resume_entry();
+				Edr_FrontActions::resume_entry();
 				break;
 
 			case 'pause-membership':
-				IB_Educator_Actions::pause_membership();
+				Edr_FrontActions::pause_membership();
 				break;
 
 			case 'resume-membership':
-				IB_Educator_Actions::resume_membership();
+				Edr_FrontActions::resume_membership();
 				break;
 		}
 	}

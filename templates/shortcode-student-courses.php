@@ -1,4 +1,10 @@
 <?php
+/**
+ * Renders the student's courses page.
+ *
+ * @version 1.1.0
+ */
+
 $user_id = get_current_user_id();
 
 if ( ! $user_id ) {
@@ -10,7 +16,7 @@ global $post;
 $api = IB_Educator::get_instance();
 $courses = $api->get_student_courses( $user_id );
 $pending_courses = $api->get_pending_courses( $user_id );
-$ms = IB_Educator_Memberships::get_instance();
+$ms = Edr_Memberships::get_instance();
 
 // Output status message.
 $message = get_query_var( 'edu-message' );

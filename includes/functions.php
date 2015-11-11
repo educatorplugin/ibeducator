@@ -149,11 +149,6 @@ function ib_edu_get_currencies() {
 		'UAH' => __( 'Ukrainian Hryvnia', 'ibeducator' ),
 	) );
 }
-/*$currencies = ib_edu_get_currencies();
-asort( $currencies );
-foreach ( $currencies as $currency => $name ) {
-	echo "case '$currency':\n";
-}*/
 
 /**
  * Get current currency.
@@ -500,13 +495,11 @@ function ib_edu_user_can_edit_lesson( $lesson_id ) {
  * @param array $template_vars
  */
 function ib_edu_send_notification( $to, $template, $subject_vars, $template_vars ) {
-	require_once IBEDUCATOR_PLUGIN_DIR . '/includes/ib-educator-email.php';
-
 	// Set default template vars.
 	$template_vars['login_link'] = apply_filters( 'ib_educator_login_url', wp_login_url() );
 
 	// Send email.
-	$email = new IB_Educator_Email();
+	$email = new Edr_EmailAgent();
 	$email->set_template( $template );
 	$email->parse_subject( $subject_vars );
 	$email->parse_template( $template_vars );
@@ -540,7 +533,7 @@ function ib_edu_get_price_widget( $course_id, $user_id, $before = '<div class="i
 	}
 
 	// Check membership.
-	$membership_access = IB_Educator_Memberships::get_instance()->membership_can_access( $course_id, $user_id );
+	$membership_access = Edr_Memberships::get_instance()->membership_can_access( $course_id, $user_id );
 
 	/**
 	 * Filter the course price widget.
@@ -669,7 +662,7 @@ function ib_edu_collect_billing_data( $object ) {
 		$price = null;
 
 		if ( 'ib_edu_membership' == $object->post_type ) {
-			$price = IB_Educator_Memberships::get_instance()->get_price( $object->ID );
+			$price = Edr_Memberships::get_instance()->get_price( $object->ID );
 		} elseif ( 'ib_educator_course' == $object->post_type ) {
 			$price = ib_edu_get_course_price( $object->ID );
 		}
@@ -731,6 +724,13 @@ function ib_edu_lesson_access( $lesson_id ) {
 	return get_post_meta( $lesson_id, '_ib_educator_access', true );
 }
 
+/**
+ * Get a purchase link.
+ * Currently, supports memberships only.
+ *
+ * @param array $atts
+ * @return string
+ */
 function ib_edu_purchase_link( $atts ) {
 	$atts = wp_parse_args( $atts, array(
 		'object_id' => null,
@@ -758,6 +758,89 @@ function ib_edu_purchase_link( $atts ) {
 	}
 
 	return $html;
+}
+
+/**
+ * Get a payment.
+ *
+ * @param int|object|null $data
+ * @return IB_Educator_Payment
+ */
+function edr_get_payment( $data = null ) {
+	return new IB_Educator_Payment( $data );
+}
+
+/**
+ * Get the available payment statuses.
+ *
+ * @return array
+ */
+function edr_get_payment_statuses() {
+	return array(
+		'pending'   => __( 'Pending', 'ibeducator' ),
+		'complete'  => __( 'Complete', 'ibeducator' ),
+		'failed'    => __( 'Failed', 'ibeducator' ),
+		'cancelled' => __( 'Cancelled', 'ibeducator' ),
+	);
+}
+
+/**
+ * Get the available payment types.
+ *
+ * @return array
+ */
+function edr_get_payment_types() {
+	return array(
+		'course'     => __( 'Course', 'ibeducator' ),
+		'membership' => __( 'Membership', 'ibeducator' ),
+	);
+}
+
+/**
+ * Get an entry.
+ *
+ * @param int|object|null $data
+ * @return IB_Educator_Entry
+ */
+function edr_get_entry( $data = null ) {
+	return new IB_Educator_Entry( $data );
+}
+
+/**
+ * Get the available entry statuses.
+ *
+ * @return array
+ */
+function edr_get_entry_statuses() {
+	return array(
+		'pending'    => __( 'Pending', 'ibeducator' ),
+		'inprogress' => __( 'In progress', 'ibeducator' ),
+		'complete'   => __( 'Complete', 'ibeducator' ),
+		'cancelled'  => __( 'Cancelled', 'ibeducator' ),
+		'paused'     => __( 'Paused', 'ibeducator' ),
+	);
+}
+
+/**
+ * Get the available entry origins.
+ *
+ * @return array
+ */
+function edr_get_entry_origins() {
+	return apply_filters( 'ib_educator_entry_origins', array(
+		'payment'    => __( 'Payment', 'ibeducator' ),
+		'membership' => __( 'Membership', 'ibeducator' ),
+	) );
+}
+
+/**
+ * Get a question.
+ *
+ * @param int|object|null $data
+ * @return IB_Educator_Question
+ */
+function edr_get_question( $data = null ) {
+	return new IB_Educator_Question( $data );
 }
 
 /**

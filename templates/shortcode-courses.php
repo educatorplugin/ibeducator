@@ -1,3 +1,10 @@
+<?php
+/**
+ * Renders the [courses] shortcode.
+ *
+ * @version 1.1.0
+ */
+?>
 <?php if ( $courses->have_posts() ) : ?>
 	<?php
 		$columns = isset( $atts['columns'] ) ? intval( $atts['columns'] ) : 1;
@@ -10,7 +17,7 @@
 		<?php
 			while ( $courses->have_posts() ) {
 				$courses->the_post();
-				IB_Educator_View::template_part( 'content', 'course' );
+				Edr_View::template_part( 'content', 'course' );
 			}
 		?>
 	</div>

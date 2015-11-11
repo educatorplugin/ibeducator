@@ -1,4 +1,10 @@
 <?php
+/**
+ * Renders the [memberships_page] shortcode.
+ *
+ * @version 1.1.0
+ */
+
 $query = new WP_Query( array(
 	'post_type'      => 'ib_edu_membership',
 	'posts_per_page' => -1,
@@ -15,7 +21,7 @@ if ( $query->have_posts() ) :
 	<?php
 		while ( $query->have_posts() ) {
 			$query->the_post();
-			IB_Educator_View::template_part( 'content', 'membership' );
+			Edr_View::template_part( 'content', 'membership' );
 		}
 	?>
 	</div>
