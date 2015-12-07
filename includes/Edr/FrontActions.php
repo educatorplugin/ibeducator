@@ -272,7 +272,7 @@ class Edr_FrontActions {
 				update_user_option( $user_id, 'default_password_nag', true, true );
 
 				// Send the new user notifications.
-				wp_new_user_notification( $user_id, $user_data['user_pass'] );
+				wp_new_user_notification( $user_id, null, 'both' );
 
 				do_action( 'ib_educator_new_student', $user_id, $post );
 
