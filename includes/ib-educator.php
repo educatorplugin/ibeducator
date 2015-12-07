@@ -349,7 +349,10 @@ class IB_Educator {
 	public function get_pending_courses( $user_id ) {
 		global $wpdb;
 		$ids = array();
-		$payments = $this->get_payments( array( 'user_id' => $user_id, 'payment_status' => array( 'pending' ) ), OBJECT_K );
+		$payments = $this->get_payments( array(
+			'user_id'        => $user_id,
+			'payment_status' => array( 'pending' ),
+		), OBJECT_K );
 
 		if ( ! empty( $payments ) ) {
 			$payment_ids = array();
@@ -365,7 +368,7 @@ class IB_Educator {
 				'posts_per_page' => -1,
 				'post__in'       => $ids,
 				'orderby'        => 'post__in',
-				'order'          => 'ASC'
+				'order'          => 'ASC',
 			) );
 
 			if ( $query->have_posts() ) {
