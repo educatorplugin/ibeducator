@@ -4,7 +4,7 @@ Donate link: http://educatorplugin.com
 Tags: learning management system, lms, learning, online courses
 Requires at least: 4.3
 Tested up to: 4.3
-Stable tag: 1.7
+Stable tag: 1.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,10 @@ Coming soon.
 8. **Course Settings**
 
 == Changelog ==
+
+= 1.7.1 =
+* If the current version of the plugin installed on your website is less than 1.7, please read the changelog for the version 1.7 carefully.
+* Fixed: the email to the student is being sent upon registration. It stopped from being sent due to the slight change in WP's api for the "new user email notifications" function.
 
 = 1.7 =
 * The version 1.7 introduces major improvements and changes to the plugin's code. Please read the http://educatorplugin.com/updating-to-educator-1-7/ carefully before you update this plugin.
