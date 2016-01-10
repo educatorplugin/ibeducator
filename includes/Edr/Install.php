@@ -42,6 +42,7 @@ class Edr_Install {
 		$this->members       = $tables['members'];
 		$this->tax_rates     = $tables['tax_rates'];
 		$this->payment_lines = $tables['payment_lines'];
+		$this->entry_meta    = $tables['entry_meta'];
 	}
 
 	/**
@@ -300,6 +301,15 @@ CREATE TABLE $this->members (
   KEY user_id (user_id),
   KEY status (status),
   KEY expiration (expiration)
+) $charset_collate;
+CREATE TABLE $this->entry_meta (
+  meta_id bigint(20) unsigned NOT NULL auto_increment,
+  object_id bigint(20) unsigned NOT NULL,
+  meta_key varchar(255) NULL,
+  meta_value longtext NULL,
+  PRIMARY KEY  (meta_id),
+  KEY object_id (object_id),
+  KEY meta_key (meta_key)
 ) $charset_collate;";
 
 			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
