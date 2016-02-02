@@ -60,6 +60,11 @@ function edr_get_quizzes_service() { return new Edr_Quizzes(); }
 
 Edr_Manager::add( 'edr_quizzes', 'edr_get_quizzes_service' );
 
+// Register the entry meta service.
+function edr_get_entry_meta_service() { $tables = ib_edu_table_names(); return new Edr_Meta( $tables['entry_meta'] ); }
+
+Edr_Manager::add( 'edr_entry_meta', 'edr_get_entry_meta_service' );
+
 // Setup the memberships feature.
 Edr_MembershipsRun::init();
 

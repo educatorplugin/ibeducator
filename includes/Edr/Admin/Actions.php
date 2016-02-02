@@ -126,6 +126,13 @@ class Edr_Admin_Actions {
 					do_action( 'edr_entry_status_change', $entry, $prev_status );
 				}
 
+				/**
+				 * Do something when an entry is being saved.
+				 *
+				 * @param IB_Educator_Entry $entry
+				 */
+				do_action( 'edr_entry_save', $entry );
+
 				wp_redirect( admin_url( 'admin.php?page=ib_educator_entries&edu-action=edit-entry&entry_id=' . $entry->ID . '&edu-message=saved' ) );
 
 				exit();
