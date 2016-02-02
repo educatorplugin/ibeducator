@@ -79,6 +79,8 @@
 			<div id="post-body" class="metabox-holder columns-<?php echo 1 == get_current_screen()->get_columns() ? '1' : '2'; ?>">
 				<div id="postbox-container-1" class="postbox-container">
 					<div id="side-sortables" class="meta-box-sortables">
+						<?php do_action( 'edr_edit_entry_form_sidebar_before', $entry ); ?>
+
 						<div id="entry-settings" class="postbox">
 							<div class="handlediv"><br></div>
 							<h3 class="hndle"><span><?php _e( 'Entry', 'ibeducator' ); ?></span></h3>
@@ -119,10 +121,14 @@
 								</div>
 							</div>
 						</div>
+
+						<?php do_action( 'edr_edit_entry_form_sidebar_after', $entry ); ?>
 					</div>
 				</div>
 				<div id="postbox-container-2" class="postbox-container">
 					<div id="normal-sortables" class="meta-box-sortables">
+						<?php do_action( 'edr_edit_entry_form_main_before', $entry ); ?>
+
 						<div id="entry-settings" class="postbox">
 							<div class="handlediv"><br></div>
 							<h3 class="hndle"><span><?php _e( 'Entry Data', 'ibeducator' ); ?></span></h3>
@@ -248,6 +254,8 @@
 								<?php endif; ?>
 							</div>
 						</div>
+
+						<?php do_action( 'edr_edit_entry_form_main_after', $entry ); ?>
 					</div>
 				</div>
 			</div>

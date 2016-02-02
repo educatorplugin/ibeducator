@@ -455,15 +455,16 @@ function ib_edu_table_names() {
 	$prefix = $wpdb->prefix . 'ibeducator_';
 	
 	return array(
-		'payments'     => $prefix . 'payments',
-		'entries'      => $prefix . 'entries',
-		'questions'    => $prefix . 'questions',
-		'choices'      => $prefix . 'choices',
-		'answers'      => $prefix . 'answers',
-		'grades'       => $prefix . 'grades',
-		'members'      => $prefix . 'members',
-		'tax_rates'    => $prefix . 'tax_rates',
+		'payments'      => $prefix . 'payments',
+		'entries'       => $prefix . 'entries',
+		'questions'     => $prefix . 'questions',
+		'choices'       => $prefix . 'choices',
+		'answers'       => $prefix . 'answers',
+		'grades'        => $prefix . 'grades',
+		'members'       => $prefix . 'members',
+		'tax_rates'     => $prefix . 'tax_rates',
 		'payment_lines' => $prefix . 'payment_lines',
+		'entry_meta'    => $prefix . 'entry_meta',
 	);
 }
 
