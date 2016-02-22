@@ -53,11 +53,16 @@
 				case 'writtenanswer':
 					view = new EdrQuiz.WrittenAnswerQuestionView({model: question});
 					break;
+
+				case 'fileupload':
+					view = new EdrQuiz.FileUploadQuestionView({model: question});
+					break;
 			}
 
-			view.render();
-
-			$('#ib-edu-questions').append(view.$el);
+			if (view) {
+				view.render();
+				$('#ib-edu-questions').append(view.$el);
+			}
 		},
 
 		/**
@@ -80,6 +85,10 @@
 
 				case 'writtenanswer':
 					view = new EdrQuiz.WrittenAnswerQuestionView({model: question});
+					break;
+
+				case 'fileupload':
+					view = new EdrQuiz.FileUploadQuestionView({model: question});
 					break;
 			}
 

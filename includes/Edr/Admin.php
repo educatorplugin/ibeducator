@@ -12,6 +12,7 @@ class Edr_Admin {
 		add_action( 'current_screen', array( __CLASS__, 'maybe_includes' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ), 9 );
 		add_action( 'admin_init', array( __CLASS__, 'admin_actions' ) );
+		add_action( 'admin_init', array( __CLASS__, 'check_uploads_protect_files' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_scripts_styles' ), 9 );
 		add_filter( 'set-screen-option', array( __CLASS__, 'set_screen_option' ), 10, 3 );
 	}
@@ -31,6 +32,7 @@ class Edr_Admin {
 		Edr_Admin_Meta::init();
 		Edr_Admin_Quiz::init();
 		new Edr_Admin_Syllabus();
+		new Edr_AdminNotices();
 	}
 
 	/**
@@ -158,6 +160,15 @@ class Edr_Admin {
 					Edr_Admin_Actions::delete_payment();
 					break;
 			}
+		}
+	}
+
+	public static function check_uploads_protect_files() {
+		if ( false === get_transient( 'edr_check_uploads_protect_files' ) ) {
+			$upload = new Edr_Upload();
+			$upload->create_protect_files();
+
+			set_transient( 'edr_check_uploads_protect_files', 3600 * 24 );
 		}
 	}
 

@@ -251,7 +251,7 @@ CREATE TABLE $this->questions (
   ID bigint(20) unsigned NOT NULL auto_increment,
   lesson_id bigint(20) unsigned NOT NULL,
   question text default NULL,
-  question_type enum('','multiplechoice', 'writtenanswer'),
+  question_type enum('','multiplechoice', 'writtenanswer', 'fileupload'),
   question_content longtext default NULL,
   menu_order int(10) NOT NULL default 0,
   PRIMARY KEY  (ID),
@@ -285,7 +285,7 @@ CREATE TABLE $this->grades (
   entry_id bigint(20) unsigned NOT NULL,
   user_id bigint(20) unsigned NOT NULL,
   grade decimal(5,2) unsigned NOT NULL,
-  status enum('pending','approved') NOT NULL default 'pending',
+  status enum('pending','approved','draft') NOT NULL default 'pending',
   PRIMARY KEY  (ID),
   KEY lesson_id (lesson_id),
   KEY entry_id (entry_id)

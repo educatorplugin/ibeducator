@@ -160,6 +160,10 @@ class IB_Educator_Main {
 			case 'resume-membership':
 				Edr_FrontActions::resume_membership();
 				break;
+
+			case 'quiz-file-download':
+				Edr_FrontActions::quiz_file_download();
+				break;
 		}
 	}
 

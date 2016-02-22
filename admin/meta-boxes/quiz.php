@@ -1,11 +1,11 @@
 <?php
-	$quizzes = Edr_Manager::get( 'edr_quizzes' );
-	$lesson_id = (int) $post->ID;
-	$attempts_number = get_post_meta( $lesson_id, '_edr_attempts', true );
+$quizzes = Edr_Manager::get( 'edr_quizzes' );
+$lesson_id = (int) $post->ID;
+$attempts_number = get_post_meta( $lesson_id, '_edr_attempts', true );
 
-	if ( ! $attempts_number ) {
-		$attempts_number = 1;
-	}
+if ( ! $attempts_number ) {
+	$attempts_number = 1;
+}
 ?>
 
 <h2><?php _e( 'Settings', 'ibeducator' ); ?></h2>
@@ -31,6 +31,7 @@
 					'<select id="ib-edu-question-type">' .
 					'<option value="multiplechoice">' . __( 'Multiple Choice', 'ibeducator' ) . '</option>' .
 					'<option value="writtenanswer">' . __( 'Written Answer', 'ibeducator' ) . '</option>' .
+					'<option value="fileupload">' . __( 'File Upload', 'ibeducator' ) . '</option>' .
 					'</select>'
 				);
 			?>
@@ -90,6 +91,28 @@
 
 <!-- Template: Written Answer Question -->
 <script type="text/template" id="tpl-ib-edu-writtenanswerquestion">
+<a class="question-header" href="#">
+	<span class="text"><%- question %></span>
+	<span class="question-trigger"></span>
+</a>
+<div class="question-body">
+	<div class="question-text">
+		<label><?php _e( 'Question', 'ibeducator' ); ?></label>
+		<input type="text" class="question-text" value="<%- question %>">
+	</div>
+	<div class="question-content">
+		<label><?php _e( 'Content', 'ibeducator' ); ?></label>
+		<textarea class="question-content-input"><%- question_content %></textarea>
+	</div>
+	<div class="quiz-buttons-group">
+		<button class="save-question button button-primary"><?php _e( 'Save Question', 'ibeducator' ); ?></button>
+		<a class="delete-question" href="#"><?php _e( 'Delete', 'ibeducator' ); ?></a>
+	</div>
+</div>
+</script>
+
+<!-- Template: File Upload Question -->
+<script type="text/template" id="tpl-ib-edu-fileuploadquestion">
 <a class="question-header" href="#">
 	<span class="text"><%- question %></span>
 	<span class="question-trigger"></span>

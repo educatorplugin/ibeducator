@@ -182,6 +182,8 @@ function edr_get_question_content( $question ) {
  * @param array $choices
  */
 function edr_question_multiple_choice( $question, $answer, $edit, $choices ) {
+	$answer_choice_id = is_object( $answer ) ? $answer->choice_id : $answer;
+
 	echo '<div class="ib-edu-question">';
 	echo '<div class="label">' . apply_filters( 'edr_get_question_title', $question->question ) . '</div>';
 
@@ -193,7 +195,7 @@ function edr_question_multiple_choice( $question, $answer, $edit, $choices ) {
 
 	if ( $edit ) {
 		foreach ( $choices as $choice ) {
-			$checked = ( $answer == $choice->ID ) ? ' checked="checked"' : '';
+			$checked = ( $answer_choice_id == $choice->ID ) ? ' checked="checked"' : '';
 			$choice_text = apply_filters( 'edr_get_choice_text', $choice->choice_text );
 
 			echo '<li><label><input type="radio" name="answers[' . intval( $question->ID )
@@ -209,7 +211,7 @@ function edr_question_multiple_choice( $question, $answer, $edit, $choices ) {
 				// Correct answer.
 				$class = 'correct';
 				$check = '<span class="custom-radio correct checked"></span>';
-			} elseif ( $choice->ID == $answer->choice_id && ! $choice->correct ) {
+			} elseif ( $choice->ID == $answer_choice_id && ! $choice->correct ) {
 				// Wrong answer.
 				$class = 'wrong';
 				$check = '<span class="custom-radio wrong checked"></span>';
@@ -234,6 +236,8 @@ function edr_question_multiple_choice( $question, $answer, $edit, $choices ) {
  * @param boolean $edit Display either a form or result.
  */
 function edr_question_written_answer( $question, $answer, $edit ) {
+	$answer_text = is_object( $answer ) ? $answer->answer_text : $answer;
+
 	echo '<div class="ib-edu-question">';
 	echo '<div class="label">' . apply_filters( 'edr_get_question_title', $question->question ) . '</div>';
 
@@ -244,11 +248,48 @@ function edr_question_written_answer( $question, $answer, $edit ) {
 	if ( $edit ) {
 		echo '<div class="ib-edu-question-answer">'
 			. '<textarea name="answers[' . intval( $question->ID ) . ']" cols="50" rows="3">'
-			. esc_textarea( $answer )
+			. esc_textarea( $answer_text )
 			. '</textarea>'
 			. '</div>';
-	} elseif ( ! is_null( $answer ) ) {
-		echo '<div class="ib-edu-question-answer">' . esc_html( $answer->answer_text ) . '</div>';
+	} elseif ( $answer_text ) {
+		echo '<div class="ib-edu-question-answer">' . esc_html( $answer_text ) . '</div>';
+	}
+
+	echo '</div>';
+}
+
+function edr_quiz_file_list( $files, $lesson_id, $question_id, $grade_id ) {
+	if ( is_array( $files ) ) {
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
+
+		echo '<ul>';
+
+		foreach ( $files as $file ) {
+			$file_url = $quizzes->get_file_url( $lesson_id, $question_id, $grade_id );
+
+			echo '<li><a href="' . esc_url( $file_url ) . '">' . esc_html( $file['original_name'] ) . '</a></li>';
+		}
+
+		echo '</ul>';
+	}
+}
+
+function edr_question_file_upload( $question, $answer, $edit, $grade ) {
+	echo '<div class="ib-edu-question">';
+	echo '<div class="label">' . apply_filters( 'edr_get_question_title', $question->question ) . '</div>';
+
+	if ( '' != $question->question_content ) {
+		echo '<div class="content">' . edr_get_question_content( $question ) . '</div>';
+	}
+
+	if ( $edit ) {
+		echo '<div class="ib-edu-question-answer">'
+			. '<input type="file" name="answer_' . intval( $question->ID ) . '">'
+			. '</div>';
+	} elseif ( ! empty( $answer ) ) {
+		$files = maybe_unserialize( $answer->answer_text );
+
+		edr_quiz_file_list( $files, $grade->lesson_id, $question->ID, $grade->ID );
 	}
 
 	echo '</div>';

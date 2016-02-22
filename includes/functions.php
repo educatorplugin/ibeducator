@@ -844,6 +844,26 @@ function edr_get_question( $data = null ) {
 	return new IB_Educator_Question( $data );
 }
 
+function edr_get_private_uploads_dir() {
+	$dir = apply_filters( 'edr_private_uploads_dir', '' );
+
+	if ( ! $dir ) {
+		$dir = wp_upload_dir();
+
+		if ( $dir && false === $dir['error'] ) {
+			return $dir['basedir'] . '/edr';
+		}
+	}
+
+	return '';
+}
+
+function edr_protect_htaccess_exists() {
+	$dir = edr_get_private_uploads_dir();
+
+	return file_exists( $dir . '/.htaccess' );
+}
+
 /**
  * Trigger deprecated function error.
  *

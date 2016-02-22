@@ -12,6 +12,7 @@ var quizJsFiles = [
 	'./admin/js/quiz/views/question.js',
 	'./admin/js/quiz/views/multiple-choice-question.js',
 	'./admin/js/quiz/views/written-answer-question.js',
+	'./admin/js/quiz/views/file-upload-question.js',
 	'./admin/js/quiz/views/quiz.js',
 	'./admin/js/quiz/quiz.js'
 ];

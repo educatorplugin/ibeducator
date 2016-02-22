@@ -134,6 +134,16 @@ $course = get_post( $entry->course_id );
 												} else {
 													echo '<div class="answer">' . __( 'Not answered yet.', 'ibeducator' ) . '</div>';
 												}
+											} elseif ( 'fileupload' == $question->question_type ) {
+												if ( $answer ) {
+													$answer_files = maybe_unserialize( $answer->answer_text );
+
+													if ( ! empty( $answer_files ) ) {
+														edr_quiz_file_list( $answer_files, $lesson_id, $question->ID, $grade->ID );
+													}
+												} else {
+													echo '<div class="answer">' . __( 'Not answered yet.', 'ibeducator' ) . '</div>';
+												}
 											}
 										?>
 										</td>

@@ -34,10 +34,12 @@ class Edr_FrontActions {
 			return;
 		}
 
+		// Get lesson id and verify nonce.
 		$lesson_id = get_the_ID();
 
 		check_admin_referer( 'edr_submit_quiz_' . $lesson_id );
 
+		// Get user id.
 		$user_id = get_current_user_id();
 
 		if ( ! $user_id ) {
@@ -46,28 +48,14 @@ class Edr_FrontActions {
 
 		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 
+		// Get questions.
 		$questions = $quizzes->get_questions( $lesson_id );
 		
 		if ( empty( $questions ) ) {
 			return;
 		}
 
-		if ( ! isset( $_POST['answers'] ) || ! is_array( $_POST['answers'] ) ) {
-			// No answers.
-			ib_edu_message( 'quiz', 'empty-answers' );
-
-			return;
-		} else {
-			foreach ( $questions as $question ) {
-				if ( empty( $_POST['answers'][ $question->ID ] ) ) {
-					// Not all questions were answered.
-					ib_edu_message( 'quiz', 'empty-answers' );
-
-					return;
-				}
-			}
-		}
-
+		// Get the student's entry.
 		$entry = IB_Educator::get_instance()->get_entry( array(
 			'user_id'      => $user_id,
 			'course_id'    => ib_edu_get_course_id( $lesson_id ),
@@ -93,23 +81,43 @@ class Edr_FrontActions {
 			return;
 		}
 
-		// Add initial grade data to the database.
-		$grade_id = $quizzes->add_grade( array(
-			'lesson_id' => $lesson_id,
-			'entry_id'  => $entry_id,
-			'user_id'   => $user_id,
-			'grade'     => 0,
-			'status'    => 'pending',
-		) );
+		// Get current grade.
+		$grade_id = null;
+		$current_answers = array();
+		$grade = $quizzes->get_grade( $lesson_id, $entry_id );
 
-		if ( ! $grade_id ) {
-			return;
+		if ( $grade && 'draft' == $grade->status ) {
+			// Continue editing the current grade if it is still a draft.
+			$grade_id = $grade->ID;
+			$current_answers = $quizzes->get_answers( $grade_id );
+		} else {
+			// Create a new grade.
+			$grade_id = $quizzes->add_grade( array(
+				'lesson_id' => $lesson_id,
+				'entry_id'  => $entry_id,
+				'user_id'   => $user_id,
+				'grade'     => 0,
+				'status'    => 'draft',
+			) );
+
+			if ( ! $grade_id ) {
+				return;
+			}
 		}
 
+		$answered = 0;
 		$user_answer = '';
 		$correct = 0;
 		$automatic_grade = true;
-		$choices = $quizzes->get_choices( $lesson_id, true );
+		$choices = null;
+		$edr_upload = null;
+		$errors = new WP_Error();
+		$posted_answers = array();
+		$question_num = 1;
+
+		if ( isset( $_POST['answers'] ) && is_array( $_POST['answers'] ) ) {
+			$posted_answers = $_POST['answers'];
+		}
 
 		// Check answers to the quiz questions.
 		foreach ( $questions as $question ) {
@@ -117,7 +125,18 @@ class Edr_FrontActions {
 			switch ( $question->question_type ) {
 				// Multiple Choice Question.
 				case 'multiplechoice':
-					$user_answer = absint( $_POST['answers'][ $question->ID ] );
+					$user_answer = isset( $posted_answers[ $question->ID ] )
+						? absint( $posted_answers[ $question->ID ] )
+						: null;
+
+					if ( ! $user_answer ) {
+						$errors->add( "q_$question->ID", sprintf( __( 'Please answer question %d', 'ibeducator' ), $question_num ) );
+						continue;
+					}
+
+					if ( null === $choices ) {
+						$choices = $quizzes->get_choices( $lesson_id, true );
+					}
 
 					if ( isset( $choices[ $question->ID ] ) && isset( $choices[ $question->ID ][ $user_answer ] ) ) {
 						$choice = $choices[ $question->ID ][ $user_answer ];
@@ -130,11 +149,13 @@ class Edr_FrontActions {
 							'choice_id'   => $choice->ID,
 						), $question );
 
-						$added = $quizzes->add_answer( $answer_data );
+						$quizzes->add_answer( $answer_data );
 
 						if ( 1 == $choice->correct ) {
-							++$correct;
+							$correct += 1;
 						}
+
+						$answered += 1;
 					}
 
 					break;
@@ -146,9 +167,12 @@ class Edr_FrontActions {
 						$automatic_grade = false;
 					}
 
-					$user_answer = stripslashes( $_POST['answers'][ $question->ID ] );
+					$user_answer = isset( $posted_answers[ $question->ID ] )
+						? stripslashes( $posted_answers[ $question->ID ] )
+						: '';
 
 					if ( empty( $user_answer ) ) {
+						$errors->add( "q_$question->ID", sprintf( __( 'Please answer question %d', 'ibeducator' ), $question_num ) );
 						continue;
 					}
 
@@ -160,17 +184,84 @@ class Edr_FrontActions {
 						'answer_text' => $user_answer,
 					), $question );
 
-					$added = $quizzes->add_answer( $answer_data );
+					$quizzes->add_answer( $answer_data );
+
+					$answered += 1;
 					
 					break;
+
+				// File Upload Question.
+				case 'fileupload':
+					if ( $automatic_grade ) {
+						$automatic_grade = false;
+					}
+
+					if ( ! isset( $_FILES['answer_' . $question->ID] ) ) {
+						$errors->add( "q_$question->ID", sprintf( __( 'Please answer question %d', 'ibeducator' ), $question_num ) );
+						continue;
+					}
+
+					$file = $_FILES['answer_' . $question->ID];
+
+					if ( ! $edr_upload ) {
+						$edr_upload = new Edr_Upload();
+					}
+
+					$upload = $edr_upload->upload_file( array(
+						'name'        => $file['name'],
+						'tmp_name'    => $file['tmp_name'],
+						'error'       => $file['error'],
+						'context_dir' => 'quiz',
+					) );
+
+					if ( isset( $upload['error'] ) ) {
+						$errors->add( "q_$question->ID", $upload['error'] );
+						continue;
+					}
+
+					$uploads = array(
+						array(
+							'name'          => $upload['name'],
+							'dir'           => $upload['dir'],
+							'original_name' => $upload['original_name'],
+						),
+					);
+
+					$answer_data = apply_filters( 'edr_submit_answer_pre', array(
+						'question_id' => $question->ID,
+						'grade_id'    => $grade_id,
+						'entry_id'    => $entry_id,
+						'correct'     => -1,
+						'answer_text' => maybe_serialize( $uploads ),
+					) );
+
+					$quizzes->add_answer( $answer_data );
+
+					$answered += 1;
+
+					break;
 			}
+
+			$question_num += 1;
 		}
 
-		if ( $automatic_grade ) {
-			$quizzes->update_grade( $grade_id, array(
-				'grade'  => round( $correct / count( $questions ) * 100 ),
-				'status' => 'approved',
-			) );
+		if ( $errors->get_error_code() ) {
+			ib_edu_message( 'quiz', $errors );
+
+			return;
+		}
+
+		if ( $answered == count( $questions ) ) {
+			if ( $automatic_grade ) {
+				$quizzes->update_grade( $grade_id, array(
+					'grade'  => round( $correct / count( $questions ) * 100 ),
+					'status' => 'approved',
+				) );
+			} else {
+				$quizzes->update_grade( $grade_id, array(
+					'status' => 'pending',
+				) );
+			}
 		}
 
 		wp_redirect( ib_edu_get_endpoint_url( 'edu-message', 'quiz-submitted', get_permalink() ) );
@@ -500,5 +591,76 @@ class Edr_FrontActions {
 		if ( $user_membership && 'paused' == $user_membership['status'] ) {
 			$ms->resume_membership( $user_id );
 		}
+	}
+
+	public static function quiz_file_download() {
+		$user_id = get_current_user_id();
+
+		if ( ! $user_id ) {
+			return;
+		}
+
+		$grade_id = isset( $_GET['grade_id'] ) ? intval( $_GET['grade_id'] ) : null;
+		$question_id = isset( $_GET['question_id'] ) ? intval( $_GET['question_id'] ) : null;
+
+		if ( ! $grade_id || ! $question_id ) {
+			return;
+		}
+
+		$quizzes = Edr_Manager::get( 'edr_quizzes' );
+
+		$grade = $quizzes->get_grade_by_id( $grade_id );
+
+		if ( ! $grade ) {
+			exit();
+		}
+
+		// Verify user's capabilities.
+		if ( $grade->user_id != $user_id ) {
+			$entry = edr_get_entry( $grade->entry_id );
+
+			if ( ! $entry || ! current_user_can( 'edit_ib_educator_course', $entry->course_id ) ) {
+				exit( __( 'Access denied.', 'ibeducator' ) );
+			}
+		}
+
+		$answers = $quizzes->get_answers( $grade_id );
+
+		if ( empty( $answers ) || ! isset( $answers[ $question_id ] ) ) {
+			exit();
+		}
+
+		$files = maybe_unserialize( $answers[ $question_id ]->answer_text );
+
+		if ( ! is_array( $files ) || empty( $files ) ) {
+			exit();
+		}
+
+		$file = $files[0];
+
+		if ( ! preg_match( '#^[0-9a-z]+/[0-9a-z]+$#', $file['dir'] )
+			|| ! preg_match( '#^[0-9a-z]+(\.[0-9a-z]+)?$#', $file['name'] ) ) {
+			exit();
+		}
+
+		$file_dir = edr_get_private_uploads_dir();
+
+		if ( ! $file_dir ) {
+			exit();
+		}
+
+		$file_path = $file_dir . '/quiz/' . $file['dir'] . '/' . $file['name'];
+
+		if ( ! file_exists( $file_path ) ) {
+			exit();
+		}
+
+		header( 'Content-Type: application/octet-stream' );
+		header( 'Content-Disposition: attachment; filename="' . sanitize_file_name( $file['original_name'] ) . '"' );
+		header( 'Content-Length: ' . filesize( $file_path ) );
+
+		readfile( $file_path );
+
+		exit();
 	}
 }

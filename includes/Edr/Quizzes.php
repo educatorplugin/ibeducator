@@ -51,7 +51,7 @@ class Edr_Quizzes {
 	 */
 	public function get_attempts_number( $lesson_id, $entry_id = null ) {
 		global $wpdb;
-		$query = 'SELECT count(1) FROM ' . $this->tbl_grades . ' WHERE lesson_id = %d';
+		$query = "SELECT count(1) FROM $this->tbl_grades WHERE lesson_id = %d AND status <> 'draft'";
 		$values = array();
 		$values[] = $lesson_id;
 
@@ -223,7 +223,7 @@ class Edr_Quizzes {
 	 *
 	 * @param int $lesson_id
 	 * @param int $entry_id
-	 * @return object
+	 * @return null|object Returns null if the grade is not found.
 	 */
 	public function get_grade( $lesson_id, $entry_id = null ) {
 		global $wpdb;
@@ -242,6 +242,20 @@ class Edr_Quizzes {
 		$query .= ' ORDER BY ID DESC';
 
 		return $wpdb->get_row( $wpdb->prepare( $query, $values ) );
+	}
+
+	/**
+	 * Get grade by id.
+	 *
+	 * @param int $grade_id
+	 * @return null|object Returns null if the grade is not found.
+	 */
+	public function get_grade_by_id( $grade_id ) {
+		global $wpdb;
+
+		$query = 'SELECT * FROM ' . $this->tbl_grades . ' WHERE ID = %d';
+
+		return $wpdb->get_row( $wpdb->prepare( $query, $grade_id ) );
 	}
 
 	/**
@@ -357,6 +371,9 @@ class Edr_Quizzes {
 		return false;
 	}
 
+	public function update_answer( $answer ) {
+	}
+
 	/**
 	 * Get the entries with ungraded quizzes.
 	 *
@@ -375,5 +392,22 @@ class Edr_Quizzes {
 		$entries = $wpdb->get_col( "SELECT entry_id FROM $this->tbl_grades WHERE status = 'pending' AND entry_id IN ($ids) GROUP BY entry_id" );
 
 		return $entries;
+	}
+
+	public function get_file_url( $lesson_id, $question_id, $grade_id ) {
+		$url = get_permalink( $lesson_id );
+
+		if ( get_option( 'pretty_permalinks' ) ) {
+			$url = add_query_arg( array(
+				'edu_action'  => 'quiz-file-download',
+				'grade_id'    => $grade_id,
+				'question_id' => $question_id,
+			) );
+		} else {
+			$url = trailingslashit( $url ) . 'edu-action/quiz-file-download/?grade_id=' .
+				$grade_id . '&question_id=' . $question_id;
+		}
+
+		return $url;
 	}
 }
