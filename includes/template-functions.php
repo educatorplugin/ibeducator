@@ -282,13 +282,18 @@ function edr_question_file_upload( $question, $answer, $edit, $grade ) {
 		echo '<div class="content">' . edr_get_question_content( $question ) . '</div>';
 	}
 
+	$files = ( $answer ) ? maybe_unserialize( $answer->answer_text ) : array();
+
 	if ( $edit ) {
-		echo '<div class="ib-edu-question-answer">'
-			. '<input type="file" name="answer_' . intval( $question->ID ) . '">'
+		echo '<div class="ib-edu-question-answer">';
+
+		if ( ! empty( $files ) ) {
+			edr_quiz_file_list( $files, $grade->lesson_id, $question->ID, $grade->ID );
+		}
+
+		echo '<input type="file" name="answer_' . intval( $question->ID ) . '">'
 			. '</div>';
 	} elseif ( ! empty( $answer ) ) {
-		$files = maybe_unserialize( $answer->answer_text );
-
 		edr_quiz_file_list( $files, $grade->lesson_id, $question->ID, $grade->ID );
 	}
 

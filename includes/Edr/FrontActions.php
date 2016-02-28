@@ -106,12 +106,14 @@ class Edr_FrontActions {
 		}
 
 		$answered = 0;
+		$current_answer = null;
 		$user_answer = '';
 		$correct = 0;
 		$automatic_grade = true;
 		$choices = null;
 		$edr_upload = null;
 		$errors = new WP_Error();
+		$uploads_dir = edr_get_private_uploads_dir();
 		$posted_answers = array();
 		$question_num = 1;
 
@@ -125,6 +127,10 @@ class Edr_FrontActions {
 			switch ( $question->question_type ) {
 				// Multiple Choice Question.
 				case 'multiplechoice':
+					$current_answer = isset( $current_answers[ $question->ID ] )
+						? $current_answers[ $question->ID ]
+						: null;
+
 					$user_answer = isset( $posted_answers[ $question->ID ] )
 						? absint( $posted_answers[ $question->ID ] )
 						: null;
@@ -149,7 +155,11 @@ class Edr_FrontActions {
 							'choice_id'   => $choice->ID,
 						), $question );
 
-						$quizzes->add_answer( $answer_data );
+						if ( $current_answer ) {
+							$quizzes->update_answer( $current_answer->ID, $answer_data );
+						} else {
+							$quizzes->add_answer( $answer_data );
+						}
 
 						if ( 1 == $choice->correct ) {
 							$correct += 1;
@@ -167,12 +177,19 @@ class Edr_FrontActions {
 						$automatic_grade = false;
 					}
 
+					$current_answer = isset( $current_answers[ $question->ID ] )
+						? $current_answers[ $question->ID ]
+						: null;
+
 					$user_answer = isset( $posted_answers[ $question->ID ] )
 						? stripslashes( $posted_answers[ $question->ID ] )
 						: '';
 
 					if ( empty( $user_answer ) ) {
-						$errors->add( "q_$question->ID", sprintf( __( 'Please answer question %d', 'ibeducator' ), $question_num ) );
+						if ( ! $current_answer || empty( $current_answer->answer_text ) ) {
+							$errors->add( "q_$question->ID", sprintf( __( 'Please answer question %d', 'ibeducator' ), $question_num ) );
+						}
+
 						continue;
 					}
 
@@ -184,7 +201,11 @@ class Edr_FrontActions {
 						'answer_text' => $user_answer,
 					), $question );
 
-					$quizzes->add_answer( $answer_data );
+					if ( $current_answer ) {
+						$quizzes->update_answer( $current_answer->ID, $answer_data );
+					} else {
+						$quizzes->add_answer( $answer_data );
+					}
 
 					$answered += 1;
 					
@@ -196,21 +217,52 @@ class Edr_FrontActions {
 						$automatic_grade = false;
 					}
 
-					if ( ! isset( $_FILES['answer_' . $question->ID] ) ) {
-						$errors->add( "q_$question->ID", sprintf( __( 'Please answer question %d', 'ibeducator' ), $question_num ) );
-						continue;
-					}
+					$current_answer = null;
+					$current_file = '';
+					$files = null;
 
-					$file = $_FILES['answer_' . $question->ID];
+					if ( isset( $current_answers[ $question->ID ] ) ) {
+						$current_answer = $current_answers[ $question->ID ];
+						$files = maybe_unserialize( $current_answer->answer_text );
+
+						if ( ! empty( $files ) ) {
+							$current_file = $uploads_dir . '/quiz/' . $files[0]['dir'] . '/' . $files[0]['name'];
+						}
+					}
 
 					if ( ! $edr_upload ) {
 						$edr_upload = new Edr_Upload();
 					}
 
+					$file = null;
+					$upload_error = '';
+
+					if ( isset( $_FILES['answer_' . $question->ID] ) ) {
+						$file = $_FILES['answer_' . $question->ID];
+						$upload_error = $edr_upload->check_upload_error( $file['error'] );
+					} else {
+						continue;
+					}
+
+					if ( $upload_error ) {
+						if ( $file['error'] == UPLOAD_ERR_NO_FILE && $current_answer ) {
+							// User has already answered this question.
+							$answered += 1;
+						} else {
+							$errors->add( "q_$question->ID", $upload_error );
+						}
+
+						continue;
+					}
+
+					if ( file_exists( $current_file ) && ! unlink( $current_file ) ) {
+						$errors->add( "q_$question->ID", __( 'Could not replace current file.', 'ibeducator' ) );
+						continue;
+					}
+
 					$upload = $edr_upload->upload_file( array(
 						'name'        => $file['name'],
 						'tmp_name'    => $file['tmp_name'],
-						'error'       => $file['error'],
 						'context_dir' => 'quiz',
 					) );
 
@@ -235,7 +287,11 @@ class Edr_FrontActions {
 						'answer_text' => maybe_serialize( $uploads ),
 					) );
 
-					$quizzes->add_answer( $answer_data );
+					if ( $current_answer ) {
+						$quizzes->update_answer( $current_answer->ID, $answer_data );
+					} else {
+						$quizzes->add_answer( $answer_data );
+					}
 
 					$answered += 1;
 
@@ -608,7 +664,6 @@ class Edr_FrontActions {
 		}
 
 		$quizzes = Edr_Manager::get( 'edr_quizzes' );
-
 		$grade = $quizzes->get_grade_by_id( $grade_id );
 
 		if ( ! $grade ) {
@@ -639,7 +694,7 @@ class Edr_FrontActions {
 		$file = $files[0];
 
 		if ( ! preg_match( '#^[0-9a-z]+/[0-9a-z]+$#', $file['dir'] )
-			|| ! preg_match( '#^[0-9a-z]+(\.[0-9a-z]+)?$#', $file['name'] ) ) {
+			|| ! preg_match( '#^[0-9a-z-]+(\.[0-9a-z]+)?$#', $file['name'] ) ) {
 			exit();
 		}
 

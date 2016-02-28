@@ -21,6 +21,26 @@ class Edr_Upload {
 		return $new_path;
 	}
 
+	function check_upload_error( $error_code ) {
+		$message = '';
+
+		switch ( $error_code ) {
+			case UPLOAD_ERR_OK:
+				break;
+			case UPLOAD_ERR_NO_FILE:
+				$message = __( 'No file sent.', 'ibeducator' );
+				break;
+			case UPLOAD_ERR_INI_SIZE:
+			case UPLOAD_ERR_FORM_SIZE:
+				$message = __( 'Exceeded file size limit.', 'ibeducator' );
+				break;
+			default:
+				$message = __( 'Unknown upload error.', 'ibeducator' );
+		}
+
+		return $message;
+	}
+
 	/**
 	 * Upload a file.
 	 *
@@ -33,23 +53,12 @@ class Edr_Upload {
 			return array( 'error' => __( 'A file failed upload test.', 'ibeducator' ) );
 		}
 
-		// Check file upload errors.
-		switch ( $file['error'] ) {
-			case UPLOAD_ERR_OK:
-				break;
-			case UPLOAD_ERR_NO_FILE:
-				return array( 'error' => __( 'No file sent.', 'ibeducator' ) );
-			case UPLOAD_ERR_INI_SIZE:
-			case UPLOAD_ERR_FORM_SIZE:
-				return array( 'error' => __( 'Exceeded file size limit.', 'ibeducator' ) );
-			default:
-				return array( 'error' => __( 'Unknown upload error.', 'ibeducator' ) );
-		}
-
 		// Check the file type.
-		$file_check = wp_check_filetype_and_ext( $file['tmp_name'], $file['name'] );
+		$finfo = new finfo( FILEINFO_MIME_TYPE );
+		$allowed_mime_types = get_allowed_mime_types();
+		$ext = array_search( $finfo->file( $file['tmp_name'] ), $allowed_mime_types, true );
 
-		if ( ! $file_check['ext'] || ! $file_check['type'] ) {
+		if ( false === $ext ) {
 			return array( 'error' => __( 'The type of the uploaded file is not supported.', 'ibeducator' ) );
 		}
 
@@ -77,8 +86,7 @@ class Edr_Upload {
 		}
 
 		// Prepare the file name.
-		$ext = ( $file_check['ext'] ) ? '.' . $file_check['ext'] : '';
-		$file_name = wp_unique_filename( $file_dir, $path['name'] . $ext );
+		$file_name = wp_unique_filename( $file_dir, $path['name'] . '.' . $ext );
 		$file_path = $file_dir . '/' . $file_name;
 
 		// Move uploaded file to a new path.
@@ -91,10 +99,12 @@ class Edr_Upload {
 		$perms = $stat['mode'] & 0000666;
 		chmod( $file_path, $perms );
 
+		$original_name = sanitize_file_name( $file['name'] );
+
 		return array(
 			'name'          => $file_name,
 			'dir'           => $path['dir'],
-			'original_name' => ( $file_check['proper_filename'] ) ? $file_check['proper_filename'] : sanitize_file_name( $file['name'] ),
+			'original_name' => ( $original_name ) ? $original_name : $file_name,
 		);
 	}
 

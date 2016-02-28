@@ -371,7 +371,10 @@ class Edr_Quizzes {
 		return false;
 	}
 
-	public function update_answer( $answer ) {
+	public function update_answer( $answer_id, $data ) {
+		global $wpdb;
+
+		return $wpdb->update( $this->tbl_answers, $data, array( 'ID' => $answer_id ) );
 	}
 
 	/**
