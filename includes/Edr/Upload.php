@@ -21,6 +21,12 @@ class Edr_Upload {
 		return $new_path;
 	}
 
+	/**
+	 * Get file upload's error message, given error code.
+	 *
+	 * @param int $error_code
+	 * @return string
+	 */
 	function check_upload_error( $error_code ) {
 		$message = '';
 
@@ -108,6 +114,12 @@ class Edr_Upload {
 		);
 	}
 
+	/**
+	 * Get .htaccess rules to protect directory content,
+	 * from being accessed directly.
+	 *
+	 * @return string
+	 */
 	public function generate_protect_htaccess() {
 		$htaccess = "Options -Indexes\n";
 		$htaccess .= "deny from all\n";
@@ -115,6 +127,11 @@ class Edr_Upload {
 		return apply_filters( 'edr_protect_htaccess_content', $htaccess );
 	}
 
+	/**
+	 * Create .htaccess file in the private uploads directory
+	 * to prevent its content from being served directly.
+	 * This solution works for Apache web server only.
+	 */
 	public function create_protect_files() {
 		$dir = edr_get_private_uploads_dir();
 

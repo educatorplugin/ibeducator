@@ -371,6 +371,13 @@ class Edr_Quizzes {
 		return false;
 	}
 
+	/**
+	 * Update answer.
+	 *
+	 * @param int $answer_id
+	 * @param array $data
+	 * @return int|false Number of rows updated (e.g., 0, 1, 2, ...) or false on error.
+	 */
 	public function update_answer( $answer_id, $data ) {
 		global $wpdb;
 
@@ -397,6 +404,14 @@ class Edr_Quizzes {
 		return $entries;
 	}
 
+	/**
+	 * Get quiz answer file URL.
+	 *
+	 * @param int $lesson_id
+	 * @param int $question_id
+	 * @param int $grade_id
+	 * @return string
+	 */
 	public function get_file_url( $lesson_id, $question_id, $grade_id ) {
 		$url = get_permalink( $lesson_id );
 

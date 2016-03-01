@@ -1,10 +1,19 @@
 <?php
 
+/**
+ * This class displays admin notices.
+ */
 class Edr_AdminNotices {
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		add_action( 'admin_notices', array( __CLASS__, 'quiz_uploads_notice' ) );
 	}
 
+	/**
+	 * Display quiz uploads protection notice if necessary.
+	 */
 	public static function quiz_uploads_notice() {
 		$user_can_manage = current_user_can( 'manage_educator' );
 

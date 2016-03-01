@@ -258,6 +258,14 @@ function edr_question_written_answer( $question, $answer, $edit ) {
 	echo '</div>';
 }
 
+/**
+ * Display quiz answer file uploads list.
+ *
+ * @param array $files
+ * @param int $lesson_id
+ * @param int $question_id
+ * @param int $grade_id
+ */
 function edr_quiz_file_list( $files, $lesson_id, $question_id, $grade_id ) {
 	if ( is_array( $files ) ) {
 		$quizzes = Edr_Manager::get( 'edr_quizzes' );
@@ -274,6 +282,14 @@ function edr_quiz_file_list( $files, $lesson_id, $question_id, $grade_id ) {
 	}
 }
 
+/**
+ * Display a file upload question.
+ *
+ * @param IB_Educator_Question $question
+ * @param mixed $answer
+ * @param boolean $edit
+ * @param object $grade
+ */
 function edr_question_file_upload( $question, $answer, $edit, $grade ) {
 	echo '<div class="ib-edu-question">';
 	echo '<div class="label">' . apply_filters( 'edr_get_question_title', $question->question ) . '</div>';

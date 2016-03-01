@@ -844,6 +844,11 @@ function edr_get_question( $data = null ) {
 	return new IB_Educator_Question( $data );
 }
 
+/**
+ * Get directory path for private file uploads.
+ *
+ * @return string
+ */
 function edr_get_private_uploads_dir() {
 	$dir = apply_filters( 'edr_private_uploads_dir', '' );
 
@@ -858,6 +863,12 @@ function edr_get_private_uploads_dir() {
 	return '';
 }
 
+/**
+ * Check if the protection .htaccess file exists
+ * in the private file uploads directory.
+ *
+ * @return boolean
+ */
 function edr_protect_htaccess_exists() {
 	$dir = edr_get_private_uploads_dir();
 

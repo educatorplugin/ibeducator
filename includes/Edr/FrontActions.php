@@ -649,6 +649,10 @@ class Edr_FrontActions {
 		}
 	}
 
+	/**
+	 * Send the requested quiz answer file,
+	 * if a user has permissions to view it.
+	 */
 	public static function quiz_file_download() {
 		$user_id = get_current_user_id();
 
