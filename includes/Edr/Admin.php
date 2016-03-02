@@ -135,6 +135,11 @@ class Edr_Admin {
 	 */
 	public static function admin_actions() {
 		if ( isset( $_GET['edu-action'] ) ) {
+			/**
+			 * Allow to hook into various admin actions.
+			 */
+			do_action( 'edr_action_' . sanitize_key( $_GET['edu-action'] ) );
+
 			switch ( $_GET['edu-action'] ) {
 				case 'edit-entry':
 					Edr_Admin_Actions::edit_entry();
