@@ -119,7 +119,19 @@ class Edr_Upload {
 		$file_info = $this->check_mime_type( $file['tmp_name'] );
 
 		if ( ! $file_info['type'] ) {
-			return array( 'error' => __( 'The type of the uploaded file is not supported.', 'ibeducator' ) );
+			return array( 'error' => __( 'This file type is not supported.', 'ibeducator' ) );
+		}
+
+		// Get file extension.
+		$ext = '';
+		$name_parts = explode( '.', $file['name'] );
+
+		if ( count( $name_parts ) > 1 ) {
+			$ext = array_pop( $name_parts );
+		}
+
+		if ( ! $ext || ! preg_match( '#^(' . $file_info['ext_regexp'] . ')$#i', $ext ) ) {
+			return array( 'error' => __( 'Could not verify file extension.', 'ibeducator' ) );
 		}
 
 		// Determine the directory where to upload the file.
@@ -146,20 +158,7 @@ class Edr_Upload {
 		}
 
 		// Prepare the file name.
-		$ext = '';
-		$original_name = $file['name'];
-		$name_parts = explode( '.', $original_name );
-
-		if ( count( $name_parts ) > 1 ) {
-			$ext = array_pop( $name_parts );
-
-			if ( ! preg_match( '#^(' . $file_info['ext_regexp'] . ')$#i', $ext ) ) {
-				$ext = '';
-				$original_name = implode( '.', $name_parts );
-			}
-		}
-
-		$file_name = ( $ext ) ? $path['name'] . '.' . $ext : $path['name'];
+		$file_name = $path['name'] . '.' . $ext;
 		$file_name = wp_unique_filename( $file_dir, $file_name );
 		$file_path = $file_dir . '/' . $file_name;
 
@@ -173,7 +172,7 @@ class Edr_Upload {
 		$perms = $stat['mode'] & 0000666;
 		chmod( $file_path, $perms );
 
-		$original_name = sanitize_file_name( $original_name );
+		$original_name = sanitize_file_name( $file['name'] );
 
 		return array(
 			'name'          => $file_name,

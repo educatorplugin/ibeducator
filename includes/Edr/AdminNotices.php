@@ -30,7 +30,8 @@ class Edr_AdminNotices {
 				<div class="error">
 					<p><?php printf( __( 'Private uploads are not currently protected in %s, because the Educator .htaccess file is missing.', 'ibeducator' ), $private_uploads_dir ); ?></p>
 					<p><?php printf( __( 'Please create the .htaccess file in %s directory, and paste the following code into it:', 'ibeducator' ), $private_uploads_dir ); ?></p>
-					<p><pre><?php echo $upload->generate_protect_htaccess(); ?></pre></p>
+					<pre><?php echo $upload->generate_protect_htaccess(); ?></pre>
+					<p><?php _e( 'Please make sure that the private uploads directory is protected before dismissing this notice.', 'ibeducator' ); ?></p>
 					<p><?php printf( '<a href="%s">%s</a>', esc_url( add_query_arg( array( 'edu-action' => 'dismiss-notice', 'edr-notice' => 'uploads_htaccess' ) ) ), __( 'Dismiss Notice', 'ibeducator' ) ) ?></p>
 				</div>
 				<?php
@@ -46,6 +47,7 @@ class Edr_AdminNotices {
 				<div class="error">
 					<p><?php printf( __( 'Private uploads are not currently protected in %s. You must add a redirect rule to protect them.', 'ibeducator' ), $private_uploads_dir ); ?></p>
 					<p><?php printf( __( 'Please read the <a href="http://educatorplugin.com/protect-private-uploads" target="_blank">Protect Private Uploads</a> article.', 'ibeducator' ) ); ?></p>
+					<p><?php _e( 'Please make sure that the private uploads directory is protected before dismissing this notice.', 'ibeducator' ); ?></p>
 					<p><?php printf( '<a href="%s">%s</a>', esc_url( add_query_arg( array( 'edu-action' => 'dismiss-notice', 'edr-notice' => 'uploads_nginx' ) ) ), __( 'Dismiss Notice', 'ibeducator' ) ) ?></p>
 				</div>
 				<?php
@@ -61,6 +63,7 @@ class Edr_AdminNotices {
 				<div class="error">
 					<p><?php printf( __( 'Private uploads may not be currently protected in %s.', 'ibeducator' ), $private_uploads_dir ); ?></p>
 					<p><?php printf( __( 'Please read the <a href="http://educatorplugin.com/protect-private-uploads" target="_blank">Protect Private Uploads</a> article.', 'ibeducator' ) ); ?></p>
+					<p><?php _e( 'Please make sure that the private uploads directory is protected before dismissing this notice.', 'ibeducator' ); ?></p>
 					<p><?php printf( '<a href="%s">%s</a>', esc_url( add_query_arg( array( 'edu-action' => 'dismiss-notice', 'edr-notice' => 'uploads_other' ) ) ), __( 'Dismiss Notice', 'ibeducator' ) ) ?></p>
 				</div>
 				<?php

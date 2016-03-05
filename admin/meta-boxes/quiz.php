@@ -8,8 +8,6 @@ if ( ! $attempts_number ) {
 }
 ?>
 
-<h2><?php _e( 'Settings', 'ibeducator' ); ?></h2>
-
 <div class="ib-edu-field">
 	<div class="ib-edu-label">
 		<label for="edr-attempts-number"><?php _e( 'Number of attempts', 'ibeducator' ); ?></label>
@@ -18,8 +16,6 @@ if ( ! $attempts_number ) {
 		<input type="number" id="edr-attempts-number" name="_edr_attempts" value="<?php echo intval( $attempts_number ); ?>">
 	</div>
 </div>
-
-<h2><?php _e( 'Questions', 'ibeducator' ); ?></h2>
 
 <div id="ib-edu-quiz">
 	<div id="ib-edu-questions"></div>

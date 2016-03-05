@@ -173,7 +173,7 @@ class Edr_Admin {
 			$upload = new Edr_Upload();
 			$upload->create_protect_files();
 
-			set_transient( 'edr_check_uploads_protect_files', 3600 * 24 );
+			set_transient( 'edr_check_uploads_protect_files', 1, 3600 * 24 );
 		}
 	}
 
