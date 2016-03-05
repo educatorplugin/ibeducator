@@ -878,6 +878,7 @@ function edr_protect_htaccess_exists() {
 /**
  * Trigger deprecated function error.
  *
+ * @deprecated 1.8.0
  * @param string $function
  * @param string $version
  * @param string $replacement

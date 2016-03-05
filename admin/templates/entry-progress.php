@@ -139,7 +139,7 @@ $course = get_post( $entry->course_id );
 													$answer_files = maybe_unserialize( $answer->answer_text );
 
 													if ( ! empty( $answer_files ) ) {
-														edr_quiz_file_list( $answer_files, $lesson_id, $question->ID, $grade->ID );
+														edr_quiz_file_list( $answer_files, $question->ID, $grade->ID, $lesson_id );
 													}
 												} else {
 													echo '<div class="answer">' . __( 'Not answered yet.', 'ibeducator' ) . '</div>';

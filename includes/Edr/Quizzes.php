@@ -415,15 +415,15 @@ class Edr_Quizzes {
 	public function get_file_url( $lesson_id, $question_id, $grade_id ) {
 		$url = get_permalink( $lesson_id );
 
-		if ( get_option( 'pretty_permalinks' ) ) {
+		if ( get_option( 'permalink_structure' ) ) {
+			$url = trailingslashit( $url ) . 'edu-action/quiz-file-download/?grade_id=' .
+				$grade_id . '&question_id=' . $question_id;
+		} else {
 			$url = add_query_arg( array(
 				'edu_action'  => 'quiz-file-download',
 				'grade_id'    => $grade_id,
 				'question_id' => $question_id,
 			) );
-		} else {
-			$url = trailingslashit( $url ) . 'edu-action/quiz-file-download/?grade_id=' .
-				$grade_id . '&question_id=' . $question_id;
 		}
 
 		return $url;

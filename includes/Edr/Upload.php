@@ -7,7 +7,7 @@ class Edr_Upload {
 	 * @param string $file_path
 	 * @return null|array
 	 */
-	private function get_file_path( $file_path ) {
+	protected function get_file_path( $file_path ) {
 		$file_hash = sha1_file( $file_path );
 		$new_path = null;
 
@@ -27,7 +27,7 @@ class Edr_Upload {
 	 * @param int $error_code
 	 * @return string
 	 */
-	function check_upload_error( $error_code ) {
+	public function check_upload_error( $error_code ) {
 		$message = '';
 
 		switch ( $error_code ) {
@@ -48,6 +48,62 @@ class Edr_Upload {
 	}
 
 	/**
+	 * Get allowed mime types.
+	 *
+	 * @return array
+	 */
+	protected function get_allowed_mime_types() {
+		return apply_filters( 'edr_allowed_mime_types', array(
+			'jpg|jpeg' => 'image/jpeg',
+			'gif' => 'image/gif',
+			'png' => 'image/png',
+			'txt' => 'text/plain',
+			'csv' => 'text/csv',
+			'pdf' => 'application/pdf',
+			'tar' => 'application/x-tar',
+			'zip' => 'application/zip',
+			'gz|gzip' => 'application/x-gzip',
+			'rar' => 'application/rar',
+			'7z' => 'application/x-7z-compressed',
+			'psd' => 'application/octet-stream',
+			'doc' => 'application/msword',
+			'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'xls' => 'application/vnd.ms-excel',
+			'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+			'ppt|pps' => 'application/vnd.ms-powerpoint',
+			'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+			'ppsx' => 'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+			'odt' => 'application/vnd.oasis.opendocument.text',
+			'odp' => 'application/vnd.oasis.opendocument.presentation',
+			'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+		) );
+	}
+
+	/**
+	 * Check mime type of a given file.
+	 * Also, check extension.
+	 *
+	 * @param string $file_path
+	 * @return array
+	 */
+	protected function check_mime_type( $file_path ) {
+		$finfo = new finfo( FILEINFO_MIME_TYPE );
+		$type = $finfo->file( $file_path );
+		$ext_regexp = '';
+
+		if ( $type ) {
+			$allowed_mime_types = $this->get_allowed_mime_types();
+			$ext_regexp = array_search( $type, $allowed_mime_types, true );
+
+			if ( false === $ext_regexp ) {
+				$type = false;
+			}
+		}
+
+		return compact( 'type', 'ext_regexp' );
+	}
+
+	/**
 	 * Upload a file.
 	 *
 	 * @param array $file
@@ -60,11 +116,9 @@ class Edr_Upload {
 		}
 
 		// Check the file type.
-		$finfo = new finfo( FILEINFO_MIME_TYPE );
-		$allowed_mime_types = get_allowed_mime_types();
-		$ext = array_search( $finfo->file( $file['tmp_name'] ), $allowed_mime_types, true );
+		$file_info = $this->check_mime_type( $file['tmp_name'] );
 
-		if ( false === $ext ) {
+		if ( ! $file_info['type'] ) {
 			return array( 'error' => __( 'The type of the uploaded file is not supported.', 'ibeducator' ) );
 		}
 
@@ -92,7 +146,21 @@ class Edr_Upload {
 		}
 
 		// Prepare the file name.
-		$file_name = wp_unique_filename( $file_dir, $path['name'] . '.' . $ext );
+		$ext = '';
+		$original_name = $file['name'];
+		$name_parts = explode( '.', $original_name );
+
+		if ( count( $name_parts ) > 1 ) {
+			$ext = array_pop( $name_parts );
+
+			if ( ! preg_match( '#^(' . $file_info['ext_regexp'] . ')$#i', $ext ) ) {
+				$ext = '';
+				$original_name = implode( '.', $name_parts );
+			}
+		}
+
+		$file_name = ( $ext ) ? $path['name'] . '.' . $ext : $path['name'];
+		$file_name = wp_unique_filename( $file_dir, $file_name );
 		$file_path = $file_dir . '/' . $file_name;
 
 		// Move uploaded file to a new path.
@@ -105,7 +173,7 @@ class Edr_Upload {
 		$perms = $stat['mode'] & 0000666;
 		chmod( $file_path, $perms );
 
-		$original_name = sanitize_file_name( $file['name'] );
+		$original_name = sanitize_file_name( $original_name );
 
 		return array(
 			'name'          => $file_name,

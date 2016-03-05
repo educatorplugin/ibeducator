@@ -266,7 +266,7 @@ function edr_question_written_answer( $question, $answer, $edit ) {
  * @param int $question_id
  * @param int $grade_id
  */
-function edr_quiz_file_list( $files, $lesson_id, $question_id, $grade_id ) {
+function edr_quiz_file_list( $files, $question_id, $grade_id, $lesson_id ) {
 	if ( is_array( $files ) ) {
 		$quizzes = Edr_Manager::get( 'edr_quizzes' );
 
@@ -304,13 +304,14 @@ function edr_question_file_upload( $question, $answer, $edit, $grade ) {
 		echo '<div class="ib-edu-question-answer">';
 
 		if ( ! empty( $files ) ) {
-			edr_quiz_file_list( $files, $grade->lesson_id, $question->ID, $grade->ID );
+			edr_quiz_file_list( $files, $question->ID, $grade->ID, $grade->lesson_id );
 		}
 
-		echo '<input type="file" name="answer_' . intval( $question->ID ) . '">'
-			. '</div>';
+		echo '<input type="file" name="answer_' . intval( $question->ID ) . '">';
+
+		echo '</div>';
 	} elseif ( ! empty( $answer ) ) {
-		edr_quiz_file_list( $files, $grade->lesson_id, $question->ID, $grade->ID );
+		edr_quiz_file_list( $files, $question->ID, $grade->ID, $grade->lesson_id );
 	}
 
 	echo '</div>';

@@ -94,7 +94,7 @@ $questions = $quizzes->get_questions( $lesson_id );
 			}
 		?>
 
-		<?php if ( ! $do_quiz ) : ?>
+		<?php if ( ! $do_quiz && $grade ) : ?>
 			<section class="ib-edu-quiz-grade">
 				<h3><?php _e( 'Quiz Grade', 'ibeducator' ); ?></h3>
 				<p class="grade">
@@ -116,8 +116,7 @@ $questions = $quizzes->get_questions( $lesson_id );
 				<?php
 					$current_attempt = $attempts_number;
 
-					// Increment current attempt number if a user is currently editing the quiz
-					// has attempts left, and doesn't have a grade created in the db.
+					// Increment current attempt number if a user is editing the quiz.
 					if ( $do_quiz ) {
 						$current_attempt += 1;
 					}
