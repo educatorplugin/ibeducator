@@ -2,6 +2,15 @@
 
 class Edr_View {
 	/**
+	 * Get theme templates dir name.
+	 *
+	 * @return string
+	 */
+	protected static function theme_templates_dir_name() {
+		return 'ibeducator';
+	}
+
+	/**
 	 * Get plugin templates directory.
 	 *
 	 * @return string
@@ -11,12 +20,13 @@ class Edr_View {
 	}
 
 	public static function locate_template_path( $name ) {
-		$file_path = trailingslashit( get_stylesheet_directory() ) . 'ibeducator/' . $name;
+		$templates_dir = self::theme_templates_dir_name();
+		$file_path = trailingslashit( get_stylesheet_directory() ) . $templates_dir . '/' . $name;
 
 		if ( file_exists( $file_path ) ) {
 			return $file_path;
 		} else {
-			$file_path = trailingslashit( get_template_directory() ) . 'ibeducator/' . $name;
+			$file_path = trailingslashit( get_template_directory() ) . $templates_dir . '/' . $name;
 
 			if ( file_exists( $file_path ) ) {
 				return $file_path;
@@ -40,15 +50,16 @@ class Edr_View {
 	 */
 	public static function locate_template( $template_names ) {
 		$located = false;
+		$templates_dir = self::theme_templates_dir_name();
 
 		foreach ( $template_names as $name ) {
-			if ( file_exists( trailingslashit( get_stylesheet_directory() ) . 'ibeducator/' . $name ) ) {
-				$located = trailingslashit( get_stylesheet_directory() ) . 'ibeducator/' . $name;
+			if ( file_exists( trailingslashit( get_stylesheet_directory() ) . $templates_dir . '/' . $name ) ) {
+				$located = trailingslashit( get_stylesheet_directory() ) . $templates_dir . '/' . $name;
 				break;
 			}
 
-			if ( file_exists( trailingslashit( get_template_directory() ) . 'ibeducator/' . $name ) ) {
-				$located = trailingslashit( get_template_directory() ) . 'ibeducator/' . $name;
+			if ( file_exists( trailingslashit( get_template_directory() ) . $templates_dir . '/' . $name ) ) {
+				$located = trailingslashit( get_template_directory() ) . $templates_dir . '/' . $name;
 				break;
 			}
 

@@ -14,9 +14,7 @@ class IB_Educator_Main {
 		add_action( 'init', array( __CLASS__, 'init_gateways' ) );
 		add_action( 'init', array( __CLASS__, 'add_rewrite_endpoints' ), 8 ); // Run before the plugin update.
 		add_action( 'template_redirect', array( __CLASS__, 'process_actions' ) );
-		add_filter( 'template_include', array( __CLASS__, 'override_templates' ) );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_scripts_styles' ) );
-		add_filter( 'wp_nav_menu_objects', array( __CLASS__, 'add_menu_classes' ) );
 
 		// Add template functions.
 		add_action( 'after_setup_theme', array( __CLASS__, 'require_template_functions' ) );
@@ -168,34 +166,6 @@ class IB_Educator_Main {
 	}
 
 	/**
-	 * Override templates.
-	 *
-	 * @param string $template
-	 * @return string
-	 */
-	public static function override_templates( $template ) {
-		if ( is_post_type_archive( 'ib_educator_course' ) ) {
-			if ( false === strpos( $template, 'archive-ib_educator_course.php' ) ) {
-				return IBEDUCATOR_PLUGIN_DIR . 'templates/archive-ib_educator_course.php';
-			}
-		} elseif ( is_singular( 'ib_educator_course' ) ) {
-			if ( false === strpos( $template, 'single-ib_educator_course.php' ) ) {
-				return IBEDUCATOR_PLUGIN_DIR . 'templates/single-ib_educator_course.php';
-			}
-		} elseif ( is_singular( 'ib_educator_lesson' ) ) {
-			if ( false === strpos( $template, 'single-ib_educator_lesson.php' ) ) {
-				return IBEDUCATOR_PLUGIN_DIR . 'templates/single-ib_educator_lesson.php';
-			}
-		} elseif ( is_post_type_archive( 'ib_educator_lesson' ) ) {
-			if ( false === strpos( $template, 'archive-ib_educator_lesson.php' ) ) {
-				return IBEDUCATOR_PLUGIN_DIR . 'templates/archive-ib_educator_lesson.php';
-			}
-		}
-
-		return $template;
-	}
-
-	/**
 	 * Enqueue scripts and styles.
 	 */
 	public static function enqueue_scripts_styles() {
@@ -222,30 +192,6 @@ class IB_Educator_Main {
 				'get_states_nonce' => wp_create_nonce( 'ib_edu_get_states' )
 			) );
 		}
-	}
-
-	/**
-	 * Add classes to menu items.
-	 *
-	 * @param array $items
-	 * @return array
-	 */
-	public static function add_menu_classes( $items ) {
-		$courses_url = get_post_type_archive_link( 'ib_educator_course' );
-
-		foreach ( $items as $key => $item ) {
-			if ( $item->url == $courses_url ) {
-				if ( is_singular( 'ib_educator_course' )
-					|| is_post_type_archive( 'ib_educator_course' )
-					|| is_tax( 'ib_educator_category' ) ) {
-					$items[ $key ]->classes[] = 'current-menu-item';
-				}
-
-				break;
-			}
-		}
-
-		return $items;
 	}
 
 	/**

@@ -75,7 +75,7 @@ class Edr_PostTypes {
 				'exclude_from_search' => false,
 				'publicly_queryable'  => true,
 				'show_ui'             => true,
-				'show_in_nav_menus'   => false,
+				'show_in_nav_menus'   => true,
 				'show_in_menu'        => true,
 				'show_in_admin_bar'   => true,
 				'capability_type'     => 'ib_educator_lesson',

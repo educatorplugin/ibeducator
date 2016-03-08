@@ -2,16 +2,18 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-// Add HTML for default WP themes.
-add_action( 'ib_educator_before_main_loop', 'edr_before_main_loop' );
-add_action( 'ib_educator_after_main_loop', 'edr_after_main_loop' );
+add_action( 'the_content', 'edr_filter_course_content', 20 );
+add_action( 'the_content', 'edr_filter_lesson_content', 20 );
 
-// Default sidebar.
-add_action( 'ib_educator_sidebar', 'edr_show_sidebar' );
+// Display course status to a student.
+add_action( 'edr_before_course_content', 'edr_display_course_status' );
 
 // Display the course difficulty and categories on the single course page.
-add_action( 'ib_educator_before_course_content', 'edr_show_course_difficulty' );
-add_action( 'ib_educator_before_course_content', 'edr_show_course_categories' );
+add_action( 'edr_before_course_content', 'edr_show_course_difficulty' );
+add_action( 'edr_before_course_content', 'edr_show_course_categories' );
 
 // Display lessons on the single course page.
-add_action( 'edr_course_footer', 'edr_display_lessons' );
+add_action( 'edr_after_course_content', 'edr_display_lessons' );
+
+add_action( 'edr_before_lesson_content', 'edr_breadcrumbs' );
+add_action( 'edr_after_lesson_content', 'edr_lesson_after' );

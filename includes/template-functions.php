@@ -1,76 +1,5 @@
 <?php
 
-if ( ! function_exists( 'edr_before_main_loop' ) ) :
-/**
- * Default html before the main loop.
- *
- * @param string $where
- */
-function edr_before_main_loop( $where = '' ) {
-	$template = get_template();
-
-	switch ( $template ) {
-		case 'twentyfourteen':
-			echo '<div id="main-content" class="main-content"><div id="primary" class="content-area"><div id="content" class="site-content" role="main">';
-
-			if ( 'archive' != $where ) {
-				echo '<div class="ib-edu-twentyfourteen">';
-			}
-
-			break;
-
-		case 'twentyfifteen':
-			echo '<div id="primary" class="content-area"><main id="main" class="site-main" role="main">';
-
-			if ( 'archive' != $where ) {
-				echo '<div class="ib-edu-twentyfifteen">';
-			}
-
-			break;
-	}
-}
-endif;
-
-if ( ! function_exists( 'edr_after_main_loop' ) ) :
-/**
- * Default html after the main loop.
- *
- * @param string $where
- */
-function edr_after_main_loop( $where = '' ) {
-	$template = get_template();
-
-	switch ( $template ) {
-		case 'twentyfourteen':
-			echo '</div></div></div>';
-
-			if ( 'archive' != $where ) {
-				echo '</div>';
-			}
-
-			break;
-
-		case 'twentyfifteen':
-			echo '</main></div>';
-
-			if ( 'archive' != $where ) {
-				echo '</div>';
-			}
-
-			break;
-	}
-}
-endif;
-
-if ( ! function_exists( 'edr_show_sidebar' ) ) :
-/**
- * Show sidebar.
- */
-function edr_show_sidebar() {
-	get_sidebar( 'educator' );
-}
-endif;
-
 if ( ! function_exists( 'edr_show_course_difficulty' ) ) :
 /**
  * Display course difficulty level.
@@ -96,6 +25,30 @@ function edr_show_course_categories() {
 	}
 }
 endif;
+
+function edr_course_meta( $course_id ) {
+}
+
+function edr_breadcrumbs() {
+	$breadcrumbs = array();
+	$is_lesson = is_singular( 'ib_educator_lesson' );
+
+	if ( $is_lesson ) {
+		$course_id = ib_edu_get_course_id( get_the_ID() );
+
+		if ( $course_id ) {
+			$course = get_post( $course_id );
+
+			if ( $course ) {
+				$breadcrumbs[] = '<a href="' . esc_url( get_permalink( $course->ID ) ) . '">' . esc_html( $course->post_title ) . '</a>';
+			}
+		}
+	}
+
+	$breadcrumbs[] = '<span>' . get_the_title() . '</span>';
+
+	echo implode( '&raquo;', $breadcrumbs );
+}
 
 if ( ! function_exists( 'edr_display_lessons' ) ) :
 /**
@@ -156,6 +109,101 @@ function edr_display_lessons( $course_id ) {
 	}
 }
 endif;
+
+function edr_filter_course_content( $content ) {
+	$post_type = 'ib_educator_course';
+	$post = get_post();
+
+	if ( $post && $post_type == $post->post_type && is_singular( $post_type ) && is_main_query() ) {
+		ob_start();
+		do_action( 'edr_before_course_content', $post->ID );
+		$content = ob_get_contents() . $content;
+		ob_clean();
+		do_action( 'edr_after_course_content', $post->ID );
+		$content .= ob_get_clean();
+	}
+
+	return $content;
+}
+
+function edr_filter_lesson_content( $content ) {
+	$post_type = 'ib_educator_lesson';
+	$post = get_post();
+
+	if ( $post && $post_type == $post->post_type && is_singular( $post_type ) && is_main_query() ) {
+		ob_start();
+		do_action( 'edr_before_lesson_content', $post->ID );
+		$content = ob_get_contents() . $content;
+		ob_clean();
+		do_action( 'edr_after_lesson_content', $post->ID );
+		$content .= ob_get_clean();
+	}
+
+	return $content;
+}
+
+function edr_display_course_status( $course_id ) {
+	$api = IB_Educator::get_instance();
+	$user_id = get_current_user_id();
+	$access_status = '';
+
+	if ( $user_id ) {
+		$access_status = $api->get_access_status( $course_id, $user_id );
+	}
+
+	switch ( $access_status ) {
+		case 'inprogress':
+			echo '<div class="ib-edu-message info">' . __( 'You are registered for this course.', 'ibeducator' ) . '</div>';
+			break;
+
+		case 'pending_entry':
+			echo '<div class="ib-edu-message info">' . __( 'Your registration for this course is pending.', 'ibeducator' ) . '</div>';
+			break;
+
+		case 'pending_payment':
+			echo '<div class="ib-edu-message info">' . __( 'Your payment for this course is pending.', 'ibeducator' ) . '</div>';
+			break;
+
+		default:
+			echo ib_edu_get_price_widget( $course_id, $user_id );
+	}
+
+	// Output error messages.
+	$errors = ib_edu_message( 'course_join_errors' );
+
+	if ( $errors ) {
+		$messages = $errors->get_error_messages();
+
+		foreach ( $messages as $message ) {
+			echo '<div class="ib-edu-message error">' . $message . '</div>';
+		}
+	}
+}
+
+function edr_lesson_after( $lesson_id ) {
+	$course_id = ib_edu_get_course_id( $lesson_id );
+	$can_study = ib_edu_student_can_study( $lesson_id );
+
+	if ( ! $can_study ) {
+		echo '<p>';
+		printf(
+			__( 'Please register for %s to view this lesson.', 'ibeducator' ),
+			'<a href="' . esc_url( get_permalink( $course_id ) ) . '">' . the_title( '', '', false ) . '</a>'
+		);
+		echo '</p>';
+	} else {
+		Edr_View::template_part( 'quiz' );
+	}
+
+	?>
+	<nav class="ib-edu-lesson-nav">
+		<?php
+			echo ib_edu_get_adjacent_lesson_link( 'previous', '<div class="nav-previous">%link</div>', __( '&laquo; Previous Lesson', 'ibeducator' ) );
+			echo ib_edu_get_adjacent_lesson_link( 'next', '<div class="nav-next">%link</div>', __( 'Next Lesson &raquo;', 'ibeducator' ) );
+		?>
+	</nav>
+	<?php
+}
 
 /**
  * Get question content.

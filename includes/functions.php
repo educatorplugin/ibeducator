@@ -51,10 +51,13 @@ function ib_edu_get_option( $option_key, $option_section ) {
 /**
  * Get breadcrumbs HTML.
  *
+ * @deprecated 1.8.0
  * @param string $sep
  * @return string
  */
 function ib_edu_breadcrumbs( $sep = ' &raquo; ' ) {
+	edr_deprecated_function( 'ib_edu_breadcrumbs', '1.8.0' );
+
 	$breadcrumbs = array();
 	$is_lesson = is_singular( 'ib_educator_lesson' );
 	$is_course = is_singular( 'ib_educator_course' );
@@ -66,7 +69,7 @@ function ib_edu_breadcrumbs( $sep = ' &raquo; ' ) {
 			$page = get_post( $student_courses_page_id );
 
 			if ( $page ) {
-				$breadcrumbs[] = '<a href="' . get_permalink( $page->ID ) . '">' . esc_html( $page->post_title ) . '</a>';
+				$breadcrumbs[] = '<a href="' . esc_url( get_permalink( $page->ID ) ) . '">' . esc_html( $page->post_title ) . '</a>';
 			}
 		}
 	}
@@ -78,7 +81,7 @@ function ib_edu_breadcrumbs( $sep = ' &raquo; ' ) {
 			$course = get_post( $course_id );
 
 			if ( $course ) {
-				$breadcrumbs[] = '<a href="' . get_permalink( $course->ID ) . '">' . esc_html( $course->post_title ) . '</a>';
+				$breadcrumbs[] = '<a href="' . esc_url( get_permalink( $course->ID ) ) . '">' . esc_html( $course->post_title ) . '</a>';
 			}
 		}
 	}
@@ -844,6 +847,16 @@ function edr_get_question( $data = null ) {
 	return new IB_Educator_Question( $data );
 }
 
+function edr_deprecated_function( $function, $version, $replacement = null ) {
+	if ( WP_DEBUG ) {
+		if ( ! is_null( $replacement ) ) {
+			trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since Educator version %2$s with no alternative available.'), $function, $version ) );
+		} else {
+			trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since Educator version %2$s! Use %3$s instead.'), $function, $version, $replacement ) );
+		}
+	}
+}
+
 /**
  * Get directory path for private file uploads.
  *
@@ -884,11 +897,5 @@ function edr_protect_htaccess_exists() {
  * @param string $replacement
  */
 function _ib_edu_deprecated_function( $function, $version, $replacement = null ) {
-	if ( WP_DEBUG && current_user_can( 'manage_options' ) ) {
-		if ( ! is_null( $replacement ) ) {
-			trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since Educator version %2$s! Use %3$s instead.'), $function, $version, $replacement ) );
-		} else {
-			trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since Educator version %2$s with no alternative available.'), $function, $version ) );
-		}
-	}
+	edr_deprecated_function( $function, $version, $replacement );
 }
