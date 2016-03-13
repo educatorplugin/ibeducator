@@ -20,7 +20,7 @@ class Edr_Memberships {
 	 * Private constructor.
 	 */
 	private function __construct() {
-		$tables = ib_edu_table_names();
+		$tables = edr_db_tables();
 		$this->tbl_members = $tables['members'];
 	}
 
@@ -506,7 +506,7 @@ class Edr_Memberships {
 	 */
 	public function update_membership_entries( $user_id, $status ) {
 		global $wpdb;
-		$tables = ib_edu_table_names();
+		$tables = edr_db_tables();
 
 		$wpdb->update(
 			$tables['entries'],

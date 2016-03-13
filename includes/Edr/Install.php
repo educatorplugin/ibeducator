@@ -32,7 +32,7 @@ class Edr_Install {
 	private $grades;
 
 	public function __construct() {
-		$tables = ib_edu_table_names();
+		$tables = edr_db_tables();
 		$this->payments      = $tables['payments'];
 		$this->entries       = $tables['entries'];
 		$this->questions     = $tables['questions'];

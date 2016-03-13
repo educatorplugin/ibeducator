@@ -41,7 +41,7 @@ class Edr_Admin_PostTypes {
 	 */
 	public static function lessons_column_output( $column_name, $post_id ) {
 		if ( 'course' == $column_name ) {
-			$course_id = ib_edu_get_course_id( $post_id );
+			$course_id = Edr_Courses::get_instance()->get_course_id( $post_id );
 
 			if ( $course_id && ( $course = get_post( $course_id ) ) ) {
 				echo '<a href="' . esc_url( get_permalink( $course->ID ) ) . '" target="_blank">' . esc_html( $course->post_title ) . '</a>';

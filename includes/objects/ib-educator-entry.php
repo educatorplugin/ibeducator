@@ -52,7 +52,7 @@ class IB_Educator_Entry {
 	 */
 	public function __construct( $data ) {
 		global $wpdb;
-		$tables = ib_edu_table_names();
+		$tables = edr_db_tables();
 		$this->table_name = $tables['entries'];
 
 		if ( is_numeric( $data ) && $data > 0 ) {

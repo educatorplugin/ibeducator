@@ -58,7 +58,7 @@ class Edr_FrontActions {
 		// Get the student's entry.
 		$entry = IB_Educator::get_instance()->get_entry( array(
 			'user_id'      => $user_id,
-			'course_id'    => ib_edu_get_course_id( $lesson_id ),
+			'course_id'    => Edr_Courses::get_instance()->get_course_id( $lesson_id ),
 			'entry_status' => 'inprogress',
 		) );
 

@@ -75,7 +75,7 @@ function ib_edu_breadcrumbs( $sep = ' &raquo; ' ) {
 	}
 
 	if ( $is_lesson ) {
-		$course_id = ib_edu_get_course_id( get_the_ID() );
+		$course_id = Edr_Courses::get_instance()->get_course_id( get_the_ID() );
 
 		if ( $course_id ) {
 			$course = get_post( $course_id );
@@ -345,55 +345,6 @@ function ib_edu_get_access_status_message( $access_status ) {
 }
 
 /**
- * Get the course ID for a lesson.
- *
- * @param int $lesson_id
- * @return int
- */
-function ib_edu_get_course_id( $lesson_id = null ) {
-	// Is this function called inside the loop?
-	if ( ! $lesson_id ) {
-		$lesson_id = get_the_ID();
-	}
-
-	$course_id = get_post_meta( $lesson_id, '_ibedu_course', true );
-	
-	return is_numeric( $course_id ) ? $course_id : 0;
-}
-
-/**
- * Check if the current user can view the lesson.
- *
- * @param int $lesson_id
- * @return bool
- */
-function ib_edu_student_can_study( $lesson_id ) {
-	$lesson_access = ib_edu_lesson_access( $lesson_id );
-	$user_id = get_current_user_id();
-	$access = false;
-
-	if ( 'public' == $lesson_access ) {
-		$access = true;
-	} elseif ( $user_id ) {
-		if ( 'logged_in' == $lesson_access ) {
-			$access = true;
-		} else {
-			$course_id = ib_edu_get_course_id( $lesson_id );
-
-			if ( $course_id ) {
-				$access_status = IB_Educator::get_instance()->get_access_status( $course_id, $user_id );
-
-				if ( in_array( $access_status, array( 'inprogress', 'course_complete' ) ) ) {
-					$access = true;
-				}
-			}
-		}
-	}
-
-	return $access;
-}
-
-/**
  * Pass the message from the back-end to a template.
  *
  * @param string $key
@@ -445,31 +396,6 @@ function edr_get_difficulty( $course_id ) {
 }
 
 /**
- * Get database table names.
- *
- * @since 1.0.0
- * @param string $key
- * @return string
- */
-function ib_edu_table_names() {
-	global $wpdb;
-	$prefix = $wpdb->prefix . 'ibeducator_';
-	
-	return array(
-		'payments'      => $prefix . 'payments',
-		'entries'       => $prefix . 'entries',
-		'questions'     => $prefix . 'questions',
-		'choices'       => $prefix . 'choices',
-		'answers'       => $prefix . 'answers',
-		'grades'        => $prefix . 'grades',
-		'members'       => $prefix . 'members',
-		'tax_rates'     => $prefix . 'tax_rates',
-		'payment_lines' => $prefix . 'payment_lines',
-		'entry_meta'    => $prefix . 'entry_meta',
-	);
-}
-
-/**
  * Can the current user edit a given lesson?
  *
  * @param int $lesson_id
@@ -478,7 +404,7 @@ function ib_edu_table_names() {
 function ib_edu_user_can_edit_lesson( $lesson_id ) {
 	if ( current_user_can( 'manage_educator' ) ) return true;
 
-	$course_id = ib_edu_get_course_id( $lesson_id );
+	$course_id = Edr_Courses::get_instance()->get_course_id( $lesson_id );
 
 	if ( $course_id ) {
 		$api = IB_Educator::get_instance();
@@ -601,7 +527,7 @@ function ib_edu_get_adjacent_lesson( $previous = true ) {
 		return null;
 	}
 
-	$course_id = ib_edu_get_course_id( $lesson->ID );
+	$course_id = Edr_Courses::get_instance()->get_course_id( $lesson->ID );
 	$cmp = $previous ? '<' : '>';
 	$order = $previous ? 'DESC' : 'ASC';
 	$join = "INNER JOIN $wpdb->postmeta pm ON pm.post_id = p.ID";
@@ -763,6 +689,29 @@ function ib_edu_purchase_link( $atts ) {
 }
 
 /**
+ * Get database table names.
+ *
+ * @return array
+ */
+function edr_db_tables() {
+	global $wpdb;
+	$prefix = $wpdb->prefix . 'ibeducator_';
+
+	return array(
+		'payments'      => $prefix . 'payments',
+		'entries'       => $prefix . 'entries',
+		'questions'     => $prefix . 'questions',
+		'choices'       => $prefix . 'choices',
+		'answers'       => $prefix . 'answers',
+		'grades'        => $prefix . 'grades',
+		'members'       => $prefix . 'members',
+		'tax_rates'     => $prefix . 'tax_rates',
+		'payment_lines' => $prefix . 'payment_lines',
+		'entry_meta'    => $prefix . 'entry_meta',
+	);
+}
+
+/**
  * Get a payment.
  *
  * @param int|object|null $data
@@ -847,7 +796,7 @@ function edr_get_question( $data = null ) {
 
 function edr_deprecated_function( $function, $version, $replacement = null ) {
 	if ( WP_DEBUG ) {
-		if ( ! is_null( $replacement ) ) {
+		if ( is_null( $replacement ) ) {
 			trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since Educator version %2$s with no alternative available.'), $function, $version ) );
 		} else {
 			trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since Educator version %2$s! Use %3$s instead.'), $function, $version, $replacement ) );

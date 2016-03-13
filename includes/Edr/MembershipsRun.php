@@ -67,7 +67,7 @@ class Edr_MembershipsRun {
 		global $wpdb;
 		$ms = Edr_Memberships::get_instance();
 		$now = date( 'Y-m-d H:i:s' );
-		$tables = ib_edu_table_names();
+		$tables = edr_db_tables();
 		$expired_memberships = $wpdb->get_col( $wpdb->prepare( 'SELECT user_id FROM ' . $tables['members']
 			. ' WHERE `expiration` <> %s AND `expiration` < %s AND `status` = %s', '0000-00-00 00:00:00', $now, 'active' ) );
 
@@ -90,7 +90,7 @@ class Edr_MembershipsRun {
 		}
 
 		$expires_date = date( 'Y-m-d', strtotime( '+ ' . $days_notify . ' days' ) );
-		$tables = ib_edu_table_names();
+		$tables = edr_db_tables();
 		$users = $wpdb->get_results( $wpdb->prepare(
 			'SELECT u.ID, u.user_email, u.display_name, m.expiration, m.membership_id
 			FROM ' . $tables['members'] . ' m
@@ -184,7 +184,7 @@ class Edr_MembershipsRun {
 	 */
 	public static function on_deleted_user( $user_id ) {
 		global $wpdb;
-		$tables = ib_edu_table_names();
+		$tables = edr_db_tables();
 		
 		$wpdb->delete( $tables['members'], array( 'user_id' => $user_id ), array( '%d' ) );
 	}

@@ -96,7 +96,7 @@ class Edr_Autocomplete {
 				} elseif ( current_user_can( 'educator_edit_entries' ) ) {
 					$cur_user_id = get_current_user_id();
 					$course_ids = implode( ',', IB_Educator::get_instance()->get_lecturer_courses( $cur_user_id ) );
-					$tables = ib_edu_table_names();
+					$tables = edr_db_tables();
 					$student_ids = $wpdb->get_col(
 						"SELECT DISTINCT user_id
 						FROM {$tables['entries']}

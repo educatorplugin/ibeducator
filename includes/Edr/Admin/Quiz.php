@@ -89,7 +89,7 @@ class Edr_Admin_Quiz {
 
 		// Delete choices that are not sent by the user.
 		if ( ! empty( $choice_ids ) ) {
-			$tables = ib_edu_table_names();
+			$tables = edr_db_tables();
 			$query = 'DELETE FROM ' . $tables['choices'] . ' WHERE question_id = %d AND ID NOT IN (' . implode( ',', $choice_ids ) . ')';
 			$wpdb->query( $wpdb->prepare( $query, $question_id ) );
 		}
@@ -397,7 +397,7 @@ class Edr_Admin_Quiz {
 		if ( $ids && $order ) {
 			foreach ( $ids as $key => $question_id ) {
 				if ( is_numeric( $question_id ) && isset( $order[ $key ] ) && is_numeric( $order[ $key ] ) ) {
-					$tables = ib_edu_table_names();
+					$tables = edr_db_tables();
 					$wpdb->update(
 						$tables['questions'],
 						array( 'menu_order' => $order[ $key ] ),

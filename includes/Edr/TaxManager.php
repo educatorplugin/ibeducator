@@ -20,7 +20,7 @@ class Edr_TaxManager {
 	 * Constructor.
 	 */
 	protected function __construct() {
-		$tables = ib_edu_table_names();
+		$tables = edr_db_tables();
 		$this->table = $tables['tax_rates'];
 	}
 

@@ -21,8 +21,8 @@ $lesson_id = get_the_ID();
 // Get entry data for the current student. Entry status must be "inprogress".
 $entry = IB_Educator::get_instance()->get_entry( array(
 	'user_id'      => $user_id,
-	'course_id'    => ib_edu_get_course_id( $lesson_id ),
-	'entry_status' => 'inprogress'
+	'course_id'    => Edr_Courses::get_instance()->get_course_id( $lesson_id ),
+	'entry_status' => 'inprogress',
 ) );
 
 $entry_id = ( $entry ) ? $entry->ID : 0;

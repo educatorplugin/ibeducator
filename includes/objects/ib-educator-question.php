@@ -26,7 +26,7 @@ class IB_Educator_Question {
 	 */
 	public function __construct( $data ) {
 		global $wpdb;
-		$tables = ib_edu_table_names();
+		$tables = edr_db_tables();
 		$this->table_name = $tables['questions'];
 
 		if ( is_numeric( $data ) ) {

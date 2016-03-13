@@ -66,7 +66,7 @@ class IB_Educator_Payment {
 	 */
 	public function __construct( $data ) {
 		global $wpdb;
-		$tables = ib_edu_table_names();
+		$tables = edr_db_tables();
 		$this->table_name = $tables['payments'];
 		$this->lines_table = $tables['payment_lines'];
 

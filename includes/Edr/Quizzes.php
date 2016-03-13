@@ -25,7 +25,7 @@ class Edr_Quizzes {
 	 * Constructor
 	 */
 	public function __construct() {
-		$tables = ib_edu_table_names();
+		$tables = edr_db_tables();
 		$this->tbl_questions = $tables['questions'];
 		$this->tbl_choices   = $tables['choices'];
 		$this->tbl_grades    = $tables['grades'];

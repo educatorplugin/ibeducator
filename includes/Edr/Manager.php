@@ -10,7 +10,7 @@ class Edr_Manager {
 	 * Get data or service by key.
 	 *
 	 * @param string $key
-	 * @return mixed
+	 * @return object Instantiated object.
 	 */
 	public static function get( $key ) {
 		if ( ! array_key_exists( $key, self::$data ) ) {

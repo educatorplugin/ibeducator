@@ -15,7 +15,7 @@ class IB_Educator {
 	 * @access private
 	 */
 	private function __construct() {
-		$tables = ib_edu_table_names();
+		$tables = edr_db_tables();
 		$this->payments  = $tables['payments'];
 		$this->entries   = $tables['entries'];
 		$this->questions = $tables['questions'];
@@ -40,44 +40,15 @@ class IB_Educator {
 	/**
 	 * Get course access status.
 	 *
+	 * @deprecated 1.8.0
 	 * @param int $course_id
 	 * @param int $user_id
 	 * @return string
 	 */
 	public function get_access_status( $course_id, $user_id ) {
-		global $wpdb;
-		$status = '';
-		$sql = "SELECT ee.course_id, ee.user_id, ep.payment_status, ee.entry_status FROM $this->entries ee
-			LEFT JOIN $this->payments ep ON ep.ID=ee.payment_id
-			WHERE ee.course_id=%d AND ee.user_id=%d";
-		$results = $wpdb->get_results( $wpdb->prepare( $sql, $course_id, $user_id ) );
-		$has_complete = false;
-		$has_cancelled = false;
-		
-		if ( $results ) {
-			foreach ( $results as $result ) {
-				if ( 'complete' == $result->entry_status ) {
-					$has_complete = true;
-				} elseif ( 'cancelled' == $result->entry_status ) {
-					$has_cancelled = true;
-				} else {
-					// Found payment/entry record that is neither complete, nor cancelled.
-					if ( 'pending' == $result->entry_status ) {
-						$status = 'pending_entry';
-					} elseif ( 'inprogress' == $result->entry_status ) {
-						$status = 'inprogress';
-					} elseif ( 'pending' == $result->payment_status ) {
-						$status = 'pending_payment';
-					}
-				}
-			}
-		}
+		edr_deprecated_function( 'IB_Educator::get_access_status', '1.8.0', 'Edr_Access::get_instance()->get_course_access_status()' );
 
-		if ( empty( $status ) ) {
-			$status = ( $has_complete ) ? 'course_complete' : 'forbidden';
-		}
-
-		return apply_filters( 'ib_educator_access_status', $status, $course_id, $user_id );
+		return Edr_Access::get_instance()->get_course_access_status( $course_id, $user_id );
 	}
 
 	/**
@@ -89,6 +60,8 @@ class IB_Educator {
 	 * @return boolean
 	 */
 	public function user_can_pay( $course_id, $user_id ) {
+		edr_deprecated_function( 'IB_Educator::user_can_pay', '1.8.0' );
+
 		return in_array( $this->get_access_status( $course_id, $user_id ), array( 'forbidden', 'course_complete' ) );
 	}
 
@@ -539,7 +512,7 @@ class IB_Educator {
 	 * @return false|array of IB_Educator_Question objects
 	 */
 	public function get_questions( $args ) {
-		_ib_edu_deprecated_function( 'IB_Educator::get_questions', '1.6', 'Edr_Quizzes::get_questions' );
+		edr_deprecated_function( 'IB_Educator::get_questions', '1.6', 'Edr_Quizzes::get_questions' );
 
 		return Edr_Manager::get( 'edr_quizzes' )->get_questions( $args['lesson_id'] );
 	}
@@ -551,7 +524,7 @@ class IB_Educator {
 	 * @return false|array
 	 */
 	public function get_choices( $lesson_id, $sorted = false ) {
-		_ib_edu_deprecated_function( 'IB_Educator::get_choices', '1.6', 'Edr_Quizzes::get_choices' );
+		edr_deprecated_function( 'IB_Educator::get_choices', '1.6', 'Edr_Quizzes::get_choices' );
 
 		return Edr_Manager::get( 'edr_quizzes' )->get_choices( $lesson_id, $sorted );
 	}
@@ -563,7 +536,7 @@ class IB_Educator {
 	 * @return false|array
 	 */
 	public function get_question_choices( $question_id ) {
-		_ib_edu_deprecated_function( 'IB_Educator::get_question_choices', '1.6', 'Edr_Quizzes::get_question_choices' );
+		edr_deprecated_function( 'IB_Educator::get_question_choices', '1.6', 'Edr_Quizzes::get_question_choices' );
 
 		return Edr_Manager::get( 'edr_quizzes' )->get_question_choices( $question_id );
 	}
@@ -575,7 +548,7 @@ class IB_Educator {
 	 * @return false|int
 	 */
 	public function add_choice( $data ) {
-		_ib_edu_deprecated_function( 'IB_Educator::add_choice', '1.6', 'Edr_Quizzes::add_choice' );
+		edr_deprecated_function( 'IB_Educator::add_choice', '1.6', 'Edr_Quizzes::add_choice' );
 
 		return Edr_Manager::get( 'edr_quizzes' )->add_choice( $data );
 	}
@@ -587,7 +560,7 @@ class IB_Educator {
 	 * @return false|int
 	 */
 	public function update_choice( $choice_id, $data ) {
-		_ib_edu_deprecated_function( 'IB_Educator::update_choice', '1.6', 'Edr_Quizzes::update_choice' );
+		edr_deprecated_function( 'IB_Educator::update_choice', '1.6', 'Edr_Quizzes::update_choice' );
 
 		return Edr_Manager::get( 'edr_quizzes' )->update_choice( $choice_id, $data );
 	}
@@ -599,7 +572,7 @@ class IB_Educator {
 	 * @return false|int false on error, number of rows updated on success.
 	 */
 	public function delete_choice( $choice_id ) {
-		_ib_edu_deprecated_function( 'IB_Educator::delete_choice', '1.6', 'Edr_Quizzes::delete_choice' );
+		edr_deprecated_function( 'IB_Educator::delete_choice', '1.6', 'Edr_Quizzes::delete_choice' );
 
 		return Edr_Manager::get( 'edr_quizzes' )->delete_choice( $choice_id );
 	}
@@ -611,7 +584,7 @@ class IB_Educator {
 	 * @return false|int false on error, number of rows updated on success.
 	 */
 	public function delete_choices( $question_id ) {
-		_ib_edu_deprecated_function( 'IB_Educator::delete_choices', '1.6', 'Edr_Quizzes::delete_choices' );
+		edr_deprecated_function( 'IB_Educator::delete_choices', '1.6', 'Edr_Quizzes::delete_choices' );
 
 		return Edr_Manager::get( 'edr_quizzes' )->delete_choices( $question_id );
 	}
@@ -623,7 +596,7 @@ class IB_Educator {
 	 * @return false|int
 	 */
 	public function add_student_answer( $data ) {
-		_ib_edu_deprecated_function( 'IB_Educator::add_student_answer', '1.6', 'Edr_Quizzes::add_answer' );
+		edr_deprecated_function( 'IB_Educator::add_student_answer', '1.6', 'Edr_Quizzes::add_answer' );
 
 		return Edr_Manager::get( 'edr_quizzes' )->add_answer( $data );
 	}
@@ -636,7 +609,7 @@ class IB_Educator {
 	 * @return false|array
 	 */
 	public function get_student_answers( $lesson_id, $entry_id ) {
-		_ib_edu_deprecated_function( 'IB_Educator::get_student_answers', '1.6', 'Edr_Quizzes::get_answers( int $grade_id )' );
+		edr_deprecated_function( 'IB_Educator::get_student_answers', '1.6', 'Edr_Quizzes::get_answers( int $grade_id )' );
 
 		global $wpdb;
 
@@ -659,7 +632,7 @@ class IB_Educator {
 	 * @return false|int
 	 */
 	public function add_quiz_grade( $data ) {
-		_ib_edu_deprecated_function( 'IB_Educator::add_quiz_grade', '1.6', 'Edr_Quizzes::add_grade' );
+		edr_deprecated_function( 'IB_Educator::add_quiz_grade', '1.6', 'Edr_Quizzes::add_grade' );
 
 		return Edr_Manager::get( 'edr_quizzes' )->add_grade( $data );
 	}
@@ -671,7 +644,7 @@ class IB_Educator {
 	 * @return int
 	 */
 	public function update_quiz_grade( $grade_id, $data ) {
-		_ib_edu_deprecated_function( 'IB_Educator::update_quiz_grade', '1.6', 'Edr_Quizzes::update_grade' );
+		edr_deprecated_function( 'IB_Educator::update_quiz_grade', '1.6', 'Edr_Quizzes::update_grade' );
 
 		return Edr_Manager::get( 'edr_quizzes' )->update_grade( $grade_id, $data );
 	}
@@ -684,7 +657,7 @@ class IB_Educator {
 	 * @return boolean
 	 */
 	public function is_quiz_submitted( $lesson_id, $entry_id ) {
-		_ib_edu_deprecated_function( 'IB_Educator::is_quiz_submitted', '1.6', 'Edr_Quizzes::get_grade( int $lesson_id, int $entry_id )' );
+		edr_deprecated_function( 'IB_Educator::is_quiz_submitted', '1.6', 'Edr_Quizzes::get_grade( int $lesson_id, int $entry_id )' );
 
 		global $wpdb;
 
@@ -705,7 +678,7 @@ class IB_Educator {
 	 * @return array
 	 */
 	public function get_quiz_grade( $lesson_id, $entry_id ) {
-		_ib_edu_deprecated_function( 'IB_Educator::get_quiz_grade', '1.6', 'Edr_Quizzes::get_grade' );
+		edr_deprecated_function( 'IB_Educator::get_quiz_grade', '1.6', 'Edr_Quizzes::get_grade' );
 
 		return Edr_Manager::get( 'edr_quizzes' )->get_grade( $lesson_id, $entry_id );
 	}
@@ -717,7 +690,7 @@ class IB_Educator {
 	 * @return array
 	 */
 	public function check_quiz_pending( $ids ) {
-		_ib_edu_deprecated_function( 'IB_Educator::check_quiz_pending', '1.6', 'Edr_Quizzes::check_for_pending_quizzes' );
+		edr_deprecated_function( 'IB_Educator::check_quiz_pending', '1.6', 'Edr_Quizzes::check_for_pending_quizzes' );
 
 		return Edr_Manager::get( 'edr_quizzes' )->check_for_pending_quizzes( $ids );
 	}
@@ -865,7 +838,7 @@ class IB_Educator {
 
 class IBEdu_API {
 	public static function get_instance() {
-		_ib_edu_deprecated_function( 'IBEdu_API::get_instance()', '0.9.0', 'IB_Educator::get_instance()' );
+		edr_deprecated_function( 'IBEdu_API::get_instance()', '0.9.0', 'IB_Educator::get_instance()' );
 		return IB_Educator::get_instance();
 	}
 }

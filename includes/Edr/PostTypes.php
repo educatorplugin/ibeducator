@@ -156,7 +156,7 @@ class Edr_PostTypes {
 			return;
 		}
 
-		$tables = ib_edu_table_names();
+		$tables = edr_db_tables();
 
 		self::$current_user_courses = $wpdb->get_col( $wpdb->prepare(
 			"SELECT course_id FROM {$tables['entries']} WHERE user_id = %d AND entry_status = 'inprogress'",
@@ -183,7 +183,9 @@ class Edr_PostTypes {
 				} else {
 					self::set_current_user_courses( $user_id );
 
-					if ( in_array( ib_edu_get_course_id( $object_id ), self::$current_user_courses ) ) {
+					$course_id = Edr_Courses::get_instance()->get_course_id( $object_id );
+
+					if ( in_array( $course_id, self::$current_user_courses ) ) {
 						$access = true;
 					}
 				}

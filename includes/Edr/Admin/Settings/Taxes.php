@@ -269,7 +269,7 @@ class Edr_Admin_Settings_Taxes extends Edr_Admin_Settings_Base {
 				}
 
 				global $wpdb;
-				$tables = ib_edu_table_names();
+				$tables = edr_db_tables();
 
 				foreach ( $_POST['order'] as $id => $order ) {
 					if ( ! is_numeric( $id ) || ! is_numeric( $order ) ) {

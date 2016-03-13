@@ -23,7 +23,7 @@ function edr_breadcrumbs() {
 	$is_lesson = is_singular( 'ib_educator_lesson' );
 
 	if ( $is_lesson ) {
-		$course_id = ib_edu_get_course_id( get_the_ID() );
+		$course_id = Edr_Courses::get_instance()->get_course_id( get_the_ID() );
 
 		if ( $course_id ) {
 			$course = get_post( $course_id );
@@ -170,14 +170,14 @@ function edr_display_course_status( $course_id ) {
 }
 
 function edr_lesson_after( $lesson_id ) {
-	$course_id = ib_edu_get_course_id( $lesson_id );
-	$can_study = ib_edu_student_can_study( $lesson_id );
+	$course_id = Edr_Courses::get_instance()->get_course_id( $lesson_id );
+	$can_study = Edr_Access::get_instance()->can_study_lesson( $lesson_id );
 
 	if ( ! $can_study ) {
 		echo '<p>';
 		printf(
 			__( 'Please register for %s to view this lesson.', 'ibeducator' ),
-			'<a href="' . esc_url( get_permalink( $course_id ) ) . '">' . the_title( '', '', false ) . '</a>'
+			'<a href="' . esc_url( get_permalink( $course_id ) ) . '">' . get_the_title( $course_id ) . '</a>'
 		);
 		echo '</p>';
 	} else {
