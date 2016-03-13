@@ -51,6 +51,7 @@ require IBEDUCATOR_PLUGIN_DIR . 'includes/objects/ib-educator-question.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/formatting.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/functions.php';
+require IBEDUCATOR_PLUGIN_DIR . 'includes/deprecated-functions.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/ib-educator-main.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/shortcodes.php';
 require IBEDUCATOR_PLUGIN_DIR . 'includes/filters.php';

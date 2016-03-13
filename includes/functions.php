@@ -413,10 +413,9 @@ function ib_edu_message( $key, $value = null ) {
 /**
  * Get available course difficulty levels.
  *
- * @since 1.0.0
  * @return array
  */
-function ib_edu_get_difficulty_levels() {
+function edr_get_difficulty_levels() {
 	return array(
 		'beginner'     => __( 'Beginner', 'ibeducator' ),
 		'intermediate' => __( 'Intermediate', 'ibeducator' ),
@@ -427,19 +426,18 @@ function ib_edu_get_difficulty_levels() {
 /**
  * Get course difficulty.
  *
- * @since 1.0.0
  * @param int $course_id
  * @return null|array
  */
-function ib_edu_get_difficulty( $course_id ) {
+function edr_get_difficulty( $course_id ) {
 	$difficulty = get_post_meta( $course_id, '_ib_educator_difficulty', true );
 	
 	if ( $difficulty ) {
-		$levels = ib_edu_get_difficulty_levels();
+		$levels = edr_get_difficulty_levels();
 
 		return array(
 			'key'   => $difficulty,
-			'label' => ( isset( $levels[ $difficulty ] ) ) ? $levels[ $difficulty ] : '',
+			'label' => isset( $levels[ $difficulty ] ) ? $levels[ $difficulty ] : '',
 		);
 	}
 

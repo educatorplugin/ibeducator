@@ -1,32 +1,21 @@
 <?php
 
-if ( ! function_exists( 'edr_show_course_difficulty' ) ) :
-/**
- * Display course difficulty level.
- */
-function edr_show_course_difficulty() {
-	$difficulty = ib_edu_get_difficulty( get_the_ID() );
+function edr_course_meta( $course_id ) {
+	$categories = get_the_term_list( $course_id, 'ib_educator_category', '', __( ', ', 'ibeducator' ) );
+	$difficulty = edr_get_difficulty( $course_id );
+	$html = '';
 
 	if ( $difficulty ) {
-		Edr_View::the_template( 'course/difficulty', array( 'difficulty' => $difficulty ) );
+		$html .= '<li>' . esc_html( $difficulty['label'] ) . '</li>';
 	}
-}
-endif;
-
-if ( ! function_exists( 'edr_show_course_categories' ) ) :
-/**
- * Display course categories.
- */
-function edr_show_course_categories() {
-	$categories = get_the_term_list( get_the_ID(), 'ib_educator_category', '', __( ', ', 'ibeducator' ) );
 
 	if ( $categories ) {
-		Edr_View::the_template( 'course/categories', array( 'categories' => $categories ) );
+		$html .= '<li>' . $categories . '</li>';
 	}
-}
-endif;
 
-function edr_course_meta( $course_id ) {
+	if ( $html ) {
+		echo '<ul>', $html, '</ul>';
+	}
 }
 
 function edr_breadcrumbs() {
@@ -364,3 +353,49 @@ function edr_question_file_upload( $question, $answer, $edit, $grade ) {
 
 	echo '</div>';
 }
+
+/* Deprecated functions */
+
+if ( ! function_exists( 'edr_show_course_difficulty' ) ) :
+/**
+ * Display course difficulty level.
+ *
+ * @deprecated 1.8.0
+ */
+function edr_show_course_difficulty() {
+	edr_deprecated_function( 'edr_show_course_difficulty', '1.8.0' );
+
+	$difficulty = ib_edu_get_difficulty( get_the_ID() );
+
+	if ( $difficulty ) {
+		?>
+		<div class="ib-edu-course-difficulty">
+			<span class="label"><?php _e( 'Difficulty:', 'ibeducator' ); ?></span>
+			<?php echo esc_html( $difficulty['label'] ); ?>
+		</div>
+		<?php
+	}
+}
+endif;
+
+if ( ! function_exists( 'edr_show_course_categories' ) ) :
+/**
+ * Display course categories.
+ *
+ * @deprecated 1.8.0
+ */
+function edr_show_course_categories() {
+	edr_deprecated_function( 'edr_show_course_categories', '1.8.0' );
+
+	$categories = get_the_term_list( get_the_ID(), 'ib_educator_category', '', __( ', ', 'ibeducator' ) );
+
+	if ( $categories ) {
+		?>
+		<div class="ib-edu-course-categories">
+			<span class="label"><?php _e( 'Categories:', 'ibeducator' ); ?></span>
+			<?php echo $categories; ?>
+		</div>
+		<?php
+	}
+}
+endif;
