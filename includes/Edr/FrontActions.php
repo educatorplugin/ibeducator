@@ -358,7 +358,7 @@ class Edr_FrontActions {
 		// Check the course prerequisites.
 		if ( 'course' == $payment_type ) {
 			// Registration allowed?
-			if ( 'closed' == ib_edu_registration( $post_id ) ) {
+			if ( 'closed' == Edr_Courses::get_instance()->get_register_status( $post_id ) ) {
 				return;
 			}
 
@@ -433,7 +433,7 @@ class Edr_FrontActions {
 		$can_pay = true;
 
 		if ( 'course' == $payment_type ) {
-			$access_status = IB_Educator::get_instance()->get_access_status( $post_id, $user_id );
+			$access_status = Edr_Access::get_instance()->get_course_access_status( $post_id, $user_id );
 
 			// Student can pay for a course only if he/she completed this course or didn't register for it yet.
 			$can_pay = in_array( $access_status, array( 'course_complete', 'forbidden' ) );
@@ -488,7 +488,7 @@ class Edr_FrontActions {
 		}
 
 		// Registration allowed?
-		if ( 'closed' == ib_edu_registration( $course_id ) ) {
+		if ( 'closed' == Edr_Courses::get_instance()->get_register_status( $course_id ) ) {
 			return;
 		}
 

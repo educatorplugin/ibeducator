@@ -446,58 +446,6 @@ function ib_edu_has_quiz( $lesson_id ) {
 }
 
 /**
- * Get HTML for the course price widget.
- *
- * @param int $course_id
- * @param int $user_id
- * @param string $before
- * @param string $after
- * @return string
- */
-function ib_edu_get_price_widget( $course_id, $user_id, $before = '<div class="ib-edu-course-price">', $after = '</div>' ) {
-	// Registration allowed?
-	if ( 'closed' == ib_edu_registration( $course_id ) ) {
-		return '';
-	}
-
-	// Check membership.
-	$membership_access = Edr_Memberships::get_instance()->membership_can_access( $course_id, $user_id );
-
-	/**
-	 * Filter the course price widget.
-	 *
-	 * @since 1.3.2
-	 *
-	 * @param bool $membership_access Whether the user's current membership allows him/her to take the course.
-	 */
-	$output = apply_filters( 'ib_educator_course_price_widget', null, $membership_access, $course_id, $user_id );
-	
-	if ( null !== $output ) {
-		return $output;
-	}
-
-	// Generate the widget.
-	$output = $before;
-
-	if ( $membership_access ) {
-		$register_url = ib_edu_get_endpoint_url( 'edu-action', 'join', get_permalink( $course_id ) );
-		$output .= '<form action="' . esc_url( $register_url ) . '" method="post">';
-		$output .= '<input type="hidden" name="_wpnonce" value="' . wp_create_nonce( 'ib_educator_join' ) . '">';
-		$output .= '<input type="submit" class="ib-edu-button" value="' . __( 'Join', 'ibeducator' ) . '">';
-		$output .= '</form>';
-	} else {
-		$price = ib_edu_get_course_price( $course_id );
-		$price = ( 0 == $price ) ? __( 'Free', 'ibeducator' ) : ib_edu_format_course_price( $price );
-		$register_url = ib_edu_get_endpoint_url( 'edu-course', $course_id, get_permalink( ib_edu_page_id( 'payment' ) ) );
-		$output .= '<span class="price">' . $price . '</span><a href="' . esc_url( $register_url )
-				. '" class="ib-edu-button">' . __( 'Register', 'ibeducator' ) . '</a>';
-	}
-
-	$output .= $after;
-	return $output;
-}
-
-/**
  * Output the default page title based on the page context.
  */
 function ib_edu_page_title() {
@@ -512,56 +460,6 @@ function ib_edu_page_title() {
 	$title = apply_filters( 'ib_educator_page_title', $title );
 
 	echo $title;
-}
-
-/**
- * Get the adjacent lesson.
- *
- * @param bool $previous
- * @return mixed If global post object is not set returns null, if post is not found, returns empty string, else returns WP_Post.
- */
-function ib_edu_get_adjacent_lesson( $previous = true ) {
-	global $wpdb;
-
-	if ( ! $lesson = get_post() ) {
-		return null;
-	}
-
-	$course_id = Edr_Courses::get_instance()->get_course_id( $lesson->ID );
-	$cmp = $previous ? '<' : '>';
-	$order = $previous ? 'DESC' : 'ASC';
-	$join = "INNER JOIN $wpdb->postmeta pm ON pm.post_id = p.ID";
-	$where = $wpdb->prepare( "WHERE p.post_type = 'ib_educator_lesson' AND p.post_status = 'publish' AND p.menu_order $cmp %d AND pm.meta_key = '_ibedu_course' AND pm.meta_value = %d", $lesson->menu_order, $course_id );
-	$sort = "ORDER BY p.menu_order $order";
-	$query = "SELECT p.ID FROM $wpdb->posts as p $join $where $sort LIMIT 1";
-	$result = $wpdb->get_var( $query );
-
-	if ( null === $result ) {
-		return '';
-	}
-
-	return get_post( $result );
-}
-
-/**
- * Get the adjacent lesson's link.
- *
- * @param string $dir
- * @param string $format
- * @param string $title
- * @return string
- */
-function ib_edu_get_adjacent_lesson_link( $dir = 'previous', $format, $title ) {
-	$previous = ( 'previous' == $dir ) ? true : false;
-	
-	if ( ! $lesson = ib_edu_get_adjacent_lesson( $previous ) ) {
-		return '';
-	}
-
-	$url = apply_filters( "ib_educator_{$dir}_lesson_url", get_permalink( $lesson->ID ), get_the_ID() );
-	$title = str_replace( '%title', esc_html( $lesson->post_title ), $title );
-	$link = '<a href="' . esc_url( $url ) . '">' . $title . '</a>';
-	return str_replace( '%link', $link, $format );
 }
 
 /**
@@ -630,16 +528,6 @@ function ib_edu_get_location( $part = null ) {
 	}
 
 	return $result;
-}
-
-/**
- * Get registration status for a given course.
- *
- * @param int $course_id
- * @return string
- */
-function ib_edu_registration( $course_id ) {
-	return get_post_meta( $course_id, '_ib_educator_register', true );
 }
 
 /**

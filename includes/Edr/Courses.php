@@ -22,4 +22,37 @@ class Edr_Courses {
 	public function get_course_id( $lesson_id ) {
 		return intval( get_post_meta( $lesson_id, '_ibedu_course', true ) );
 	}
+
+	public function get_register_status( $course_id ) {
+		return get_post_meta( $course_id, '_ib_educator_register', true );
+	}
+
+	/**
+	 * Get an adjacent lesson.
+	 *
+	 * @param bool $previous
+	 * @return mixed If global post object is not set returns null, if post is not found, returns empty string, else returns WP_Post.
+	 */
+	function get_adjacent_lesson( $previous = true ) {
+		global $wpdb;
+
+		if ( ! $lesson = get_post() ) {
+			return null;
+		}
+
+		$course_id = $this->get_course_id( $lesson->ID );
+		$cmp = $previous ? '<' : '>';
+		$order = $previous ? 'DESC' : 'ASC';
+		$join = "INNER JOIN $wpdb->postmeta pm ON pm.post_id = p.ID";
+		$where = $wpdb->prepare( "WHERE p.post_type = 'ib_educator_lesson' AND p.post_status = 'publish' AND p.menu_order $cmp %d AND pm.meta_key = '_ibedu_course' AND pm.meta_value = %d", $lesson->menu_order, $course_id );
+		$sort = "ORDER BY p.menu_order $order";
+		$query = "SELECT p.ID FROM $wpdb->posts as p $join $where $sort LIMIT 1";
+		$result = $wpdb->get_var( $query );
+
+		if ( null === $result ) {
+			return '';
+		}
+
+		return get_post( $result );
+	}
 }
