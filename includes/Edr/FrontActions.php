@@ -469,7 +469,7 @@ class Edr_FrontActions {
 	 * Join the course if membership allows.
 	 */
 	public static function join() {
-		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'ib_educator_join' ) ) {
+		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'edr_join_course' ) ) {
 			return;
 		}
 

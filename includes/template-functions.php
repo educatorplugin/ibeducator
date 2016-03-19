@@ -78,23 +78,11 @@ function edr_display_lessons( $course_id ) {
 			'lessons'  => $lessons,
 		) );
 	} else {
-		$query = IB_Educator::get_instance()->get_lessons( $course_id );
+		$query = Edr_Courses::get_instance()->get_lessons( $course_id );
 
-		if ( $query && $query->have_posts() ) {
-		?>
-			<section class="ib-edu-lessons">
-				<h2><?php _e( 'Lessons', 'ibeducator' ); ?></h2>
-				<?php
-					while ( $query->have_posts() ) {
-						$query->the_post();
-						Edr_View::template_part( 'content', 'lesson' );
-					}
-
-					wp_reset_postdata();
-				?>
-			</section>
-		<?php
-		}
+		Edr_View::the_template( 'course/lessons-list', array(
+			'query' => $query,
+		) );
 	}
 }
 endif;
@@ -131,30 +119,10 @@ function edr_filter_lesson_content( $content ) {
 	return $content;
 }
 
-function edr_display_course_status( $course_id ) {
+function edr_display_course_price( $course_id ) {
 	$user_id = get_current_user_id();
-	$access_status = '';
 
-	if ( $user_id ) {
-		$access_status = Edr_Access::get_instance()->get_course_access_status( $course_id, $user_id );
-	}
-
-	switch ( $access_status ) {
-		case 'inprogress':
-			echo '<div class="edr-message ib-edu-message info">' . __( 'You are registered for this course.', 'ibeducator' ) . '</div>';
-			break;
-
-		case 'pending_entry':
-			echo '<div class="edr-message ib-edu-message info">' . __( 'Your registration for this course is pending.', 'ibeducator' ) . '</div>';
-			break;
-
-		case 'pending_payment':
-			echo '<div class="edr-message ib-edu-message info">' . __( 'Your payment for this course is pending.', 'ibeducator' ) . '</div>';
-			break;
-
-		default:
-			echo edr_get_price_widget( $course_id, $user_id );
-	}
+	echo edr_get_price_widget( $course_id, $user_id );
 }
 
 function edr_display_course_errors( $course_id ) {
@@ -378,6 +346,48 @@ function edr_question_file_upload( $question, $answer, $edit, $grade ) {
 	echo '</div>';
 }
 
+/**
+ * Get HTML for the course price widget.
+ *
+ * @param int $course_id
+ * @param int $user_id
+ * @param string $before
+ * @param string $after
+ * @return string
+ */
+function edr_get_price_widget( $course_id, $user_id, $before = '<div class="edr-price-widget">', $after = '</div>' ) {
+	$courses = Edr_Courses::get_instance();
+
+	// Registration allowed?
+	if ( 'closed' == $courses->get_register_status( $course_id ) ) {
+		return '';
+	}
+
+	// Check membership.
+	$membership_access = Edr_Memberships::get_instance()->membership_can_access( $course_id, $user_id );
+
+	// Generate the widget.
+	$output = $before;
+
+	if ( $membership_access ) {
+		$register_url = ib_edu_get_endpoint_url( 'edu-action', 'join', get_permalink( $course_id ) );
+		$output .= '<form action="' . esc_url( $register_url ) . '" method="post">';
+		$output .= '<input type="hidden" name="_wpnonce" value="' . wp_create_nonce( 'edr_join_course' ) . '">';
+		$output .= '<button type="submit">' . __( 'Join', 'ibeducator' ) . '</button>';
+		$output .= '</form>';
+	} else {
+		$price = ib_edu_get_course_price( $course_id );
+		$price = ( 0 == $price ) ? __( 'Free', 'ibeducator' ) : ib_edu_format_course_price( $price );
+		$register_url = ib_edu_get_endpoint_url( 'edu-course', $course_id, get_permalink( ib_edu_page_id( 'payment' ) ) );
+		$output .= '<span class="price">' . $price . '</span>';
+		$output .= '<a href="' . esc_url( $register_url ) . '">' . __( 'Register', 'ibeducator' ) . '</a>';
+	}
+
+	$output .= $after;
+
+	return $output;
+}
+
 /* Deprecated functions */
 
 if ( ! function_exists( 'edr_show_course_difficulty' ) ) :
@@ -423,56 +433,3 @@ function edr_show_course_categories() {
 	}
 }
 endif;
-
-/**
- * Get HTML for the course price widget.
- *
- * @param int $course_id
- * @param int $user_id
- * @param string $before
- * @param string $after
- * @return string
- */
-function edr_get_price_widget( $course_id, $user_id, $before = '<div class="edr-course-price">', $after = '</div>' ) {
-	// Registration allowed?
-	if ( 'closed' == Edr_Courses::get_instance()->get_register_status( $course_id ) ) {
-		return '';
-	}
-
-	// Check membership.
-	$membership_access = Edr_Memberships::get_instance()->membership_can_access( $course_id, $user_id );
-
-	/**
-	 * Filter the course price widget.
-	 *
-	 * @since 1.3.2
-	 *
-	 * @param bool $membership_access Whether the user's current membership allows him/her to take the course.
-	 */
-	$output = apply_filters( 'ib_educator_course_price_widget', null, $membership_access, $course_id, $user_id );
-
-	if ( null !== $output ) {
-		return $output;
-	}
-
-	// Generate the widget.
-	$output = $before;
-
-	if ( $membership_access ) {
-		$register_url = ib_edu_get_endpoint_url( 'edu-action', 'join', get_permalink( $course_id ) );
-		$output .= '<form action="' . esc_url( $register_url ) . '" method="post">';
-		$output .= '<input type="hidden" name="_wpnonce" value="' . wp_create_nonce( 'ib_educator_join' ) . '">';
-		$output .= '<input type="submit" class="ib-edu-button" value="' . __( 'Join', 'ibeducator' ) . '">';
-		$output .= '</form>';
-	} else {
-		$price = ib_edu_get_course_price( $course_id );
-		$price = ( 0 == $price ) ? __( 'Free', 'ibeducator' ) : ib_edu_format_course_price( $price );
-		$register_url = ib_edu_get_endpoint_url( 'edu-course', $course_id, get_permalink( ib_edu_page_id( 'payment' ) ) );
-		$output .= '<span class="price">' . $price . '</span><a href="' . esc_url( $register_url )
-				. '" class="ib-edu-button">' . __( 'Register', 'ibeducator' ) . '</a>';
-	}
-
-	$output .= $after;
-
-	return $output;
-}

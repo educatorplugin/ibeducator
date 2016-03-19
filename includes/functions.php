@@ -436,13 +436,13 @@ function ib_edu_send_notification( $to, $template, $subject_vars, $template_vars
 }
 
 /**
- * Check if the lesson has a quiz attached.
+ * Check if a post has a quiz attached.
  *
- * @param int $lesson_id
+ * @param int $post_id
  * @return bool
  */
-function ib_edu_has_quiz( $lesson_id ) {
-	return get_post_meta( $lesson_id, '_ibedu_quiz', true ) ? true : false;
+function edr_post_has_quiz( $post_id ) {
+	return get_post_meta( $post_id, '_ibedu_quiz', true ) ? true : false;
 }
 
 /**

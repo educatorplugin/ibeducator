@@ -59,8 +59,6 @@ function ib_edu_get_difficulty( $course_id ) {
 }
 
 /**
- * Get HTML for the course price widget.
- *
  * @deprecated 1.8.0
  */
 function ib_edu_get_price_widget( $course_id, $user_id, $before = '<div class="ib-edu-course-price">', $after = '</div>' ) {
@@ -70,8 +68,6 @@ function ib_edu_get_price_widget( $course_id, $user_id, $before = '<div class="i
 }
 
 /**
- * Get registration status for a given course.
- *
  * @deprecated 1.8.0
  */
 function ib_edu_registration( $course_id ) {
@@ -81,8 +77,6 @@ function ib_edu_registration( $course_id ) {
 }
 
 /**
- * Get the adjacent lesson.
- *
  * @deprecated 1.8.0
  */
 function ib_edu_get_adjacent_lesson( $previous = true ) {
@@ -92,12 +86,19 @@ function ib_edu_get_adjacent_lesson( $previous = true ) {
 }
 
 /**
- * Get the adjacent lesson's link.
- *
  * @deprecated 1.8.0
  */
 function ib_edu_get_adjacent_lesson_link( $dir = 'previous', $format, $title ) {
 	edr_deprecated_function( 'ib_edu_get_adjacent_lesson_link', '1.8.0', 'edr_get_adjacent_lesson_link' );
 
 	return edr_get_adjacent_lesson_link( $dir, $format, $title );
+}
+
+/**
+ * @deprecated 1.8.0
+ */
+function ib_edu_has_quiz( $lesson_id ) {
+	edr_deprecated_function( 'ib_edu_has_quiz', '1.8.0', 'edr_post_has_quiz' );
+
+	return edr_post_has_quiz( $lesson_id );
 }

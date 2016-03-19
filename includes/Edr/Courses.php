@@ -28,6 +28,28 @@ class Edr_Courses {
 	}
 
 	/**
+	 * Get lessons of a course.
+	 *
+	 * @param int $course_id
+	 * @return false|WP_Query
+	 */
+	public function get_lessons( $course_id ) {
+		if ( ! is_numeric( $course_id ) ) {
+			return false;
+		}
+
+		return new WP_Query( array(
+			'post_type'      => 'ib_educator_lesson',
+			'orderby'        => 'menu_order',
+			'order'          => 'ASC',
+			'posts_per_page' => -1,
+			'meta_query'     => array(
+				array( 'key' => '_ibedu_course', 'value' => $course_id, 'compare' => '=' ),
+			)
+		) );
+	}
+
+	/**
 	 * Get an adjacent lesson.
 	 *
 	 * @param bool $previous

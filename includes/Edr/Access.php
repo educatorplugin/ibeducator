@@ -27,34 +27,23 @@ class Edr_Access {
 	public function get_course_access_status( $course_id, $user_id ) {
 		global $wpdb;
 		$status = '';
-		$sql = "SELECT ee.course_id, ee.user_id, ep.payment_status, ee.entry_status FROM $this->entries ee
-			LEFT JOIN $this->payments ep ON ep.ID=ee.payment_id
-			WHERE ee.course_id=%d AND ee.user_id=%d";
+		$sql = "SELECT course_id, user_id, entry_status FROM $this->entries WHERE course_id = %d AND user_id = %d";
 		$results = $wpdb->get_results( $wpdb->prepare( $sql, $course_id, $user_id ) );
-		$has_complete = false;
-		$has_cancelled = false;
 
-		if ( $results ) {
+		if ( ! empty( $results ) ) {
 			foreach ( $results as $result ) {
 				if ( 'complete' == $result->entry_status ) {
-					$has_complete = true;
-				} elseif ( 'cancelled' == $result->entry_status ) {
-					$has_cancelled = true;
-				} else {
-					// Found payment/entry record that is neither complete, nor cancelled.
-					if ( 'pending' == $result->entry_status ) {
-						$status = 'pending_entry';
-					} elseif ( 'inprogress' == $result->entry_status ) {
-						$status = 'inprogress';
-					} elseif ( 'pending' == $result->payment_status ) {
-						$status = 'pending_payment';
-					}
+					$status = 'course_complete';
+				} elseif ( 'pending' == $result->entry_status ) {
+					$status = 'pending_entry';
+				} elseif ( 'inprogress' == $result->entry_status ) {
+					$status = 'inprogress';
 				}
 			}
 		}
 
 		if ( empty( $status ) ) {
-			$status = ( $has_complete ) ? 'course_complete' : 'forbidden';
+			$status = 'forbidden';
 		}
 
 		return apply_filters( 'ib_educator_access_status', $status, $course_id, $user_id );

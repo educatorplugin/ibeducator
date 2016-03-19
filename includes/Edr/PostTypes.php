@@ -19,6 +19,7 @@ class Edr_PostTypes {
 		if ( 1 == ib_edu_get_option( 'lesson_comments', 'learning' ) ) {
 			add_filter( 'comment_feed_where', array( __CLASS__, 'hide_comments_in_feed' ), 10, 2 );
 			add_filter( 'comments_clauses', array( __CLASS__, 'hide_lesson_comments' ), 10, 2 );
+			add_filter( 'comments_template', array( __CLASS__, 'lock_comments_display' ) );
 		}
 	}
 
@@ -289,5 +290,23 @@ class Edr_PostTypes {
 		}
 		
 		return $pieces;
+	}
+
+	/**
+	 * Lock lesson comments display.
+	 *
+	 * @param string $theme_template
+	 * @return string
+	 */
+	public static function lock_comments_display( $theme_template ) {
+		global $post;
+
+		if ( $post->post_type != EDR_PT_LESSON ) {
+			return $theme_template;
+		}
+
+		return ( self::can_user_access( 'lesson', $post->ID ) )
+			? $theme_template
+			: IBEDUCATOR_PLUGIN_DIR . 'templates/lesson/comments-locked.php';
 	}
 }

@@ -361,25 +361,12 @@ class IB_Educator {
 	}
 
 	/**
-	 * Get lessons for a course.
-	 *
-	 * @param int $course_id
-	 * @return false|WP_Query
+	 * @deprecated 1.8.0
 	 */
 	public function get_lessons( $course_id ) {
-		if ( ! is_numeric( $course_id ) ) {
-			return false;
-		}
+		edr_deprecated_function( 'IB_Educator::get_instance()->get_lessons', '1.8.0', 'Edr_Courses::get_instance()->get_lessons' );
 
-		return new WP_Query( array(
-			'post_type'      => 'ib_educator_lesson',
-			'orderby'        => 'menu_order',
-			'order'          => 'ASC',
-			'posts_per_page' => -1,
-			'meta_query'     => array(
-				array( 'key' => '_ibedu_course', 'value' => $course_id, 'compare' => '=' )
-			)
-		) );
+		return Edr_Courses::get_instance()->get_lessons( $course_id );
 	}
 
 	/**

@@ -6,7 +6,7 @@ add_action( 'the_content', 'edr_filter_course_content', 20 );
 add_action( 'the_content', 'edr_filter_lesson_content', 20 );
 
 // Display course status to a student.
-add_action( 'edr_before_course_content', 'edr_display_course_status' );
+add_action( 'edr_before_course_content', 'edr_display_course_price' );
 add_action( 'edr_before_course_content', 'edr_display_course_errors' );
 
 // Display the course difficulty and categories on the single course page.

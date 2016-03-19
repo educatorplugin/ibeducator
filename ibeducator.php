@@ -37,6 +37,9 @@ define( 'IBEDUCATOR_VERSION', '1.7.2' );
 define( 'IBEDUCATOR_DB_VERSION', '1.8' );
 define( 'IBEDUCATOR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'IBEDUCATOR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'EDR_PT_COURSE', 'ib_educator_course' );
+define( 'EDR_PT_LESSON', 'ib_educator_lesson' );
+define( 'EDR_PT_MEMBERSHIP', 'ib_edu_membership' );
 
 register_activation_hook( __FILE__, array( 'IB_Educator_Main', 'plugin_activation' ) );
 register_deactivation_hook( __FILE__, array( 'IB_Educator_Main', 'plugin_deactivation' ) );
