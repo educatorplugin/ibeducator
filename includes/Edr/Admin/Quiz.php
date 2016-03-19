@@ -386,11 +386,10 @@ class Edr_Admin_Quiz {
 			exit;
 		}
 
-		// Verify capabilities.
-		if ( ! ib_edu_user_can_edit_lesson( $lesson_id ) ) {
+		if ( ! Edr_Access::get_instance()->can_edit_lesson( $lesson_id ) ) {
 			exit;
 		}
-		
+
 		$ids = isset( $_POST['question_id'] ) && is_array( $_POST['question_id'] ) ? $_POST['question_id'] : null;
 		$order = isset( $_POST['order'] ) && is_array( $_POST['order'] ) ? $_POST['order'] : null;
 

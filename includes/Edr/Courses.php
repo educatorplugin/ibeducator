@@ -54,12 +54,22 @@ class Edr_Courses {
 	}
 
 	/**
+	 * Get lesson access status.
+	 *
+	 * @param int $lesson_id
+	 * @return string
+	 */
+	public function get_lesson_access_status( $lesson_id ) {
+		return get_post_meta( $lesson_id, '_ib_educator_access', true );
+	}
+
+	/**
 	 * Get an adjacent lesson.
 	 *
 	 * @param bool $previous
 	 * @return mixed If global post object is not set returns null, if post is not found, returns empty string, else returns WP_Post.
 	 */
-	function get_adjacent_lesson( $previous = true ) {
+	public function get_adjacent_lesson( $previous = true ) {
 		global $wpdb;
 
 		if ( ! $lesson = get_post() ) {
@@ -80,5 +90,20 @@ class Edr_Courses {
 		}
 
 		return get_post( $result );
+	}
+
+	/**
+	 * Get courses where the user is the author.
+	 *
+	 * @param int $user_id
+	 * @return array
+	 */
+	public function get_lecturer_courses( $user_id ) {
+		global $wpdb;
+
+		$sql = $wpdb->prepare( 'SELECT ID FROM ' . $wpdb->posts . ' WHERE post_author = %d AND post_type = %s',
+			$user_id, EDR_PT_COURSE );
+
+		return $wpdb->get_col( $sql );
 	}
 }

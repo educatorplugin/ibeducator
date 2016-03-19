@@ -391,87 +391,15 @@ class IB_Educator {
 	}
 
 	/**
-	 * Get payments.
-	 *
-	 * @param array $args
-	 * @return array
+	 * @deprecated 1.8.0
 	 */
 	public function get_payments( $args, $output_type = null ) {
-		global $wpdb;
+		edr_deprecated_function( 'IB_Educator::get_instance()->get_payments', '1.8.0', 'Edr_Payments::get_instance()->get_payments' );
 
-		if ( is_null( $output_type ) ) {
-			$output_type = OBJECT;
-		}
-
-		$sql = 'SELECT * FROM ' . $this->payments . ' WHERE 1';
-
-		// Filter by payment_id.
-		if ( isset( $args['payment_id'] ) ) {
-			if ( is_array( $args['payment_id'] ) ) {
-				$sql .= ' AND ID IN (' . implode( ',', array_map( 'absint', $args['payment_id'] ) ) . ')';
-			} else {
-				$sql .= $wpdb->prepare( ' AND ID = %d', $args['payment_id'] );
-			}
-		}
-
-		// Filter by user_id.
-		if ( isset( $args['user_id'] ) ) {
-			$sql .= $wpdb->prepare( ' AND user_id = %d', $args['user_id'] );
-		}
-
-		// Filter by course_id.
-		if ( isset( $args['course_id'] ) ) {
-			$sql .= $wpdb->prepare( ' AND course_id = %d', $args['course_id'] );
-		}
-
-		// Filter by payment_type.
-		if ( isset( $args['payment_type'] ) ) {
-			$sql .= $wpdb->prepare( ' AND payment_type = %s', $args['payment_type'] );
-		}
-
-		// Filter by object_id.
-		if ( isset( $args['object_id'] ) ) {
-			$sql .= $wpdb->prepare( ' AND object_id = %d', $args['object_id'] );
-		}
-
-		// Filter by payment status.
-		if ( isset( $args['payment_status'] ) && is_array( $args['payment_status'] ) ) {
-			$sql .= $wpdb->prepare(
-				' AND payment_status IN (' . implode( ',', array_fill( 0, count( $args['payment_status'] ), '%s' ) ) . ')',
-				$args['payment_status']
-			);
-		}
-
-		// With or without pagination
-		$has_pagination = ( isset( $args['page'] ) && isset( $args['per_page'] )
-			&& is_numeric( $args['page'] ) && is_numeric( $args['per_page'] ) );
-		$pagination_sql = '';
-
-		if ( $has_pagination ) {
-			$num_rows = $wpdb->get_var( str_replace( 'SELECT *', 'SELECT count(1)', $sql ) );
-			$pagination_sql .= ' LIMIT ' . ( ( $args['page'] - 1 ) * $args['per_page'] ) . ', ' . $args['per_page'];
-		}
-
-		$payments = $wpdb->get_results( $sql . ' ORDER BY payment_date DESC' . $pagination_sql, $output_type );
-
-		if ( ! empty( $payments ) ) {
-			$payments = array_map( 'edr_get_payment', $payments );
-		}
-
-		if ( $has_pagination ) {
-			return array(
-				'num_pages' => ceil( $num_rows / $args['per_page'] ),
-				'num_items' => $num_rows,
-				'rows'      => $payments,
-			);
-		}
-
-		return $payments;
+		return Edr_Payments::get_instance()->get_payments( $args, $output_type );
 	}
 
 	/**
-	 * Get payments count groupped by payment status.
-	 *
 	 * @deprecated 1.3.0
 	 */
 	public function get_payments_count() {
@@ -481,22 +409,16 @@ class IB_Educator {
 	}
 
 	/**
-	 * Get courses of a lecturer.
-	 *
-	 * @param int $user_id
-	 * @return array
+	 * @deprecated 1.8.0
 	 */
 	public function get_lecturer_courses( $user_id ) {
-		global $wpdb;
+		edr_deprecated_function( 'IB_Educator::get_instance()->get_lecturer_courses', '1.8.0', 'Edr_Courses::get_instance()->get_lecturer_courses' );
 
-		return $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_author=%d AND post_type='ib_educator_course'", $user_id ) );
+		return Edr_Courses::get_instance()->get_lecturer_courses( $user_id );
 	}
 
 	/**
-	 * Get quiz questions.
-	 *
-	 * @param array $args
-	 * @return false|array of IB_Educator_Question objects
+	 * @deprecated 1.6
 	 */
 	public function get_questions( $args ) {
 		edr_deprecated_function( 'IB_Educator::get_questions', '1.6', 'Edr_Quizzes::get_questions' );

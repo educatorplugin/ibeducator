@@ -74,4 +74,27 @@ class Edr_Access {
 
 		return $access;
 	}
+
+	/**
+	 * Check whether the user can edit a lesson.
+	 *
+	 * @param int $lesson_id
+	 * @return bool
+	 */
+	function can_edit_lesson( $lesson_id ) {
+		if ( current_user_can( 'manage_educator' ) ) {
+			return true;
+		}
+
+		$course_id = Edr_Courses::get_instance()->get_course_id( $lesson_id );
+
+		if ( $course_id ) {
+			$edr_courses = Edr_Courses::get_instance();
+			$user_id = get_current_user_id();
+
+			return in_array( $course_id, $edr_courses->get_lecturer_courses( $user_id ) );
+		}
+
+		return false;
+	}
 }

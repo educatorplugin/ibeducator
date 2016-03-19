@@ -3,6 +3,24 @@
 /**
  * @deprecated 1.8.0
  */
+function ib_edu_lesson_access( $lesson_id ) {
+	edr_deprecated_function( 'ib_edu_lesson_access', '1.8.0', 'Edr_Courses::get_instance()->get_lesson_access_status' );
+
+	Edr_Courses::get_instance()->get_lesson_access_status( $lesson_id );
+}
+
+/**
+ * @deprecated 1.8.0
+ */
+function ib_edu_user_can_edit_lesson( $lesson_id ) {
+	edr_deprecated_function( 'ib_edu_user_can_edit_lesson', '1.8.0', 'Edr_Access::get_instance()->can_edit_lesson' );
+
+	return Edr_Access::get_instance()->can_edit_lesson( $lesson_id );
+}
+
+/**
+ * @deprecated 1.8.0
+ */
 function _ib_edu_deprecated_function( $function, $version, $replacement = null ) {
 	edr_deprecated_function( $function, $version, $replacement );
 }
@@ -321,4 +339,29 @@ function ib_edu_breadcrumbs( $sep = ' &raquo; ' ) {
 	$breadcrumbs[] = '<span>' . get_the_title() . '</span>';
 
 	echo implode( $sep, $breadcrumbs );
+}
+
+/**
+ * @deprecated 1.8.0
+ */
+function ib_edu_get_access_status_message( $access_status ) {
+	edr_deprecated_function( 'ib_edu_get_access_status_message', '1.8.0' );
+
+	$message = '';
+
+	switch ( $access_status ) {
+		case 'pending_entry':
+			$message = '<p>' . __( 'Your registration is pending.', 'ibeducator' ) . '</p>';
+			break;
+
+		case 'pending_payment':
+			$message = '<p>' . __( 'The payment for this course is pending.', 'ibeducator' ) . '</p>';
+			break;
+
+		case 'inprogress':
+			$message = '<p>' . __( 'You are registered for this course.', 'ibeducator' ) . '</p>';
+			break;
+	}
+
+	return $message;
 }

@@ -416,18 +416,11 @@ function edr_purchase_link( $atts ) {
 	$atts = wp_parse_args( $atts, array(
 		'object_id' => null,
 		'type'      => null,
-		'text'      => __( 'Purchase', 'ib-educator' ),
+		'text'      => __( 'Purchase', 'ibeducator' ),
 		'class'     => array(),
 	) );
 
-	// Add default class.
-	array_push( $atts['class'], 'edu-purchase-link' );
-
-	$html = apply_filters( 'ib_edu_pre_purchase_link', null, $atts );
-
-	if ( ! is_null( $html ) ) {
-		return $html;
-	}
+	array_push( $atts['class'], 'edr-purchase-link' );
 
 	if ( 'membership' == $atts['type'] ) {
 		$html = sprintf(

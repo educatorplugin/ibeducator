@@ -76,7 +76,7 @@ class Edr_Admin_EntriesTable extends WP_List_Table {
 			);
 
 			if ( 'own' == $access ) {
-				$course_args['include'] = IB_Educator::get_instance()->get_lecturer_courses( get_current_user_id() );
+				$course_args['include'] = Edr_Courses::get_instance()->get_lecturer_courses( get_current_user_id() );
 			}
 
 			$courses = get_posts( $course_args );
@@ -351,7 +351,7 @@ class Edr_Admin_EntriesTable extends WP_List_Table {
 			$entries = $api->get_entries( $args, 'ARRAY_A' );
 		} elseif ( current_user_can( 'educator_edit_entries' ) ) {
 			// Get the entries for the current lecturer's courses only.
-			$course_ids = $api->get_lecturer_courses( get_current_user_id() );
+			$course_ids = Edr_Courses::get_instance()->get_lecturer_courses( get_current_user_id() );
 
 			if ( ! empty( $course_ids ) ) {
 				if ( empty( $args['course_id'] ) || ! in_array( $args['course_id'], $course_ids) ) {

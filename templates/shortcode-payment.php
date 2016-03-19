@@ -2,9 +2,10 @@
 /**
  * Renders the payment page.
  *
- * @version 1.1.0
+ * @version 1.2.0
  */
 
+$edr_payments = Edr_Payments::get_instance();
 $user_id = get_current_user_id();
 
 if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
@@ -138,40 +139,39 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 		}
 	}
 
-	// Check whether the selected item exists.
-	if ( ! $post || ! in_array( $post->post_type, array( 'ib_educator_course', 'ib_edu_membership' ) ) ) {
-		echo '<p>' . __( 'Please select a course to continue.', 'ibeducator' ) . '</p>';
+	if ( ! $post || ! in_array( $post->post_type, array( EDR_PT_COURSE, EDR_PT_MEMBERSHIP ) ) ) {
 		return;
 	}
 
-	// Determine whether a user can pay for the item.
-	$access_status = '';
-
-	if ( 'ib_educator_course' == $post->post_type ) {
-		// Registration allowed?
+	if ( EDR_PT_COURSE == $post->post_type ) {
 		if ( 'closed' == Edr_Courses::get_instance()->get_register_status( $post->ID ) ) {
 			echo '<p>' . __( 'Registration for this course is closed.', 'ibeducator' ) . '</p>';
+
 			return;
 		}
 
-		$access_status = Edr_Access::get_instance()->get_course_access_status( $post->ID, $user_id );
+		if ( $user_id ) {
+			$payments = $edr_payments->get_payments( array(
+				'user_id'        => $user_id,
+				'course_id'      => $post->ID,
+				'payment_status' => array( 'pending' ),
+			) );
 
-		if ( ! in_array( $access_status, array( 'course_complete', 'forbidden' ) ) ) {
-			echo '<p>' . ib_edu_get_access_status_message( $access_status ) . '</p>';
-			return;
+			if ( ! empty( $payments ) ) {
+				echo '<p>' . __( 'The payment for this course is pending.', 'ibeducator' ) . '</p>';
+
+				return;
+			}
 		}
 	}
 
-	// Show a login link to non-authenticated users.
 	if ( ! $user_id ) {
-		$login_url = apply_filters( 'ib_educator_login_url', '' );
+		$login_url = '';
 
-		if ( empty( $login_url ) ) {
-			if ( 'ib_educator_course' == $post->post_type ) {
-				$login_url = wp_login_url( edr_get_endpoint_url( 'edu-course', $post->ID, get_permalink() ) );
-			} elseif ( 'ib_edu_membership' == $post->post_type ) {
-				$login_url = wp_login_url( edr_get_endpoint_url( 'edu-membership', $post->ID, get_permalink() ) );
-			}
+		if ( EDR_PT_COURSE == $post->post_type ) {
+			$login_url = wp_login_url( edr_get_endpoint_url( 'edu-course', $post->ID, get_permalink() ) );
+		} elseif ( EDR_PT_MEMBERSHIP == $post->post_type ) {
+			$login_url = wp_login_url( edr_get_endpoint_url( 'edu-membership', $post->ID, get_permalink() ) );
 		}
 
 		echo '<p>' . __( 'Already have an account?', 'ibeducator' ) . ' <a href="' . esc_url( $login_url ) . '">' . __( 'Log in', 'ibeducator' ) . '</a></p>';

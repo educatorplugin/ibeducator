@@ -243,32 +243,6 @@ function edr_get_page_id( $page_name ) {
 }
 
 /**
- * Get course access status message for a student.
- *
- * @param string $access_status
- * @return string
- */
-function ib_edu_get_access_status_message( $access_status ) {
-	$message = '';
-
-	switch ( $access_status ) {
-		case 'pending_entry':
-			$message = '<p>' . __( 'Your registration is pending.', 'ibeducator' ) . '</p>';
-			break;
-
-		case 'pending_payment':
-			$message = '<p>' . __( 'The payment for this course is pending.', 'ibeducator' ) . '</p>';
-			break;
-
-		case 'inprogress':
-			$message = '<p>' . __( 'You are registered for this course.', 'ibeducator' ) . '</p>';
-			break;
-	}
-
-	return $message;
-}
-
-/**
  * Pass the message from the back-end to a template.
  *
  * @param string $key
@@ -317,25 +291,6 @@ function edr_get_difficulty( $course_id ) {
 	}
 
 	return null;
-}
-
-/**
- * Can the current user edit a given lesson?
- *
- * @param int $lesson_id
- * @return bool
- */
-function ib_edu_user_can_edit_lesson( $lesson_id ) {
-	if ( current_user_can( 'manage_educator' ) ) return true;
-
-	$course_id = Edr_Courses::get_instance()->get_course_id( $lesson_id );
-
-	if ( $course_id ) {
-		$api = IB_Educator::get_instance();
-		return in_array( $course_id, $api->get_lecturer_courses( get_current_user_id() ) );
-	}
-
-	return false;
 }
 
 /**
@@ -435,16 +390,6 @@ function edr_get_location( $part = null ) {
 	}
 
 	return $result;
-}
-
-/**
- * Get lesson's access.
- *
- * @param int $lesson_id
- * @return string
- */
-function ib_edu_lesson_access( $lesson_id ) {
-	return get_post_meta( $lesson_id, '_ib_educator_access', true );
 }
 
 /**

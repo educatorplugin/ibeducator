@@ -174,7 +174,8 @@ class Edr_PostTypes {
 		$user_id = get_current_user_id();
 
 		if ( 'lesson' == $object ) {
-			$lesson_access = ib_edu_lesson_access( $object_id );
+			$edr_courses = Edr_Courses::get_instance();
+			$lesson_access = $edr_courses->get_lesson_access_status( $object_id );
 
 			if ( 'public' == $lesson_access ) {
 				$access = true;
@@ -184,7 +185,7 @@ class Edr_PostTypes {
 				} else {
 					self::set_current_user_courses( $user_id );
 
-					$course_id = Edr_Courses::get_instance()->get_course_id( $object_id );
+					$course_id = $edr_courses->get_course_id( $object_id );
 
 					if ( in_array( $course_id, self::$current_user_courses ) ) {
 						$access = true;
