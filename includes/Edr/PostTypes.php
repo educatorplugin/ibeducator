@@ -16,7 +16,7 @@ class Edr_PostTypes {
 		add_filter( 'the_content_feed', array( __CLASS__, 'lock_lessons_in_feed' ) );
 		add_filter( 'pre_option_rss_use_excerpt', array( __CLASS__, 'hide_content_in_feed' ) );
 
-		if ( 1 == ib_edu_get_option( 'lesson_comments', 'learning' ) ) {
+		if ( 1 == edr_get_option( 'lesson_comments', 'learning' ) ) {
 			add_filter( 'comment_feed_where', array( __CLASS__, 'hide_comments_in_feed' ), 10, 2 );
 			add_filter( 'comments_clauses', array( __CLASS__, 'hide_lesson_comments' ), 10, 2 );
 			add_filter( 'comments_template', array( __CLASS__, 'lock_comments_display' ) );
@@ -61,7 +61,7 @@ class Edr_PostTypes {
 		// Lessons.
 		$supports = array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'page-attributes' );
 
-		if ( 1 == ib_edu_get_option( 'lesson_comments', 'learning' ) ) {
+		if ( 1 == edr_get_option( 'lesson_comments', 'learning' ) ) {
 			$supports[] = 'comments';
 		}
 

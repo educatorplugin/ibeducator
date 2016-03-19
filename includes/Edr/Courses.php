@@ -23,6 +23,10 @@ class Edr_Courses {
 		return intval( get_post_meta( $lesson_id, '_ibedu_course', true ) );
 	}
 
+	public function get_course_price( $course_id ) {
+		return (float) get_post_meta( $course_id, '_ibedu_price', true );
+	}
+
 	public function get_register_status( $course_id ) {
 		return get_post_meta( $course_id, '_ib_educator_register', true );
 	}

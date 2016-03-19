@@ -18,7 +18,7 @@ $form->add( array(
 	'name'   => '_ib_educator_price',
 	'id'     => 'ib-educator-price',
 	'label'  => __( 'Price', 'ibeducator' ),
-	'before' => esc_html( ib_edu_get_currency_symbol( ib_edu_get_currency() ) ) . ' ',
+	'before' => esc_html( edr_get_currency_symbol( edr_get_currency() ) ) . ' ',
 ) );
 
 // Tax Class.

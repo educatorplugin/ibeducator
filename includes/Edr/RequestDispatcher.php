@@ -9,6 +9,18 @@ class Edr_RequestDispatcher {
 	}
 
 	/**
+	 * Get URL.
+	 *
+	 * @param string $request
+	 * @return string
+	 */
+	public static function get_url( $request ) {
+		$scheme = parse_url( get_option( 'home' ), PHP_URL_SCHEME );
+
+		return esc_url_raw( add_query_arg( array( 'edu-request' => $request ), home_url( '/', $scheme ) ) );
+	}
+
+	/**
 	 * Process request.
 	 *
 	 * @param WP $wp

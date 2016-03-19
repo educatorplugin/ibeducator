@@ -31,11 +31,11 @@ class Edr_Gateway_Free extends Edr_Gateway_Base {
 		$payment->payment_status = 'complete';
 		$payment->payment_gateway = $this->get_id();
 		$payment->amount = 0.0;
-		$payment->currency = ib_edu_get_currency();
+		$payment->currency = edr_get_currency();
 
 		if ( 'course' == $payment_type ) {
 			$payment->course_id = $object_id;
-			$payment->amount = ib_edu_get_course_price( $object_id );
+			$payment->amount = Edr_Courses::get_instance()->get_course_price( $object_id );
 		} elseif ( 'membership' == $payment_type ) {
 			$payment->object_id = $object_id;
 			$ms = Edr_Memberships::get_instance();

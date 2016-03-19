@@ -57,7 +57,7 @@ $questions = $quizzes->get_questions( $lesson_id );
 		$grade = $quizzes->get_grade( $lesson_id, $entry_id );
 
 		// Determine the form action.
-		$form_action = ib_edu_get_endpoint_url( 'edu-action', 'submit-quiz', get_permalink() );
+		$form_action = edr_get_endpoint_url( 'edu-action', 'submit-quiz', get_permalink() );
 
 		if ( $can_attempt ) {
 			if ( isset( $_GET['try_again'] ) && 'true' == $_GET['try_again'] ) {
@@ -78,7 +78,7 @@ $questions = $quizzes->get_questions( $lesson_id );
 
 	<section id="ib-edu-quiz" class="<?php echo ( $grade ) ? 'ib-edu-quiz-complete' : 'ib-edu-quiz-inprogress'; ?>">
 		<?php
-			$messages = ib_edu_message( 'quiz' );
+			$messages = edr_internal_message( 'quiz' );
 			$error_codes = is_wp_error( $messages ) ? $messages->get_error_codes() : null;
 
 			if ( ! empty( $error_codes ) ) {
@@ -100,7 +100,7 @@ $questions = $quizzes->get_questions( $lesson_id );
 				<p class="grade">
 					<?php
 						if ( 'approved' == $grade->status ) {
-							printf( __( 'You scored %s for this quiz.', 'ibeducator' ), '<strong>' . ib_edu_format_grade( $grade->grade ) . '</strong>' );
+							printf( __( 'You scored %s for this quiz.', 'ibeducator' ), '<strong>' . edr_format_grade( $grade->grade ) . '</strong>' );
 						} else {
 							_e( 'Your grade is pending.', 'ibeducator' );
 						}

@@ -201,11 +201,11 @@ abstract class Edr_Gateway_Base {
 		$payment->payment_type = $payment_type;
 		$payment->payment_status = 'pending';
 		$payment->payment_gateway = $this->get_id();
-		$payment->currency = ib_edu_get_currency();
+		$payment->currency = edr_get_currency();
 
 		if ( 'course' == $payment_type ) {
 			$payment->course_id = $object_id;
-			$payment->amount = ib_edu_get_course_price( $object_id );
+			$payment->amount = Edr_Courses::get_instance()->get_course_price( $object_id );
 		} elseif ( 'membership' == $payment_type ) {
 			$payment->object_id = $object_id;
 			$payment->amount = Edr_Memberships::get_instance()->get_price( $object_id );
@@ -213,7 +213,7 @@ abstract class Edr_Gateway_Base {
 
 		$tax_data = null;
 
-		if ( ib_edu_collect_billing_data( $object_id ) ) {
+		if ( edr_collect_billing_data( $object_id ) ) {
 			// Save billing data.
 			$billing = get_user_meta( $user_id, '_ib_educator_billing', true );
 
@@ -268,9 +268,9 @@ abstract class Edr_Gateway_Base {
 		$redirect = '';
 
 		if ( isset( $args['value'] ) ) {
-			$redirect = ib_edu_get_endpoint_url( 'edu-thankyou', $args['value'], get_permalink( ib_edu_page_id( 'payment' ) ) );
+			$redirect = edr_get_endpoint_url( 'edu-thankyou', $args['value'], get_permalink( edr_get_page_id( 'payment' ) ) );
 		} else {
-			$redirect = ib_edu_get_endpoint_url( 'edu-thankyou', '', get_permalink( ib_edu_page_id( 'payment' ) ) );
+			$redirect = edr_get_endpoint_url( 'edu-thankyou', '', get_permalink( edr_get_page_id( 'payment' ) ) );
 		}
 
 		return $redirect;

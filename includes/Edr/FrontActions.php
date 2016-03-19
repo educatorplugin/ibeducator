@@ -20,7 +20,7 @@ class Edr_FrontActions {
 		// User may cancel his/her pending payments only.
 		if ( 'pending' == $payment->payment_status && $payment->user_id == get_current_user_id() ) {
 			if ( $payment->update_status( 'cancelled' ) ) {
-				wp_redirect( ib_edu_get_endpoint_url( 'edu-message', 'payment-cancelled', get_permalink() ) );
+				wp_redirect( edr_get_endpoint_url( 'edu-message', 'payment-cancelled', get_permalink() ) );
 				exit;
 			}
 		}
@@ -302,7 +302,7 @@ class Edr_FrontActions {
 		}
 
 		if ( $errors->get_error_code() ) {
-			ib_edu_message( 'quiz', $errors );
+			edr_internal_message( 'quiz', $errors );
 
 			return;
 		}
@@ -320,7 +320,7 @@ class Edr_FrontActions {
 			}
 		}
 
-		wp_redirect( ib_edu_get_endpoint_url( 'edu-message', 'quiz-submitted', get_permalink() ) );
+		wp_redirect( edr_get_endpoint_url( 'edu-message', 'quiz-submitted', get_permalink() ) );
 
 		exit();
 	}
@@ -381,7 +381,7 @@ class Edr_FrontActions {
 				}
 
 				$errors->add( 'prerequisites', sprintf( __( 'You have to complete the prerequisites for this course: %s', 'ibeducator' ), $prerequisites_html ) );
-				ib_edu_message( 'payment_errors', $errors );
+				edr_internal_message( 'payment_errors', $errors );
 				return;
 			}
 		}
@@ -405,14 +405,14 @@ class Edr_FrontActions {
 
 		// Attempt to register the user.
 		if ( $errors->get_error_code() ) {
-			ib_edu_message( 'payment_errors', $errors );
+			edr_internal_message( 'payment_errors', $errors );
 			return;
 		} elseif ( ! $user_id ) {
 			$user_data = apply_filters( 'ib_educator_register_user_data', array( 'role' => 'student' ), $post );
 			$user_id = wp_insert_user( $user_data );
 
 			if ( is_wp_error( $user_id ) ) {
-				ib_edu_message( 'payment_errors', $user_id );
+				edr_internal_message( 'payment_errors', $user_id );
 				return;
 			} else {
 				// Setup the password change nag.
@@ -443,7 +443,7 @@ class Edr_FrontActions {
 			// Process payment.
 			$atts = array();
 
-			if ( ib_edu_get_option( 'payment_ip', 'settings' ) ) {
+			if ( edr_get_option( 'payment_ip', 'settings' ) ) {
 				$atts['ip'] = $_SERVER['REMOTE_ADDR'];
 			}
 			
@@ -519,7 +519,7 @@ class Edr_FrontActions {
 			}
 
 			$errors->add( 'prerequisites', sprintf( __( 'You have to complete the prerequisites for this course: %s', 'ibeducator' ), $prerequisites_html ) );
-			ib_edu_message( 'course_join_errors', $errors );
+			edr_internal_message( 'course_join_errors', $errors );
 			return;
 		}
 
@@ -599,7 +599,7 @@ class Edr_FrontActions {
 	 * Pause the user's membership.
 	 */
 	public static function pause_membership() {
-		if ( 1 != ib_edu_get_option( 'pause_memberships', 'memberships' ) ) {
+		if ( 1 != edr_get_option( 'pause_memberships', 'memberships' ) ) {
 			return;
 		}
 
@@ -626,7 +626,7 @@ class Edr_FrontActions {
 	 * Resume the user's membership.
 	 */
 	public static function resume_membership() {
-		if ( 1 != ib_edu_get_option( 'pause_memberships', 'memberships' ) ) {
+		if ( 1 != edr_get_option( 'pause_memberships', 'memberships' ) ) {
 			return;
 		}
 

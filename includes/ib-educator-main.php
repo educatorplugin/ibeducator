@@ -183,7 +183,7 @@ class IB_Educator_Main {
 			}
 		}
 
-		if ( ib_edu_is_payment() ) {
+		if ( edr_is_payment() ) {
 			// Scripts for the payment page.
 			wp_enqueue_script( 'ib-educator-payment', IBEDUCATOR_PLUGIN_URL . 'js/payment.js', array( 'jquery' ), '1.0.0', true );
 			wp_localize_script( 'ib-educator-payment', 'eduPaymentVars', array(

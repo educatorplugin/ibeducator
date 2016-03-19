@@ -49,10 +49,10 @@ class Edr_TaxManager {
 		global $wpdb;
 		$rates = array();
 		$priorities = array();
-		$location = ib_edu_get_location();
+		$location = edr_get_location();
 		$sql = 'SELECT * FROM ' . $this->table . ' WHERE tax_class = %s AND country IN (\'\', %s, %s) AND state IN (\'\', %s, %s) ORDER BY priority ASC, rate_order ASC';
 		$results = $wpdb->get_results( $wpdb->prepare( $sql, $tax_class, $location[0], $country, $location[1], $state ) );
-		$inclusive = ib_edu_get_option( 'tax_inclusive', 'taxes' );
+		$inclusive = edr_get_option( 'tax_inclusive', 'taxes' );
 		if ( ! $inclusive ) $inclusive = 'y';
 		$inc_rate = 0.0;
 		$inc_priorities = array();
@@ -97,7 +97,7 @@ class Edr_TaxManager {
 	 */
 	public function calculate_tax( $tax_class, $price, $country, $state ) {
 		// Are prices entered with tax?
-		$inclusive = ib_edu_get_option( 'tax_inclusive', 'taxes' );
+		$inclusive = edr_get_option( 'tax_inclusive', 'taxes' );
 		if ( ! $inclusive ) $inclusive = 'y';
 
 		// Get rates.

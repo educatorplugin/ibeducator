@@ -177,7 +177,7 @@ class Edr_Admin_Settings_General extends Edr_Admin_Settings_Base {
 			array(
 				'name'           => 'currency',
 				'settings_group' => 'ib_educator_settings',
-				'choices'        => ib_edu_get_currencies(),
+				'choices'        => edr_get_currencies(),
 			)
 		);
 
@@ -286,31 +286,31 @@ class Edr_Admin_Settings_General extends Edr_Admin_Settings_Base {
 					$clean[ $key ] = intval( $value );
 					break;
 
- 				case 'currency':
- 					if ( array_key_exists( $input[ $key ], ib_edu_get_currencies() ) ) {
- 						$clean[ $key ] = $input[ $key ];
- 					}
- 					break;
+				case 'currency':
+					if ( array_key_exists( $input[ $key ], edr_get_currencies() ) ) {
+						$clean[ $key ] = $input[ $key ];
+					}
+					break;
 
- 				case 'currency_position':
- 					if ( in_array( $value, array( 'before', 'after' ) ) ) {
- 						$clean[ $key ] = $value;
- 					}
- 					break;
+				case 'currency_position':
+					if ( in_array( $value, array( 'before', 'after' ) ) ) {
+						$clean[ $key ] = $value;
+					}
+					break;
 
- 				case 'decimal_point':
- 				case 'thousands_sep':
- 					$clean[ $key ] = preg_replace( '/[^,. ]/', '', $value );
- 					break;
+				case 'decimal_point':
+				case 'thousands_sep':
+					$clean[ $key ] = preg_replace( '/[^,. ]/', '', $value );
+					break;
 
- 				case 'location':
- 					$clean[ $key ] = sanitize_text_field( $value );
- 					break;
+				case 'location':
+					$clean[ $key ] = sanitize_text_field( $value );
+					break;
 
- 				case 'payment_ip':
- 				case 'payment_lecturer':
- 					$clean[ $key ] = ( 1 != $value ) ? 0 : 1;
- 					break;
+				case 'payment_ip':
+				case 'payment_lecturer':
+					$clean[ $key ] = ( 1 != $value ) ? 0 : 1;
+					break;
 			}
 		}
 

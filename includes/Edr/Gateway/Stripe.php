@@ -51,9 +51,9 @@ class Edr_Gateway_Stripe extends Edr_Gateway_Base {
 		$redirect = '';
 
 		if ( $payment->ID ) {
-			$redirect = ib_edu_get_endpoint_url( 'edu-pay', $payment->ID, get_permalink( ib_edu_page_id( 'payment' ) ) );
+			$redirect = edr_get_endpoint_url( 'edu-pay', $payment->ID, get_permalink( edr_get_page_id( 'payment' ) ) );
 		} else {
-			$redirect = ib_edu_get_endpoint_url( 'edu-pay', '', get_permalink( ib_edu_page_id( 'payment' ) ) );
+			$redirect = edr_get_endpoint_url( 'edu-pay', '', get_permalink( edr_get_page_id( 'payment' ) ) );
 		}
 
 		return array(
@@ -111,7 +111,7 @@ class Edr_Gateway_Stripe extends Edr_Gateway_Base {
 					$.ajax({
 						type: 'POST',
 						cache: false,
-						url: <?php echo json_encode( ib_edu_request_url( 'stripe_token' ) ); ?>,
+						url: <?php echo json_encode( Edr_RequestDispatcher::get_url( 'stripe_token' ) ); ?>,
 						data: {
 							payment_id: <?php echo intval( $payment->ID ); ?>,
 							token: token.id,
@@ -120,7 +120,7 @@ class Edr_Gateway_Stripe extends Edr_Gateway_Base {
 						success: function(response) {
 							if (response === '1') {
 								$('#ib-edu-payment-processing-msg').text(<?php echo json_encode( __( 'Redirecting to the payment summary page...', 'ibeducator' ) ); ?>);
-								var redirectTo = <?php echo json_encode( ib_edu_get_endpoint_url( 'edu-thankyou', $payment->ID, get_permalink( ib_edu_page_id( 'payment' ) ) ) ); ?>;
+								var redirectTo = <?php echo json_encode( edr_get_endpoint_url( 'edu-thankyou', $payment->ID, get_permalink( edr_get_page_id( 'payment' ) ) ) ); ?>;
 								document.location = redirectTo;
 							}
 						}
@@ -130,8 +130,8 @@ class Edr_Gateway_Stripe extends Edr_Gateway_Base {
 
 			handler.open({
 				name: <?php echo json_encode( esc_html( $post->post_title ) ); ?>,
-				description: <?php echo json_encode( ib_edu_format_price( $payment->amount, false, false ) ); ?>,
-				currency: <?php echo json_encode( ib_edu_get_currency() ); ?>,
+				description: <?php echo json_encode( edr_format_price( $payment->amount, false, false ) ); ?>,
+				currency: <?php echo json_encode( edr_get_currency() ); ?>,
 				amount: <?php echo absint( $payment->amount * 100 ); ?>
 			});
 

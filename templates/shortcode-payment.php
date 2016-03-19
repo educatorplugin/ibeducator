@@ -68,7 +68,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 		<tbody>
 			<tr>
 				<td><?php echo esc_html( $post->post_title ); ?></td>
-				<td><?php echo ib_edu_format_price( $payment->amount - $payment->tax, false ); ?></td>
+				<td><?php echo edr_format_price( $payment->amount - $payment->tax, false ); ?></td>
 			</tr>
 		</tbody>
 	</table>
@@ -76,18 +76,18 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 	<dl class="edu-payment-summary edu-dl">
 		<?php
 			if ( $payment->tax > 0.0 ) {
-				echo '<dt class="payment-subtotal">' . __( 'Subtotal', 'ibeducator' ) .'</dt><dd>' . ib_edu_format_price( $payment->amount - $payment->tax, false ) . '</dd>';
+				echo '<dt class="payment-subtotal">' . __( 'Subtotal', 'ibeducator' ) .'</dt><dd>' . edr_format_price( $payment->amount - $payment->tax, false ) . '</dd>';
 
 				foreach ( $lines as $line ) {
 					if ( 'tax' == $line->line_type ) {
-						echo '<dt>' . esc_html( $line->name ) . '</dt><dd>' . ib_edu_format_price( $line->amount, false ) . '</dd>';
+						echo '<dt>' . esc_html( $line->name ) . '</dt><dd>' . edr_format_price( $line->amount, false ) . '</dd>';
 					}
 				}
 			}
 		?>
 
 		<dt class="payment-total"><?php _e( 'Total', 'ibeducator' ); ?></dt>
-		<dd><?php echo ib_edu_format_price( $payment->amount, false ) ?></dd>
+		<dd><?php echo edr_format_price( $payment->amount, false ) ?></dd>
 	</dl>
 	<?php
 	if ( $payment->ID && $payment->user_id == $user_id ) {
@@ -95,7 +95,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 	}
 
 	// Show link to the payments page.
-	$payments_page = get_post( ib_edu_page_id( 'user_payments' ) );
+	$payments_page = get_post( edr_get_page_id( 'user_payments' ) );
 	
 	if ( $payments_page ) {
 		echo '<p>' . sprintf( __( 'Go to %s page', 'ibeducator' ), '<a href="' . esc_url( get_permalink( $payments_page->ID ) ) . '">'
@@ -168,9 +168,9 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 
 		if ( empty( $login_url ) ) {
 			if ( 'ib_educator_course' == $post->post_type ) {
-				$login_url = wp_login_url( ib_edu_get_endpoint_url( 'edu-course', $post->ID, get_permalink() ) );
+				$login_url = wp_login_url( edr_get_endpoint_url( 'edu-course', $post->ID, get_permalink() ) );
 			} elseif ( 'ib_edu_membership' == $post->post_type ) {
-				$login_url = wp_login_url( ib_edu_get_endpoint_url( 'edu-membership', $post->ID, get_permalink() ) );
+				$login_url = wp_login_url( edr_get_endpoint_url( 'edu-membership', $post->ID, get_permalink() ) );
 			}
 		}
 
@@ -178,7 +178,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 	}
 
 	// Output error messages.
-	$errors = ib_edu_message( 'payment_errors' );
+	$errors = edr_internal_message( 'payment_errors' );
 	$error_codes = $errors ? $errors->get_error_codes() : array();
 
 	if ( ! empty( $error_codes ) ) {
@@ -189,7 +189,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 		}
 	}
 
-	$form_action = ib_edu_get_endpoint_url( 'edu-action', 'payment', get_permalink() );
+	$form_action = edr_get_endpoint_url( 'edu-action', 'payment', get_permalink() );
 	?>
 		<form id="ib-edu-payment-form" class="ib-edu-form" action="<?php echo esc_url( $form_action ); ?>" method="post">
 			<?php
@@ -214,15 +214,15 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 					// Get country.
 					if ( isset( $_POST['billing_country'] ) ) $args['country'] = $_POST['billing_country'];
 					elseif ( ! empty( $billing['country'] ) ) $args['country'] = $billing['country'];
-					else $args['country'] = ib_edu_get_location( 'country' );
+					else $args['country'] = edr_get_location( 'country' );
 
 					// Get state.
 					if ( isset( $_POST['billing_state'] ) ) $args['state'] = $_POST['billing_state'];
 					elseif ( ! empty( $billing['state'] ) ) $args['state'] = $billing['state'];
-					else $args['state'] = ib_edu_get_location( 'state' );
+					else $args['state'] = edr_get_location( 'state' );
 
 					// Get price.
-					if ( 'ib_educator_course' == $post->post_type ) $args['price'] = ib_edu_get_course_price( $post->ID );
+					if ( 'ib_educator_course' == $post->post_type ) $args['price'] = Edr_Courses::get_instance()->get_course_price( $post->ID );
 					elseif ( 'ib_edu_membership' == $post->post_type ) $args['price'] = Edr_Memberships::get_instance()->get_price( $post->ID );
 
 					// Output payment summary.

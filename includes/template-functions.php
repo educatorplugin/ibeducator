@@ -39,6 +39,23 @@ function edr_breadcrumbs() {
 	echo implode( '&raquo;', $breadcrumbs );
 }
 
+/**
+ * Display default page title based on the page context.
+ */
+function edr_page_title() {
+	$title = '';
+
+	if ( is_post_type_archive( array( EDR_PT_COURSE, EDR_PT_LESSON ) ) ) {
+		$title = post_type_archive_title( '', false );
+	} elseif ( is_tax() ) {
+		$title = single_term_title( '', false );
+	}
+
+	$title = apply_filters( 'ib_educator_page_title', $title );
+
+	echo $title;
+}
+
 if ( ! function_exists( 'edr_display_lessons' ) ) :
 /**
  * Display lessons of a given course.
@@ -126,7 +143,7 @@ function edr_display_course_price( $course_id ) {
 }
 
 function edr_display_course_errors( $course_id ) {
-	$errors = ib_edu_message( 'course_join_errors' );
+	$errors = edr_internal_message( 'course_join_errors' );
 
 	if ( $errors ) {
 		$messages = $errors->get_error_messages();
@@ -370,15 +387,15 @@ function edr_get_price_widget( $course_id, $user_id, $before = '<div class="edr-
 	$output = $before;
 
 	if ( $membership_access ) {
-		$register_url = ib_edu_get_endpoint_url( 'edu-action', 'join', get_permalink( $course_id ) );
+		$register_url = edr_get_endpoint_url( 'edu-action', 'join', get_permalink( $course_id ) );
 		$output .= '<form action="' . esc_url( $register_url ) . '" method="post">';
 		$output .= '<input type="hidden" name="_wpnonce" value="' . wp_create_nonce( 'edr_join_course' ) . '">';
 		$output .= '<button type="submit">' . __( 'Join', 'ibeducator' ) . '</button>';
 		$output .= '</form>';
 	} else {
-		$price = ib_edu_get_course_price( $course_id );
-		$price = ( 0 == $price ) ? __( 'Free', 'ibeducator' ) : ib_edu_format_course_price( $price );
-		$register_url = ib_edu_get_endpoint_url( 'edu-course', $course_id, get_permalink( ib_edu_page_id( 'payment' ) ) );
+		$price = Edr_Courses::get_instance()->get_course_price( $course_id );
+		$price = ( 0 == $price ) ? __( 'Free', 'ibeducator' ) : edr_format_price( $price );
+		$register_url = edr_get_endpoint_url( 'edu-course', $course_id, get_permalink( edr_get_page_id( 'payment' ) ) );
 		$output .= '<span class="price">' . $price . '</span>';
 		$output .= '<a href="' . esc_url( $register_url ) . '">' . __( 'Register', 'ibeducator' ) . '</a>';
 	}
@@ -386,6 +403,42 @@ function edr_get_price_widget( $course_id, $user_id, $before = '<div class="edr-
 	$output .= $after;
 
 	return $output;
+}
+
+/**
+ * Get a purchase link.
+ * Currently, supports memberships only.
+ *
+ * @param array $atts
+ * @return string
+ */
+function edr_purchase_link( $atts ) {
+	$atts = wp_parse_args( $atts, array(
+		'object_id' => null,
+		'type'      => null,
+		'text'      => __( 'Purchase', 'ib-educator' ),
+		'class'     => array(),
+	) );
+
+	// Add default class.
+	array_push( $atts['class'], 'edu-purchase-link' );
+
+	$html = apply_filters( 'ib_edu_pre_purchase_link', null, $atts );
+
+	if ( ! is_null( $html ) ) {
+		return $html;
+	}
+
+	if ( 'membership' == $atts['type'] ) {
+		$html = sprintf(
+			'<a href="%s" class="%s">%s</a>',
+			esc_url( edr_get_endpoint_url( 'edu-membership', $atts['object_id'], get_permalink( edr_get_page_id( 'payment' ) ) ) ),
+			esc_attr( implode( ' ', $atts['class'] ) ),
+			$atts['text']
+		);
+	}
+
+	return $html;
 }
 
 /* Deprecated functions */

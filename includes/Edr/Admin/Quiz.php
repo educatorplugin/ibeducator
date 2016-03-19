@@ -451,7 +451,7 @@ class Edr_Admin_Quiz {
 		if ( $student ) {
 			$lesson_title = get_the_title( $lesson_id );
 			
-			ib_edu_send_notification(
+			edr_send_notification(
 				$student->user_email,
 				'quiz_grade',
 				array(
@@ -460,7 +460,7 @@ class Edr_Admin_Quiz {
 				array(
 					'student_name' => $student->display_name,
 					'lesson_title' => $lesson_title,
-					'grade'        => ib_edu_format_grade( $grade ),
+					'grade'        => edr_format_grade( $grade ),
 				)
 			);
 		}

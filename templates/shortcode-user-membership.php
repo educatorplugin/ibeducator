@@ -43,7 +43,7 @@ switch ( $action ) {
 						<?php echo esc_html( $membership->post_title ); ?>
 						<div>
 							<?php
-								echo ib_edu_purchase_link( array(
+								echo edr_purchase_link( array(
 									'object_id' => $membership->ID,
 									'type'      => 'membership',
 									'class'     => array( 'extend-membership' ),
@@ -67,15 +67,15 @@ switch ( $action ) {
 
 						<div>
 						<?php
-							if ( 1 == ib_edu_get_option( 'pause_memberships', 'memberships' ) ) {
+							if ( 1 == edr_get_option( 'pause_memberships', 'memberships' ) ) {
 								if ( 'active' == $user_membership['status'] ) {
-									$pause_url = ib_edu_get_endpoint_url( 'edu-action', 'pause-membership', get_permalink() );
+									$pause_url = edr_get_endpoint_url( 'edu-action', 'pause-membership', get_permalink() );
 									$pause_url = add_query_arg( '_wpnonce', wp_create_nonce( 'ib_educator_pause_membership' ), $pause_url );
 
 									echo ' <span class="pause-membership"><a class="ib-edu-button" href="' . esc_url( $pause_url )
 										. '">' . __( 'Pause', 'ibeducator' ) . '</a></span>';
 								} elseif ( 'paused' == $user_membership['status'] ) {
-									$resume_url = ib_edu_get_endpoint_url( 'edu-action', 'resume-membership', get_permalink() );
+									$resume_url = edr_get_endpoint_url( 'edu-action', 'resume-membership', get_permalink() );
 									$resume_url = add_query_arg( '_wpnonce', wp_create_nonce( 'ib_educator_resume_membership' ), $resume_url );
 
 									echo ' <span class="pause-membership"><a class="ib-edu-button" href="' . esc_url( $resume_url )

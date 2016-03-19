@@ -114,7 +114,7 @@ class Edr_Admin_Actions {
 			}
 
 			if ( $errors->get_error_code() ) {
-				ib_edu_message( 'edit_entry_errors', $errors );
+				edr_internal_message( 'edit_entry_errors', $errors );
 			} elseif ( $entry->save() ) {
 				if ( $prev_status ) {
 					/**
@@ -255,7 +255,7 @@ class Edr_Admin_Actions {
 			}
 
 			if ( ! empty( $errors ) ) {
-				ib_edu_message( 'edit_payment_errors', $errors );
+				edr_internal_message( 'edit_payment_errors', $errors );
 				return;
 			}
 
@@ -298,7 +298,7 @@ class Edr_Admin_Actions {
 						$course = get_post( $payment->course_id, OBJECT, 'display' );
 
 						if ( $student && $course ) {
-							ib_edu_send_notification(
+							edr_send_notification(
 								$student->user_email,
 								'student_registered',
 								array(
@@ -330,7 +330,7 @@ class Edr_Admin_Actions {
 						$membership_meta = $ms->get_membership_meta( $membership->ID );
 						$expiration = ( $user_membership ) ? $user_membership['expiration'] : 0;
 
-						ib_edu_send_notification(
+						edr_send_notification(
 							$student->user_email,
 							'membership_register',
 							array(),
@@ -410,7 +410,7 @@ class Edr_Admin_Actions {
 			}
 
 			if ( ! empty( $errors ) ) {
-				ib_edu_message( 'edit_member_errors', $errors );
+				edr_internal_message( 'edit_member_errors', $errors );
 				return;
 			}
 

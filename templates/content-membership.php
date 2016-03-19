@@ -23,7 +23,7 @@ $classes = apply_filters( 'ib_educator_membership_classes', array( 'ib-edu-membe
 
 	<div class="membership-options">
 		<?php
-			echo ib_edu_purchase_link( array(
+			echo edr_purchase_link( array(
 				'object_id' => $membership_id,
 				'type'      => 'membership',
 			) );

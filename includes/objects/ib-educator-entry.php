@@ -29,7 +29,7 @@ class IB_Educator_Entry {
 	 * @return array
 	 */
 	public static function get_statuses() {
-		_ib_edu_deprecated_function( 'IB_Educator_Entry::get_statuses', '1.7', 'edr_get_entry_statuses' );
+		edr_deprecated_function( 'IB_Educator_Entry::get_statuses', '1.7', 'edr_get_entry_statuses' );
 
 		return edr_get_entry_statuses();
 	}
@@ -40,7 +40,7 @@ class IB_Educator_Entry {
 	 * @return array
 	 */
 	public static function get_origins() {
-		_ib_edu_deprecated_function( 'IB_Educator_Entry::get_origins', '1.7', 'edr_get_entry_origins' );
+		edr_deprecated_function( 'IB_Educator_Entry::get_origins', '1.7', 'edr_get_entry_origins' );
 
 		return edr_get_entry_origins();
 	}

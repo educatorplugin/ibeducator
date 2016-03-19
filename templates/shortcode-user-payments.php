@@ -51,15 +51,15 @@ if ( 'payment-cancelled' == $message ) {
 					}
 				?>
 			</td>
-			<td><?php echo ib_edu_format_price( $payment->amount, false ); ?></td>
+			<td><?php echo edr_format_price( $payment->amount, false ); ?></td>
 			<td class="actions-group">
 				<?php
-					$invoice_url = ib_edu_get_endpoint_url( 'edu-thankyou', $payment->ID, get_permalink( ib_edu_page_id( 'payment' ) ) );
+					$invoice_url = edr_get_endpoint_url( 'edu-thankyou', $payment->ID, get_permalink( edr_get_page_id( 'payment' ) ) );
 				?>
 				<a href="<?php echo esc_url( $invoice_url ); ?>"><?php _e( 'Details', 'ibeducator' ); ?></a>
 
 				<?php if ( 'pending' == $payment->payment_status ) : ?>
-				<form action="<?php echo esc_url( ib_edu_get_endpoint_url( 'edu-action', 'cancel-payment', get_permalink() ) ); ?>" method="post">
+				<form action="<?php echo esc_url( edr_get_endpoint_url( 'edu-action', 'cancel-payment', get_permalink() ) ); ?>" method="post">
 					<?php wp_nonce_field( 'ibedu_cancel_payment' ); ?>
 					<input type="hidden" name="payment_id" value="<?php echo absint( $payment->ID ); ?>">
 					<button type="submit" class="ib-edu-button"><?php _e( 'Cancel', 'ibeducator' ); ?></button>

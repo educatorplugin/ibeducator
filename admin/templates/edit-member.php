@@ -41,7 +41,7 @@ if ( ! $user_membership ) {
 	?></h2>
 
 	<?php
-		$errors = ib_edu_message( 'edit_member_errors' );
+		$errors = edr_internal_message( 'edit_member_errors' );
 
 		if ( $errors ) {
 			echo '<div class="error below-h2"><ul>';

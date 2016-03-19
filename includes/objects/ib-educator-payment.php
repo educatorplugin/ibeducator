@@ -42,7 +42,7 @@ class IB_Educator_Payment {
 	 * @return array
 	 */
 	public static function get_statuses() {
-		_ib_edu_deprecated_function( 'IB_Educator_Payment::get_statuses', '1.7', 'edr_get_payment_statuses' );
+		edr_deprecated_function( 'IB_Educator_Payment::get_statuses', '1.7', 'edr_get_payment_statuses' );
 
 		return edr_get_payment_statuses();
 	}
@@ -53,7 +53,7 @@ class IB_Educator_Payment {
 	 * @return array
 	 */
 	public static function get_types() {
-		_ib_edu_deprecated_function( 'IB_Educator_Payment::get_types', '1.7', 'edr_get_payment_types' );
+		edr_deprecated_function( 'IB_Educator_Payment::get_types', '1.7', 'edr_get_payment_types' );
 
 		return edr_get_payment_types();
 	}

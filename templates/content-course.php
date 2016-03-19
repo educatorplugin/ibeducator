@@ -17,7 +17,7 @@ $classes = apply_filters( 'ib_educator_course_classes', array( 'course' ) );
 	<header class="course-header">
 		<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
 
-		<div class="ib-edu-course-price"><?php echo ib_edu_format_price( ib_edu_get_course_price( get_the_ID() ) ); ?></div>
+		<div class="ib-edu-course-price"><?php echo edr_format_price( Edr_Courses::get_instance()->get_course_price( get_the_ID() ) ); ?></div>
 	</header>
 
 	<section class="course-summary">

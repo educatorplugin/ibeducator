@@ -61,9 +61,9 @@ class Edr_Gateway_Paypal extends Edr_Gateway_Base {
 		$redirect = '';
 
 		if ( $payment->ID ) {
-			$redirect = ib_edu_get_endpoint_url( 'edu-pay', $payment->ID, get_permalink( ib_edu_page_id( 'payment' ) ) );
+			$redirect = edr_get_endpoint_url( 'edu-pay', $payment->ID, get_permalink( edr_get_page_id( 'payment' ) ) );
 		} else {
-			$redirect = ib_edu_get_endpoint_url( 'edu-pay', '', get_permalink( ib_edu_page_id( 'payment' ) ) );
+			$redirect = edr_get_endpoint_url( 'edu-pay', '', get_permalink( edr_get_page_id( 'payment' ) ) );
 		}
 
 		return array(
@@ -110,10 +110,10 @@ class Edr_Gateway_Paypal extends Edr_Gateway_Base {
 
 		$amount = $payment->amount - $payment->tax;
 		$return_url = '';
-		$payment_page_id = ib_edu_page_id( 'payment' );
+		$payment_page_id = edr_get_page_id( 'payment' );
 
 		if ( $payment_page_id ) {
-			$return_url = ib_edu_get_endpoint_url( 'edu-thankyou', ( $payment->ID ? $payment->ID : '' ), get_permalink( $payment_page_id ) );
+			$return_url = edr_get_endpoint_url( 'edu-thankyou', ( $payment->ID ? $payment->ID : '' ), get_permalink( $payment_page_id ) );
 		}
 
 		echo '<form id="ib-edu-paypal-form" action="' . esc_url( $action_url ) . '" method="post">';
@@ -121,8 +121,8 @@ class Edr_Gateway_Paypal extends Edr_Gateway_Base {
 		echo '<input type="hidden" name="charset" value="utf-8">';
 		echo '<input type="hidden" name="business" value="' . esc_attr( $this->get_option( 'business_email' ) ) . '">';
 		echo '<input type="hidden" name="return" value="' . esc_url( $return_url ) . '">';
-		echo '<input type="hidden" name="notify_url" value="' . esc_url( ib_edu_request_url( 'paypalipn' ) ) . '">';
-		echo '<input type="hidden" name="currency_code" value="' . esc_attr( ib_edu_get_currency() ) . '">';
+		echo '<input type="hidden" name="notify_url" value="' . esc_url( Edr_RequestDispatcher::get_url( 'paypalipn' ) ) . '">';
+		echo '<input type="hidden" name="currency_code" value="' . esc_attr( edr_get_currency() ) . '">';
 		echo '<input type="hidden" name="item_name" value="' . esc_attr( $post->post_title ) . '">';
 		echo '<input type="hidden" name="item_number" value="' . absint( $payment->ID ) . '">';
 

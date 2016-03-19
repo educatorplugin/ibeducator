@@ -125,7 +125,7 @@ class Edr_Memberships {
 	 * @return string
 	 */
 	public function format_price( $price, $duration, $period, $symbol = true ) {
-		$price_str = ib_edu_format_price( $price, true, $symbol );
+		$price_str = edr_format_price( $price, true, $symbol );
 
 		switch ( $period ) {
 			case 'days':
@@ -655,9 +655,9 @@ class Edr_Memberships {
 		}
 
 		$price = $this->get_price( $membership_id );
-		$payment_url = ib_edu_get_endpoint_url( 'edu-membership', $membership_id, get_permalink( ib_edu_page_id( 'payment' ) ) );
+		$payment_url = edr_get_endpoint_url( 'edu-membership', $membership_id, get_permalink( edr_get_page_id( 'payment' ) ) );
 		$output = '<div class="ib-edu-price-widget">';
-		$output .= '<span class="price">' . ib_edu_format_price( $price ) . '</span>';
+		$output .= '<span class="price">' . edr_format_price( $price ) . '</span>';
 		$output .= '<a href="' . esc_url( $payment_url ) . '" class="ib-edu-button">' . __( 'Purchase', 'ibeducator' ) . '</a>';
 		$output .= '</div>';
 

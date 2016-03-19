@@ -81,7 +81,7 @@ class Edr_MembershipsRun {
 	 */
 	public static function send_expiration_notifications() {
 		global $wpdb;
-		$days_notify = ib_edu_get_option( 'days_notify', 'memberships' );
+		$days_notify = edr_get_option( 'days_notify', 'memberships' );
 
 		if ( null === $days_notify ) {
 			$days_notify = 5;
@@ -127,7 +127,7 @@ class Edr_MembershipsRun {
 			}
 			
 			foreach ( $users as $user ) {
-				ib_edu_send_notification(
+				edr_send_notification(
 					$user->user_email,
 					'membership_renew',
 					array(),
@@ -135,7 +135,7 @@ class Edr_MembershipsRun {
 						'student_name'           => $user->display_name,
 						'membership'             => isset( $memberships[ $user->membership_id ] ) ? $memberships[ $user->membership_id ]->post_title : '',
 						'expiration'             => date_i18n( get_option( 'date_format' ), strtotime( $user->expiration ) ),
-						'membership_payment_url' => ib_edu_get_endpoint_url( 'edu-membership', $user->membership_id, get_permalink( ib_edu_page_id( 'payment' ) ) ),
+						'membership_payment_url' => edr_get_endpoint_url( 'edu-membership', $user->membership_id, get_permalink( edr_get_page_id( 'payment' ) ) ),
 					)
 				);
 			}

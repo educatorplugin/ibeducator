@@ -60,7 +60,7 @@
 
 	<?php
 		// Output error messages.
-		$errors = ib_edu_message( 'edit_entry_errors' );
+		$errors = edr_internal_message( 'edit_entry_errors' );
 
 		if ( $errors ) {
 			$messages = $errors->get_error_messages();

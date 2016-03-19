@@ -60,7 +60,7 @@ if ( $courses || $pending_courses ) {
 					?>
 				</td>
 				<td>
-					<form action="<?php echo esc_url( ib_edu_get_endpoint_url( 'edu-action', 'cancel-payment', get_permalink() ) ); ?>" method="post">
+					<form action="<?php echo esc_url( edr_get_endpoint_url( 'edu-action', 'cancel-payment', get_permalink() ) ); ?>" method="post">
 						<?php wp_nonce_field( 'ibedu_cancel_payment' ); ?>
 						<input type="hidden" name="payment_id" value="<?php echo absint( $course->edu_payment_id ); ?>">
 						<button type="submit" class="ib-edu-button"><?php _e( 'Cancel', 'ibeducator' ); ?></a>
@@ -141,7 +141,7 @@ if ( $courses || $pending_courses ) {
 					$values = apply_filters( 'edr_student_courses_values', array(
 						'entry'  => '<td>' . (int) $entry->ID . '</td>',
 						'course' => '<td><a class="title" href="' . esc_url( get_permalink( $course->ID ) ) . '">' . esc_html( $course->post_title ) . '</a></td>',
-						'grade'  => '<td class="grade">' . ib_edu_format_grade( $entry->grade ) . '</td>',
+						'grade'  => '<td class="grade">' . edr_format_grade( $entry->grade ) . '</td>',
 					), 'complete', $entry );
 
 					echo '<tr>';
@@ -174,7 +174,7 @@ if ( $courses || $pending_courses ) {
 						<td><?php echo intval( $entry->ID ); ?></td>
 						<td><a class="title" href="<?php echo esc_url( get_permalink( $course->ID ) ); ?>"><?php echo esc_html( $course->post_title ); ?></a></td>
 						<td>
-							<form action="<?php echo esc_url( ib_edu_get_endpoint_url( 'edu-action', 'resume-entry', get_permalink() ) ); ?>" method="post">
+							<form action="<?php echo esc_url( edr_get_endpoint_url( 'edu-action', 'resume-entry', get_permalink() ) ); ?>" method="post">
 								<?php wp_nonce_field( 'ib_educator_resume_entry' ); ?>
 								<input type="hidden" name="entry_id" value="<?php echo absint( $entry->ID ); ?>">
 								<button type="submit" class="ib-edu-button" <?php if ( ! $ms->membership_can_access( $course->ID, $user_id ) ) echo ' disabled="disabled"'; ?>><?php _e( 'Resume', 'ibeducator' ); ?></button>

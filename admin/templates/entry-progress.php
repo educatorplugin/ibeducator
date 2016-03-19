@@ -189,13 +189,13 @@ $course = get_post( $entry->course_id );
 				<div class="form-row">
 					<div class="label"><?php _e( 'Average Grade', 'ibeducator' ); ?></div>
 					<div class="field">
-						<?php echo ib_edu_format_grade( $suggested_grade / $num_quizzes ); ?>
+						<?php echo edr_format_grade( $suggested_grade / $num_quizzes ); ?>
 					</div>
 				</div>
 				<div class="form-row">
 					<div class="label"><?php _e( 'Final Grade', 'ibeducator' ); ?></div>
 					<div class="field">
-						<?php echo ib_edu_format_grade( $entry->grade ); ?>
+						<?php echo edr_format_grade( $entry->grade ); ?>
 						<a href="<?php echo esc_url( admin_url( 'admin.php?page=ib_educator_entries&edu-action=edit-entry&entry_id=' . $entry_id ) ); ?>">
 							<?php _e( 'Edit', 'ibeducator' ); ?>
 						</a>

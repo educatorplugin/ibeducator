@@ -17,14 +17,14 @@ $form->add( array(
 ) );
 
 // Price.
-$form->set_value( '_ibedu_price', ib_edu_get_course_price( $post->ID ) );
+$form->set_value( '_ibedu_price', Edr_Courses::get_instance()->get_course_price( $post->ID ) );
 $form->add( array(
 	'type'   => 'text',
 	'name'   => '_ibedu_price',
 	'class'  => '',
 	'id'     => 'ib-educator-price',
 	'label'  => __( 'Price', 'ibeducator' ),
-	'before' => esc_html( ib_edu_get_currency_symbol( ib_edu_get_currency() ) ) . ' ',
+	'before' => esc_html( edr_get_currency_symbol( edr_get_currency() ) ) . ' ',
 ) );
 
 // Tax Class.

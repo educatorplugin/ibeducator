@@ -43,7 +43,7 @@ $lines = $payment->get_lines();
 	?></h2>
 
 	<?php
-		$errors = ib_edu_message( 'edit_payment_errors' );
+		$errors = edr_internal_message( 'edit_payment_errors' );
 
 		if ( $errors ) {
 			echo '<div class="error below-h2"><ul>';
@@ -302,8 +302,8 @@ $lines = $payment->get_lines();
 										<select id="ib-edu-currency" name="currency">
 											<option value=""><?php _e( 'Select Currency', 'ibeducator' ); ?></option>
 											<?php
-												$current_currency = empty( $payment->currency ) ? ib_edu_get_currency() : $payment->currency;
-												$currencies = ib_edu_get_currencies();
+												$current_currency = empty( $payment->currency ) ? edr_get_currency() : $payment->currency;
+												$currencies = edr_get_currencies();
 
 												foreach ( $currencies as $key => $value ) {
 													$selected = ( $key == $current_currency ) ? ' selected="selected"' : '';

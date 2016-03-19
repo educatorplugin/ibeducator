@@ -256,7 +256,7 @@ class Edr_Admin_EntriesTable extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_grade( $item ) {
-		return ib_edu_format_grade( $item['grade'] );
+		return edr_format_grade( $item['grade'] );
 	}
 
 	/**

@@ -94,7 +94,7 @@ class Edr_StudentAccount {
 			), 'account' );
 		}
 
-		if ( ib_edu_collect_billing_data( $object ) ) {
+		if ( edr_collect_billing_data( $object ) ) {
 			// Add billing details group.
 			$form->add_group( array(
 				'name'  => 'billing',
@@ -105,11 +105,11 @@ class Edr_StudentAccount {
 			$values = IB_Educator::get_instance()->get_billing_data( $user->ID );
 
 			if ( empty( $values['country'] ) ) {
-				$values['country'] = ib_edu_get_location( 'country' );
+				$values['country'] = edr_get_location( 'country' );
 			}
 
 			if ( empty( $values['state'] ) ) {
-				$values['state'] = ib_edu_get_location( 'state' );
+				$values['state'] = edr_get_location( 'state' );
 			}
 
 			$values['first_name'] = ( $user->ID ) ? $user->first_name : '';
@@ -260,7 +260,7 @@ class Edr_StudentAccount {
 			}
 		}
 
-		if ( ib_edu_collect_billing_data( $object ) ) {
+		if ( edr_collect_billing_data( $object ) ) {
 			// First Name.
 			if ( empty( $_POST['billing_first_name'] ) ) {
 				$errors->add( 'billing_first_name_empty', __( 'Please enter your first name.', 'ibeducator' ) );
@@ -313,7 +313,7 @@ class Edr_StudentAccount {
 		$data['user_pass'] = wp_generate_password( 12, false );
 
 		// Billing details.
-		if ( ib_edu_collect_billing_data( $object ) ) {
+		if ( edr_collect_billing_data( $object ) ) {
 			$data['first_name'] = $_POST['billing_first_name'];
 			$data['last_name'] = $_POST['billing_last_name'];
 		}
@@ -344,7 +344,7 @@ class Edr_StudentAccount {
 	 * @param WP_Post $object
 	 */
 	public static function new_student( $user_id, $object ) {
-		if ( ib_edu_collect_billing_data( $object ) ) {
+		if ( edr_collect_billing_data( $object ) ) {
 			self::save_billing_data( $user_id );
 		}
 	}
@@ -359,7 +359,7 @@ class Edr_StudentAccount {
 	public static function update_student( $user_id, $object ) {
 		$data = array();
 
-		if ( ib_edu_collect_billing_data( $object ) ) {
+		if ( edr_collect_billing_data( $object ) ) {
 			$data['first_name'] = $_POST['billing_first_name'];
 			$data['last_name'] = $_POST['billing_last_name'];
 
@@ -384,14 +384,14 @@ class Edr_StudentAccount {
 		// Get price.
 		if ( ! isset( $args['price'] ) ) {
 			if ( 'ib_educator_course' == $object->post_type ) {
-				$args['price'] = ib_edu_get_course_price( $object->ID );
+				$args['price'] = Edr_Courses::get_instance()->get_course_price( $object->ID );
 			} elseif ( 'ib_edu_membership' == $object->post_type ) {
 				$args['price'] = Edr_Memberships::get_instance()->get_price( $object->ID );
 			}
 		}
 
 		// Get tax data.
-		$tax_enabled = ib_edu_get_option( 'enable', 'taxes' );
+		$tax_enabled = edr_get_option( 'enable', 'taxes' );
 
 		if ( $tax_enabled ) {
 			$edu_tax = Edr_TaxManager::get_instance();
@@ -412,7 +412,7 @@ class Edr_StudentAccount {
 		if ( 'ib_educator_course' == $object->post_type ) {
 			$output .= '<tbody><tr><td>';
 
-			if ( ib_edu_get_option( 'payment_lecturer', 'settings' ) ) {
+			if ( edr_get_option( 'payment_lecturer', 'settings' ) ) {
 				$output .= sprintf(
 					__( '%s with %s', 'ibeducator' ),
 					'<a href="' . esc_url( get_permalink( $object->ID ) ) . '" target="_blank">' . esc_html( $object->post_title ) . '</a>',
@@ -423,7 +423,7 @@ class Edr_StudentAccount {
 			}
 
 			$output .= '<input type="hidden" id="payment-object-id" name="course_id" value="' . intval( $object->ID ) . '"></td>';
-			$output .= '<td>' . ib_edu_format_price( $tax_data['subtotal'], false ) . '</td></tr></tbody>';
+			$output .= '<td>' . edr_format_price( $tax_data['subtotal'], false ) . '</td></tr></tbody>';
 		} elseif ( 'ib_edu_membership' == $object->post_type ) {
 			$output .= '<tbody><tr><td>' . esc_html( $object->post_title );
 			$output .= '<input type="hidden" id="payment-object-id" name="membership_id" value="' . intval( $object->ID ) . '"></td>';
@@ -438,14 +438,14 @@ class Edr_StudentAccount {
 		$output .= '<dl class="edu-payment-summary edu-dl">';
 
 		if ( $tax_data['tax'] > 0.0 ) {
-			$output .= '<dt class="payment-subtotal">' . __( 'Subtotal', 'ibeducator' ) . '</dt><dd>' . ib_edu_format_price( $tax_data['subtotal'], false ) . '</dd>';
+			$output .= '<dt class="payment-subtotal">' . __( 'Subtotal', 'ibeducator' ) . '</dt><dd>' . edr_format_price( $tax_data['subtotal'], false ) . '</dd>';
 
 			foreach ( $tax_data['taxes'] as $tax ) {
-				$output .= '<dt class="payment-tax">' . esc_html( $tax->name ) . '</dt><dd>' . ib_edu_format_price( $tax->amount, false ) . '</dd>';
+				$output .= '<dt class="payment-tax">' . esc_html( $tax->name ) . '</dt><dd>' . edr_format_price( $tax->amount, false ) . '</dd>';
 			}
 		}
 
-		$output .= '<dt class="payment-total">' . __( 'Total', 'ibeducator' ) . '</dt><dd>' . ib_edu_format_price( $tax_data['total'], false ) . '</dd>';
+		$output .= '<dt class="payment-total">' . __( 'Total', 'ibeducator' ) . '</dt><dd>' . edr_format_price( $tax_data['total'], false ) . '</dd>';
 		$output .= '</dl>';
 
 		return $output;

@@ -1,25 +1,25 @@
 <?php
 
 /**
- * Get the plugin's settings.
+ * Get settings.
  *
  * @return array
  */
-function ib_edu_get_settings() {
+function edr_get_settings() {
 	return get_option( 'ib_educator_settings', array() );
 }
 
 /**
- * Get the plugin's option.
+ * Get option.
  *
- * @param string $option_key
- * @param string $option_section
+ * @param string $key
+ * @param string $section
  * @return mixed
  */
-function ib_edu_get_option( $option_key, $option_section ) {
+function edr_get_option( $key, $section ) {
 	$options = null;
 
-	switch ( $option_section ) {
+	switch ( $section ) {
 		case 'settings':
 			$options = get_option( 'ib_educator_settings' );
 			break;
@@ -41,75 +41,11 @@ function ib_edu_get_option( $option_key, $option_section ) {
 			break;
 	}
 
-	if ( is_array( $options ) && isset( $options[ $option_key ] ) ) {
-		return $options[ $option_key ];
+	if ( is_array( $options ) && isset( $options[ $key ] ) ) {
+		return $options[ $key ];
 	}
 
 	return null;
-}
-
-/**
- * Get breadcrumbs HTML.
- *
- * @deprecated 1.8.0
- * @param string $sep
- * @return string
- */
-function ib_edu_breadcrumbs( $sep = ' &raquo; ' ) {
-	edr_deprecated_function( 'ib_edu_breadcrumbs', '1.8.0' );
-
-	$breadcrumbs = array();
-	$is_lesson = is_singular( 'ib_educator_lesson' );
-	$is_course = is_singular( 'ib_educator_course' );
-
-	if ( $is_course || $is_lesson ) {
-		$student_courses_page_id = ib_edu_page_id( 'student_courses' );
-
-		if ( $student_courses_page_id ) {
-			$page = get_post( $student_courses_page_id );
-
-			if ( $page ) {
-				$breadcrumbs[] = '<a href="' . esc_url( get_permalink( $page->ID ) ) . '">' . esc_html( $page->post_title ) . '</a>';
-			}
-		}
-	}
-
-	if ( $is_lesson ) {
-		$course_id = Edr_Courses::get_instance()->get_course_id( get_the_ID() );
-
-		if ( $course_id ) {
-			$course = get_post( $course_id );
-
-			if ( $course ) {
-				$breadcrumbs[] = '<a href="' . esc_url( get_permalink( $course->ID ) ) . '">' . esc_html( $course->post_title ) . '</a>';
-			}
-		}
-	}
-
-	$breadcrumbs[] = '<span>' . get_the_title() . '</span>';
-
-	echo implode( $sep, $breadcrumbs );
-}
-
-/**
- * Get educator API url (can be used to process payment notifications from payment gateways).
- *
- * @param string $request
- * @return string
- */
-function ib_edu_request_url( $request ) {
-	$scheme = parse_url( get_option( 'home' ), PHP_URL_SCHEME );
-	return esc_url_raw( add_query_arg( array( 'edu-request' => $request ), home_url( '/', $scheme ) ) );
-}
-
-/**
- * Get price of a course.
- *
- * @param int $course_id
- * @return float
- */
-function ib_edu_get_course_price( $course_id ) {
-	return (float) get_post_meta( $course_id, '_ibedu_price', true );
 }
 
 /**
@@ -117,7 +53,7 @@ function ib_edu_get_course_price( $course_id ) {
  *
  * @return array
  */
-function ib_edu_get_currencies() {
+function edr_get_currencies() {
 	return apply_filters( 'ib_educator_currencies', array(
 		'AUD' => __( 'Australian Dollars', 'ibeducator' ),
 		'AZN' => __( 'Azerbaijani Manat', 'ibeducator' ),
@@ -158,8 +94,8 @@ function ib_edu_get_currencies() {
  *
  * @return string
  */
-function ib_edu_get_currency() {
-	$settings = ib_edu_get_settings();
+function edr_get_currency() {
+	$settings = edr_get_settings();
 
 	if ( isset( $settings['currency'] ) ) {
 		$currency = $settings['currency'];
@@ -176,7 +112,7 @@ function ib_edu_get_currency() {
  * @param string $currency
  * @return string
  */
-function ib_edu_get_currency_symbol( $currency ) {
+function edr_get_currency_symbol( $currency ) {
 	switch ( $currency ) {
 		case 'USD':
 		case 'AUD':
@@ -216,31 +152,21 @@ function ib_edu_get_currency_symbol( $currency ) {
 }
 
 /**
- * Format course price.
- *
- * @param float $price
- * @return string
- */
-function ib_edu_format_course_price( $price ) {
-	return ib_edu_format_price( $price );
-}
-
-/**
  * Format price.
  *
  * @param float $price
  * @return string
  */
-function ib_edu_format_price( $price, $apply_filters = true, $symbol = true ) {
-	$settings = ib_edu_get_settings();
-	$currency = ib_edu_get_currency();
+function edr_format_price( $price, $apply_filters = true, $symbol = true ) {
+	$settings = edr_get_settings();
+	$currency = edr_get_currency();
 	$decimal_point = ! empty( $settings['decimal_point'] ) ? esc_html( $settings['decimal_point'] ) : '.';
 	$thousands_sep = ! empty( $settings['thousands_sep'] ) ? esc_html( $settings['thousands_sep'] ) : ',';
 	$formatted = number_format( $price, 2, $decimal_point, $thousands_sep );
-	$formatted = ib_edu_strip_zeroes( $formatted, $decimal_point );
+	$formatted = edr_strip_zeroes( $formatted, $decimal_point );
 
 	if ( $symbol ) {
-		$currency_symbol = ib_edu_get_currency_symbol( $currency );
+		$currency_symbol = edr_get_currency_symbol( $currency );
 	} else {
 		$currency_symbol = preg_replace( '/[^a-z]+/i', '', $currency );
 	}
@@ -265,7 +191,7 @@ function ib_edu_format_price( $price, $apply_filters = true, $symbol = true ) {
  * @param string $decimal_point
  * @return string
  */
-function ib_edu_strip_zeroes( $number, $decimal_point ) {
+function edr_strip_zeroes( $number, $decimal_point ) {
 	return preg_replace( '/' . preg_quote( $decimal_point, '/' ) . '0+$/', '', $number );
 }
 
@@ -275,7 +201,7 @@ function ib_edu_strip_zeroes( $number, $decimal_point ) {
  * @param int|float $grade
  * @return string
  */
-function ib_edu_format_grade( $grade ) {
+function edr_format_grade( $grade ) {
 	$formatted = (float) round( $grade, 2 );
 
 	return apply_filters( 'ib_educator_format_grade', $formatted . '%', $grade );
@@ -289,12 +215,10 @@ function ib_edu_format_grade( $grade ) {
  * @param string $url
  * @return string
  */
-function ib_edu_get_endpoint_url( $endpoint, $value, $url ) {
+function edr_get_endpoint_url( $endpoint, $value, $url ) {
 	if ( get_option( 'permalink_structure' ) ) {
-		// Pretty permalinks.
 		$url = trailingslashit( $url ) . $endpoint . '/' . $value;
 	} else {
-		// Basic permalinks.
 		$url = add_query_arg( $endpoint, $value, $url );
 	}
 
@@ -307,7 +231,7 @@ function ib_edu_get_endpoint_url( $endpoint, $value, $url ) {
  * @param string $page_name
  * @return int
  */
-function ib_edu_page_id( $page_name ) {
+function edr_get_page_id( $page_name ) {
 	$settings = get_option( 'ib_educator_settings', array() );
 	$page_name .= '_page';
 
@@ -351,7 +275,7 @@ function ib_edu_get_access_status_message( $access_status ) {
  * @param mixed $value
  * @return mixed
  */
-function ib_edu_message( $key, $value = null ) {
+function edr_internal_message( $key, $value = null ) {
 	static $messages = array();
 
 	if ( is_null( $value ) ) {
@@ -422,7 +346,7 @@ function ib_edu_user_can_edit_lesson( $lesson_id ) {
  * @param array $subject_vars
  * @param array $template_vars
  */
-function ib_edu_send_notification( $to, $template, $subject_vars, $template_vars ) {
+function edr_send_notification( $to, $template, $subject_vars, $template_vars ) {
 	// Set default template vars.
 	$template_vars['login_link'] = apply_filters( 'ib_educator_login_url', wp_login_url() );
 
@@ -446,29 +370,12 @@ function edr_post_has_quiz( $post_id ) {
 }
 
 /**
- * Output the default page title based on the page context.
- */
-function ib_edu_page_title() {
-	$title = '';
-
-	if ( is_post_type_archive( array( 'ib_educator_course', 'ib_educator_lesson' ) ) ) {
-		$title = post_type_archive_title( '', false );
-	} elseif ( is_tax() ) {
-		$title = single_term_title( '', false );
-	}
-
-	$title = apply_filters( 'ib_educator_page_title', $title );
-
-	echo $title;
-}
-
-/**
  * Are we on the payment page?
  *
  * @return bool
  */
-function ib_edu_is_payment() {
-	return is_page( ib_edu_page_id( 'payment' ) );
+function edr_is_payment() {
+	return is_page( edr_get_page_id( 'payment' ) );
 }
 
 /**
@@ -477,7 +384,7 @@ function ib_edu_is_payment() {
  * @param mixed $object
  * @return bool
  */
-function ib_edu_collect_billing_data( $object ) {
+function edr_collect_billing_data( $object ) {
 	if ( is_numeric( $object ) ) {
 		$object = get_post( $object );
 	}
@@ -487,13 +394,13 @@ function ib_edu_collect_billing_data( $object ) {
 	if ( $object ) {
 		$price = null;
 
-		if ( 'ib_edu_membership' == $object->post_type ) {
+		if ( EDR_PT_MEMBERSHIP == $object->post_type ) {
 			$price = Edr_Memberships::get_instance()->get_price( $object->ID );
-		} elseif ( 'ib_educator_course' == $object->post_type ) {
-			$price = ib_edu_get_course_price( $object->ID );
+		} elseif ( EDR_PT_COURSE == $object->post_type ) {
+			$price = Edr_Courses::get_instance()->get_course_price( $object->ID );
 		}
 
-		if ( $price && ib_edu_get_option( 'enable', 'taxes' ) ) {
+		if ( $price && edr_get_option( 'enable', 'taxes' ) ) {
 			$result = true;
 		}
 	}
@@ -507,10 +414,10 @@ function ib_edu_collect_billing_data( $object ) {
  * @param string $part
  * @return mixed
  */
-function ib_edu_get_location( $part = null ) {
+function edr_get_location( $part = null ) {
 	$result = array('', '');
 
-	if ( $location = ib_edu_get_option( 'location', 'settings' ) ) {
+	if ( $location = edr_get_option( 'location', 'settings' ) ) {
 		$delimiter = strpos( $location, ';' );
 
 		if ( false === $delimiter ) {
@@ -538,42 +445,6 @@ function ib_edu_get_location( $part = null ) {
  */
 function ib_edu_lesson_access( $lesson_id ) {
 	return get_post_meta( $lesson_id, '_ib_educator_access', true );
-}
-
-/**
- * Get a purchase link.
- * Currently, supports memberships only.
- *
- * @param array $atts
- * @return string
- */
-function ib_edu_purchase_link( $atts ) {
-	$atts = wp_parse_args( $atts, array(
-		'object_id' => null,
-		'type'      => null,
-		'text'      => __( 'Purchase', 'ib-educator' ),
-		'class'     => array(),
-	) );
-
-	// Add default class.
-	array_push( $atts['class'], 'edu-purchase-link' );
-
-	$html = apply_filters( 'ib_edu_pre_purchase_link', null, $atts );
-
-	if ( ! is_null( $html ) ) {
-		return $html;
-	}
-
-	if ( 'membership' == $atts['type'] ) {
-		$html = sprintf(
-			'<a href="%s" class="%s">%s</a>',
-			esc_url( ib_edu_get_endpoint_url( 'edu-membership', $atts['object_id'], get_permalink( ib_edu_page_id( 'payment' ) ) ) ),
-			esc_attr( implode( ' ', $atts['class'] ) ),
-			$atts['text']
-		);
-	}
-
-	return $html;
 }
 
 /**
@@ -721,16 +592,4 @@ function edr_protect_htaccess_exists() {
 	$dir = edr_get_private_uploads_dir();
 
 	return file_exists( $dir . '/.htaccess' );
-}
-
-/**
- * Trigger deprecated function error.
- *
- * @deprecated 1.8.0
- * @param string $function
- * @param string $version
- * @param string $replacement
- */
-function _ib_edu_deprecated_function( $function, $version, $replacement = null ) {
-	edr_deprecated_function( $function, $version, $replacement );
 }
