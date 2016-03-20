@@ -11,7 +11,10 @@ class Edr_Entries {
 		return self::$instance;
 	}
 
-	protected function __construct() {}
+	protected function __construct() {
+		$tables = edr_db_tables();
+		$this->entries = $tables['entries'];
+	}
 
 	/**
 	 * Get entry.

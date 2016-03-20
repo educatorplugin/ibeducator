@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Get all gateway objects
-$gateways = IB_Educator_Main::get_gateways();
+$gateways = Edr_Main::get_instance()->get_gateways();
 $gateway_id = '';
 
 if ( isset( $_GET['gateway_id'] ) ) {

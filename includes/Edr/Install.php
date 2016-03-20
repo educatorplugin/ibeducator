@@ -66,7 +66,7 @@ class Edr_Install {
 			}
 
 			if ( $inc_endpoints ) {
-				IB_Educator_Main::add_rewrite_endpoints();
+				Edr_Main::get_instance()->add_rewrite_endpoints();
 			}
 
 			flush_rewrite_rules();

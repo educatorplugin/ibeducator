@@ -41,9 +41,6 @@ define( 'EDR_PT_COURSE', 'ib_educator_course' );
 define( 'EDR_PT_LESSON', 'ib_educator_lesson' );
 define( 'EDR_PT_MEMBERSHIP', 'ib_edu_membership' );
 
-register_activation_hook( __FILE__, array( 'IB_Educator_Main', 'plugin_activation' ) );
-register_deactivation_hook( __FILE__, array( 'IB_Educator_Main', 'plugin_deactivation' ) );
-
 // Setup autoloader.
 require IBEDUCATOR_PLUGIN_DIR . 'includes/Edr/Autoloader.php';
 new Edr_Autoloader();
@@ -80,7 +77,7 @@ Edr_MembershipsRun::init();
 Edr_PostTypes::init();
 
 // Setup Educator.
-IB_Educator_Main::init();
+Edr_Main::get_instance( __FILE__ );
 
 // Ajax actions.
 Edr_AjaxActions::init();

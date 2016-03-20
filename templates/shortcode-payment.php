@@ -229,7 +229,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 					echo '<div id="edu-payment-info" class="edu-payment-info">' . Edr_StudentAccount::payment_info( $post, $args ) . '</div>';
 
 					// Payment gateways.
-					$gateways = IB_Educator_Main::get_gateways();
+					$gateways = Edr_Main::get_instance()->get_gateways();
 				?>
 
 				<?php if ( $args['price'] && ! empty( $gateways ) ) : ?>

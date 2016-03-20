@@ -441,7 +441,7 @@ class Edr_Admin_Actions {
 		check_admin_referer( 'ib_educator_payments_settings' );
 
 		// Get available gateways.
-		$gateways = IB_Educator_Main::get_gateways();
+		$gateways = Edr_Main::get_instance()->get_gateways();
 
 		// Does the requested gateway exist?
 		if ( ! isset( $gateways[ $gateway_id ] ) ) {

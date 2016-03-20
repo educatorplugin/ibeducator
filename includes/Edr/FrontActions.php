@@ -388,7 +388,7 @@ class Edr_FrontActions {
 		
 		// Get the payment method.
 		$payment_method = '';
-		$gateways = IB_Educator_Main::get_gateways();
+		$gateways = Edr_Main::get_instance()->get_gateways();
 		
 		if ( ! isset( $_POST['payment_method'] ) || ! array_key_exists( $_POST['payment_method'], $gateways ) ) {
 			$errors->add( 'empty_payment_method', __( 'Please select a payment method.', 'ibeducator' ) );

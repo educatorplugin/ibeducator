@@ -4,7 +4,7 @@ class Edr_Courses {
 	protected static $instance = null;
 
 	public static function get_instance() {
-		if ( ! self::$instance ) {
+		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}
 

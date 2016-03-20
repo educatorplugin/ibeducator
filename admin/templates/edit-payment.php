@@ -172,7 +172,7 @@ $lines = $payment->get_lines();
 										<select name="payment_gateway">
 											<option value="">&mdash; <?php _e( 'Select', 'ibeducator' ); ?> &mdash;</option>
 											<?php
-												$gateways = IB_Educator_Main::get_gateways();
+												$gateways = Edr_Main::get_instance()->get_gateways();
 
 												foreach ( $gateways as $gateway ) {
 													echo '<option value="' . esc_attr( $gateway->get_id() ) . '" '

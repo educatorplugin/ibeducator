@@ -35,7 +35,7 @@ if ( $courses || $pending_courses ) {
 		echo '<thead><tr><th style="width:20%;">' . _x( 'Payment', 'Table column heading', 'ibeducator' ) . '</th><th style="width:50%;">' . __( 'Course', 'ibeducator' ) . '</th><th>' . __( 'Actions', 'ibeducator' ) . '</th></tr></thead>';
 		echo '<tbody>';
 
-		$gateways = IB_Educator_Main::get_gateways();
+		$gateways = Edr_Main::get_instance()->get_gateways();
 		
 		foreach ( $pending_courses as $course ) {
 			?>
