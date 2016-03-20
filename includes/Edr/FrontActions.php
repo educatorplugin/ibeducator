@@ -5,15 +5,19 @@ class Edr_FrontActions {
 	 * Cancel student's payment for a course.
 	 */
 	public static function cancel_payment() {
-		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'ibedu_cancel_payment' ) ) {
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'edr_cancel_payment' ) ) {
 			return;
 		}
 
-		if ( ! is_user_logged_in() ) return;
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
 
-		$payment_id = isset( $_POST['payment_id'] ) ? absint( $_POST['payment_id'] ) : 0;
+		$payment_id = isset( $_GET['payment_id'] ) ? absint( $_GET['payment_id'] ) : 0;
 
-		if ( ! $payment_id ) return;
+		if ( ! $payment_id ) {
+			return;
+		}
 
 		$payment = edr_get_payment( $payment_id );
 

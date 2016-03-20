@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'IBEDUCATOR_VERSION', '1.7.2' );
+define( 'IBEDUCATOR_VERSION', '1.8.0' );
 define( 'IBEDUCATOR_DB_VERSION', '1.8' );
 define( 'IBEDUCATOR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'IBEDUCATOR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

@@ -137,9 +137,16 @@ function edr_filter_lesson_content( $content ) {
 }
 
 function edr_display_course_price( $course_id ) {
+	$access_status = '';
 	$user_id = get_current_user_id();
 
-	echo edr_get_price_widget( $course_id, $user_id );
+	if ( $user_id ) {
+		$access_status = Edr_Access::get_instance()->get_course_access_status( $course_id, $user_id );
+	}
+
+	if ( 'inprogress' != $access_status ) {
+		echo edr_get_price_widget( $course_id, $user_id );
+	}
 }
 
 function edr_display_course_errors( $course_id ) {

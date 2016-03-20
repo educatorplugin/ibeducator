@@ -45,7 +45,7 @@ $form->add( array(
 	'name'    => '_ib_educator_difficulty',
 	'id'      => 'ib-educator-difficulty',
 	'label'   => __( 'Difficulty', 'ibeducator' ),
-	'options' => array_merge( array( '' => __( 'None', 'ibeducator' ) ), ib_edu_get_difficulty_levels() ),
+	'options' => array_merge( array( '' => __( 'None', 'ibeducator' ) ), edr_get_difficulty_levels() ),
 ) );
 
 // Prerequisite.

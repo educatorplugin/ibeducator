@@ -2,7 +2,7 @@
 /**
  * Renders the payment page.
  *
- * @version 1.2.0
+ * @version 1.3.0
  */
 
 $edr_payments = Edr_Payments::get_instance();
@@ -159,6 +159,14 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 
 			if ( ! empty( $payments ) ) {
 				echo '<p>' . __( 'The payment for this course is pending.', 'ibeducator' ) . '</p>';
+
+				$payments_page = get_post( edr_get_page_id( 'user_payments' ) );
+
+				if ( $payments_page ) {
+					$payments_link = '<a href="' . esc_url( get_permalink( $payments_page->ID ) ) . '">' .
+						esc_html( $payments_page->post_title ) . '</a>';
+					echo '<p>' . sprintf( __( 'Go to %s', 'ibeducator' ), $payments_link ) . '</p>';
+				}
 
 				return;
 			}

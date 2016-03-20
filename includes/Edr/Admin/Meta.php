@@ -107,7 +107,7 @@ class Edr_Admin_Meta {
 		// Difficulty.
 		$difficulty = ( isset( $_POST['_ib_educator_difficulty'] ) ) ? $_POST['_ib_educator_difficulty'] : '';
 
-		if ( empty( $difficulty ) || array_key_exists( $difficulty, ib_edu_get_difficulty_levels() ) ) {
+		if ( empty( $difficulty ) || array_key_exists( $difficulty, edr_get_difficulty_levels() ) ) {
 			update_post_meta( $post_id, '_ib_educator_difficulty', $difficulty );
 		}
 

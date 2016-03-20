@@ -16,7 +16,7 @@
 									setup_postdata( $post );
 									?>
 										<li>
-											<h4><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
+											<div class="lesson-header"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></div>
 
 											<?php if ( has_excerpt() ) : ?>
 												<div class="excerpt">

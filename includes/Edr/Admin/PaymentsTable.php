@@ -270,7 +270,7 @@ class Edr_Admin_PaymentsTable extends WP_List_Table {
 			$args['payment_type'] = $_GET['payment_type'];
 		}
 
-		$payments = IB_Educator::get_instance()->get_payments( $args );
+		$payments = Edr_Payments::get_instance()->get_payments( $args );
 
 		if ( ! empty( $payments ) ) {
 			$this->set_pagination_args( array(

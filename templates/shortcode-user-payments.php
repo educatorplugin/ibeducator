@@ -12,16 +12,14 @@ if ( ! $user_id ) {
 	return;
 }
 
-$api = IB_Educator::get_instance();
-$payments = $api->get_payments( array(
-	'user_id' => $user_id,
-) );
+$edr_payments = Edr_Payments::get_instance();
+$payments = $edr_payments->get_payments( array( 'user_id' => $user_id ) );
 
 // Output status message.
 $message = get_query_var( 'edu-message' );
 
 if ( 'payment-cancelled' == $message ) {
-	echo '<div class="ib-edu-message success">' . __( 'Payment has been cancelled.', 'ibeducator' ) . '</div>';
+	echo '<div class="edr-message ib-edu-message success">' . __( 'Payment has been cancelled.', 'ibeducator' ) . '</div>';
 }
 ?>
 
@@ -59,12 +57,13 @@ if ( 'payment-cancelled' == $message ) {
 				<a href="<?php echo esc_url( $invoice_url ); ?>"><?php _e( 'Details', 'ibeducator' ); ?></a>
 
 				<?php if ( 'pending' == $payment->payment_status ) : ?>
-				<form action="<?php echo esc_url( edr_get_endpoint_url( 'edu-action', 'cancel-payment', get_permalink() ) ); ?>" method="post">
-					<?php wp_nonce_field( 'ibedu_cancel_payment' ); ?>
-					<input type="hidden" name="payment_id" value="<?php echo absint( $payment->ID ); ?>">
-					<button type="submit" class="ib-edu-button"><?php _e( 'Cancel', 'ibeducator' ); ?></button>
-				</form>
-			<?php endif; ?>
+					<?php
+						$cancel_payment_url = edr_get_endpoint_url( 'edu-action', 'cancel-payment', get_permalink() );
+						$cancel_payment_url = add_query_arg( 'payment_id', $payment->ID, $cancel_payment_url );
+						$cancel_payment_url = wp_nonce_url( $cancel_payment_url, 'edr_cancel_payment', '_wpnonce' );
+					?>
+					<a href="<?php echo esc_url( $cancel_payment_url ); ?>" class="cancel-payment"><?php _e( 'Cancel', 'ibeducator' ); ?></a>
+				<?php endif; ?>
 			</td>
 		</tr>
 		<?php endforeach; ?>

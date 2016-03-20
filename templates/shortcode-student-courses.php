@@ -60,11 +60,12 @@ if ( $courses || $pending_courses ) {
 					?>
 				</td>
 				<td>
-					<form action="<?php echo esc_url( edr_get_endpoint_url( 'edu-action', 'cancel-payment', get_permalink() ) ); ?>" method="post">
-						<?php wp_nonce_field( 'ibedu_cancel_payment' ); ?>
-						<input type="hidden" name="payment_id" value="<?php echo absint( $course->edu_payment_id ); ?>">
-						<button type="submit" class="ib-edu-button"><?php _e( 'Cancel', 'ibeducator' ); ?></a>
-					</form>
+					<?php
+						$cancel_payment_url = edr_get_endpoint_url( 'edu-action', 'cancel-payment', get_permalink() );
+						$cancel_payment_url = add_query_arg( 'payment_id', $course->edu_payment_id, $cancel_payment_url );
+						$cancel_payment_url = wp_nonce_url( $cancel_payment_url, 'edr_cancel_payment', '_wpnonce' );
+					?>
+					<a href="<?php echo esc_url( $cancel_payment_url ); ?>" class="cancel-payment"><?php _e( 'Cancel', 'ibeducator' ); ?></a>
 				</td>
 			</tr>
 			<?php

@@ -146,16 +146,6 @@ class Edr_Main {
 	public function enqueue_scripts_styles() {
 		if ( apply_filters( 'ib_educator_stylesheet', true ) ) {
 			wp_enqueue_style( 'ib-educator-base', IBEDUCATOR_PLUGIN_URL . 'css/base.css' );
-
-			switch ( get_template() ) {
-				case 'twentyfourteen':
-					wp_enqueue_style( 'ib-educator-twentyfourteen', IBEDUCATOR_PLUGIN_URL . 'css/twentyfourteen.css' );
-					break;
-
-				case 'twentyfifteen':
-					wp_enqueue_style( 'ib-educator-twentyfifteen', IBEDUCATOR_PLUGIN_URL . 'css/twentyfifteen.css' );
-					break;
-			}
 		}
 
 		if ( edr_is_payment() ) {

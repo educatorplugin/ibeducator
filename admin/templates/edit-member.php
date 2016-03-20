@@ -6,7 +6,7 @@ if ( ! current_user_can( 'manage_educator' ) ) {
 	exit;
 }
 
-$api = IB_Educator::get_instance();
+$edr_payments = Edr_Payments::get_instance();
 $member_id = isset( $_GET['id'] ) ? intval( $_GET['id'] ) : 0;
 $user = null;
 $user_membership = null;
@@ -180,7 +180,7 @@ if ( ! $user_membership ) {
 							<h3 class="hndle"><span><?php _e( 'Payments', 'ibeducator' ); ?></span></h3>
 							<div class="inside">
 								<?php
-									$payments = $api->get_payments( array(
+									$payments = $edr_payments->get_payments( array(
 										'payment_type' => 'membership',
 										'user_id'      => $user_membership['user_id'],
 									) );
