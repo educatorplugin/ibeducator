@@ -290,7 +290,7 @@ class Edr_Gateway_Paypal extends Edr_Gateway_Base {
 						$payment->save();
 						
 						// Setup course or membership for the student.
-						IB_Educator::get_instance()->setup_payment_item( $payment );
+						Edr_Payments::get_instance()->setup_payment_item( $payment );
 						break;
 
 					case 'Failed':

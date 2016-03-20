@@ -230,7 +230,7 @@ class Edr_Gateway_Stripe extends Edr_Gateway_Base {
 			$payment->save();
 
 			// Setup course or membership for the student.
-			IB_Educator::get_instance()->setup_payment_item( $payment );
+			Edr_Payments::get_instance()->setup_payment_item( $payment );
 
 			exit( '1' );
 		} catch ( Exception $e ) {}

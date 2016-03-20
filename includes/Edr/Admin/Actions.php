@@ -13,7 +13,7 @@ class Edr_Admin_Actions {
 			check_admin_referer( 'ib_educator_edit_entry_' . $entry_id );
 			
 			$errors = new WP_Error();
-			$api = IB_Educator::get_instance();
+			$edr_courses = Edr_Courses::get_instance();
 			$current_user_id = get_current_user_id();
 			$who = '';
 
@@ -95,9 +95,9 @@ class Edr_Admin_Actions {
 			}
 
 			// Check the course prerequisites.
-			if ( ! isset( $_POST['ignore_prerequisites'] ) && ! $api->check_prerequisites( $entry->course_id, $entry->user_id ) ) {
+			if ( ! isset( $_POST['ignore_prerequisites'] ) && ! $edr_courses->check_course_prerequisites( $entry->course_id, $entry->user_id ) ) {
 				$prerequisites_html = '';
-				$prerequisites = $api->get_prerequisites( $entry->course_id );
+				$prerequisites = $edr_courses->get_course_prerequisites( $entry->course_id );
 				$courses = get_posts( array(
 					'post_type'   => 'ib_educator_course',
 					'post_status' => 'publish',
@@ -278,12 +278,12 @@ class Edr_Admin_Actions {
 					}
 				}
 
-				$api = IB_Educator::get_instance();
+				$edr_entries = Edr_Entries::get_instance();
 				$entry_saved = true;
 
 				// Create entry for the student.
 				// Implemented for the "course" payment type.
-				if ( isset( $_POST['create_entry'] ) && ! $api->get_entry( array( 'payment_id' => $payment->ID ) ) ) {
+				if ( isset( $_POST['create_entry'] ) && ! $edr_entries->get_entry( array( 'payment_id' => $payment->ID ) ) ) {
 					$entry = edr_get_entry();
 					$entry->course_id = $payment->course_id;
 					$entry->user_id = $payment->user_id;

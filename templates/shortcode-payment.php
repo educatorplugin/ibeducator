@@ -209,7 +209,7 @@ if ( ( $thankyou = get_query_var( 'edu-thankyou' ) ) ) {
 
 				<?php
 					$args = array();
-					$billing = IB_Educator::get_instance()->get_billing_data( $user_id );
+					$billing = $edr_payments->get_billing_data( $user_id );
 
 					// Get country.
 					if ( isset( $_POST['billing_country'] ) ) $args['country'] = $_POST['billing_country'];

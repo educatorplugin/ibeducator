@@ -148,8 +148,8 @@ function ib_edu_course_prerequisites( $atts, $content = null ) {
 		return;
 	}
 
-	$api = IB_Educator::get_instance();
-	$prerequisites = $api->get_prerequisites( get_the_ID() );
+	$edr_courses = Edr_Courses::get_instance();
+	$prerequisites = $edr_courses->get_course_prerequisites( get_the_ID() );
 	$courses = null;
 
 	if ( ! empty( $prerequisites ) ) {

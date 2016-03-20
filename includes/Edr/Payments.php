@@ -94,4 +94,94 @@ class Edr_Payments {
 
 		return $payments;
 	}
+
+	/**
+	 * Setup payment item (e.g. course, membership).
+	 *
+	 * @param IB_Educator_Payment $payment
+	 */
+	public function setup_payment_item( $payment ) {
+		if ( 'course' == $payment->payment_type ) {
+			// Setup course entry.
+			$edr_entries = Edr_Entries::get_instance();
+			$entry = $edr_entries->get_entry( array( 'payment_id' => $payment->ID ) );
+
+			if ( ! $entry ) {
+				$entry = edr_get_entry();
+				$entry->course_id = $payment->course_id;
+				$entry->user_id = $payment->user_id;
+				$entry->payment_id = $payment->ID;
+				$entry->entry_status = 'inprogress';
+				$entry->entry_date = date( 'Y-m-d H:i:s' );
+				$entry->save();
+
+				// Send notification email to the student.
+				$student = get_user_by( 'id', $payment->user_id );
+				$course = get_post( $payment->course_id, OBJECT, 'display' );
+
+				if ( $student && $course ) {
+					edr_send_notification(
+						$student->user_email,
+						'student_registered',
+						array(
+							'course_title' => $course->post_title,
+						),
+						array(
+							'student_name'   => $student->display_name,
+							'course_title'   => $course->post_title,
+							'course_excerpt' => $course->post_excerpt,
+						)
+					);
+				}
+			}
+		} elseif ( 'membership' == $payment->payment_type ) {
+			// Setup membership.
+			$ms = Edr_Memberships::get_instance();
+			$ms->setup_membership( $payment->user_id, $payment->object_id );
+
+			$student = get_user_by( 'id', $payment->user_id );
+			$membership = $ms->get_membership( $payment->object_id );
+
+			if ( $student && $membership ) {
+				$user_membership = $ms->get_user_membership( $student->ID );
+				$membership_meta = $ms->get_membership_meta( $membership->ID );
+				$expiration = ( $user_membership ) ? $user_membership['expiration'] : 0;
+
+				edr_send_notification(
+					$student->user_email,
+					'membership_register',
+					array(),
+					array(
+						'student_name' => $student->display_name,
+						'membership'   => $membership->post_title,
+						'expiration'   => ( $expiration ) ? date_i18n( get_option( 'date_format' ), $expiration ) : __( 'None', 'ibeducator' ),
+						'price'        => $ms->format_price( $membership_meta['price'], $membership_meta['duration'], $membership_meta['period'], false ),
+					)
+				);
+			}
+		}
+	}
+
+	/**
+	 * Get user's billing data.
+	 *
+	 * @param int $user_id
+	 * @return array
+	 */
+	public function get_billing_data( $user_id ) {
+		$billing = get_user_meta( $user_id, '_ib_educator_billing', true );
+
+		if ( ! is_array( $billing ) ) {
+			$billing = array(
+				'address'   => '',
+				'address_2' => '',
+				'city'      => '',
+				'state'     => '',
+				'postcode'  => '',
+				'country'   => '',
+			);
+		}
+
+		return $billing;
+	}
 }

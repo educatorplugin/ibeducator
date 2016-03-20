@@ -56,7 +56,7 @@ class Edr_FrontActions {
 		}
 
 		// Get the student's entry.
-		$entry = IB_Educator::get_instance()->get_entry( array(
+		$entry = Edr_Entries::get_instance()->get_entry( array(
 			'user_id'      => $user_id,
 			'course_id'    => Edr_Courses::get_instance()->get_course_id( $lesson_id ),
 			'entry_status' => 'inprogress',
@@ -363,11 +363,11 @@ class Edr_FrontActions {
 			}
 
 			// Check prerequisites.
-			$api = IB_Educator::get_instance();
+			$edr_courses = Edr_Courses::get_instance();
 
-			if ( ! $api->check_prerequisites( $post_id, $user_id ) ) {
+			if ( ! $edr_courses->check_course_prerequisites( $post_id, $user_id ) ) {
 				$prerequisites_html = '';
-				$prerequisites = $api->get_prerequisites( $post_id );
+				$prerequisites = $edr_courses->get_course_prerequisites( $post_id );
 				$courses = get_posts( array(
 					'post_type'   => 'ib_educator_course',
 					'post_status' => 'publish',
@@ -499,13 +499,14 @@ class Edr_FrontActions {
 			return;
 		}
 
-		$api = IB_Educator::get_instance();
+		$edr_entries = Edr_Entries::get_instance();
+		$edr_courses = Edr_Courses::get_instance();
 		$errors = new WP_Error();
 
 		// Check the course prerequisites.
-		if ( ! $api->check_prerequisites( $course_id, $user_id ) ) {
+		if ( ! $edr_courses->check_course_prerequisites( $course_id, $user_id ) ) {
 			$prerequisites_html = '';
-			$prerequisites = $api->get_prerequisites( $course_id );
+			$prerequisites = $edr_courses->get_course_prerequisites( $course_id );
 			$courses = get_posts( array(
 				'post_type'   => 'ib_educator_course',
 				'post_status' => 'publish',
@@ -520,6 +521,7 @@ class Edr_FrontActions {
 
 			$errors->add( 'prerequisites', sprintf( __( 'You have to complete the prerequisites for this course: %s', 'ibeducator' ), $prerequisites_html ) );
 			edr_internal_message( 'course_join_errors', $errors );
+
 			return;
 		}
 
@@ -531,7 +533,7 @@ class Edr_FrontActions {
 		}
 
 		// Check if the user already has an inprogress entry for this course.
-		$entries = $api->get_entries( array(
+		$entries = $edr_entries->get_entries( array(
 			'course_id'    => $course_id,
 			'user_id'      => $user_id,
 			'entry_status' => 'inprogress',
@@ -576,8 +578,8 @@ class Edr_FrontActions {
 		$ms = Edr_Memberships::get_instance();
 
 		// Check if there is an "inprogress" entry for this course.
-		$api = IB_Educator::get_instance();
-		$inprogress_entry = $api->get_entry( array(
+		$edr_entries = Edr_Entries::get_instance();
+		$inprogress_entry = $edr_entries->get_entry( array(
 			'entry_status' => 'inprogress',
 			'course_id'    => $entry->course_id,
 			'user_id'      => $user_id,

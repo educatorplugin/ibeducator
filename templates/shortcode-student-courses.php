@@ -13,9 +13,9 @@ if ( ! $user_id ) {
 }
 
 global $post;
-$api = IB_Educator::get_instance();
-$courses = $api->get_student_courses( $user_id );
-$pending_courses = $api->get_pending_courses( $user_id );
+$edr_courses = Edr_Courses::get_instance();
+$courses = $edr_courses->get_student_courses( $user_id );
+$pending_courses = $edr_courses->get_pending_courses( $user_id );
 $ms = Edr_Memberships::get_instance();
 
 // Output status message.

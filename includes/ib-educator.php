@@ -38,12 +38,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Get course access status.
-	 *
 	 * @deprecated 1.8.0
-	 * @param int $course_id
-	 * @param int $user_id
-	 * @return string
 	 */
 	public function get_access_status( $course_id, $user_id ) {
 		edr_deprecated_function( 'IB_Educator::get_access_status', '1.8.0', 'Edr_Access::get_instance()->get_course_access_status()' );
@@ -52,12 +47,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Determine if a user can pay for a given course.
-	 *
 	 * @deprecated 1.3.0
-	 * @param int $course_id
-	 * @param int $user_id
-	 * @return boolean
 	 */
 	public function user_can_pay( $course_id, $user_id ) {
 		edr_deprecated_function( 'IB_Educator::user_can_pay', '1.8.0' );
@@ -66,12 +56,11 @@ class IB_Educator {
 	}
 
 	/**
-	 * Save payment to database.
-	 *
-	 * @param array $data
-	 * @return IB_Educator_Payment
+	 * @deprecated 1.8.0
 	 */
 	public function add_payment( $data ) {
+		edr_deprecated_function( 'IB_Educator::get_instance()->add_payment', '1.8.0' );
+
 		$payment = edr_get_payment();
 
 		if ( ! empty( $data['course_id'] ) ) {
@@ -100,134 +89,25 @@ class IB_Educator {
 	}
 
 	/**
-	 * Get entry from database.
-	 *
-	 * @param array $args
-	 * @return false|IB_Educator_Entry
+	 * @deprecated 1.8.0
 	 */
 	public function get_entry( $args ) {
-		global $wpdb;
-		$sql = "SELECT * FROM {$this->entries} WHERE 1";
+		edr_deprecated_function( 'IB_Educator::get_instance()->get_entry', '1.8.0', 'Edr_Entries::get_instance()->get_entry' );
 
-		// Filter by payment_id.
-		if ( isset( $args['payment_id'] ) ) {
-			$sql .= ' AND payment_id=' . absint( $args['payment_id'] );
-		}
-
-		// Filter by course_id.
-		if ( isset( $args['course_id'] ) ) {
-			$sql .= ' AND course_id=' . absint( $args['course_id'] );
-		}
-
-		// Filter by user_id.
-		if ( isset( $args['user_id'] ) ) {
-			$sql .= ' AND user_id=' . absint( $args['user_id'] );
-		}
-
-		// Filter by entry_status.
-		if ( isset( $args['entry_status'] ) ) {
-			$sql .= $wpdb->prepare( ' AND entry_status = %s', $args['entry_status'] );
-		}
-
-		$row = $wpdb->get_row( $sql );
-
-		if ( $row ) {
-			return edr_get_entry( $row );
-		}
-
-		return false;
+		return Edr_Entries::get_instance()->get_entry( $args );
 	}
 
 	/**
-	 * Get entries.
-	 *
-	 * @param array $args
-	 * @return array
+	 * @deprecated 1.8.0
 	 */
 	public function get_entries( $args, $output_type = 'OBJECT' ) {
-		global $wpdb;
+		edr_deprecated_function( 'IB_Educator::get_instance()->get_entries', '1.8.0', 'Edr_Entries::get_instance()->get_entries' );
 
-		$sql = "SELECT * FROM $this->entries WHERE 1";
-
-		// Entry ID.
-		if ( isset( $args['entry_id'] ) ) {
-			if ( is_array( $args['entry_id'] ) ) {
-				$ids = implode( ',', array_map( 'intval', $args['entry_id'] ) );
-				$sql .= " AND ID IN ($ids)";
-			} else {
-				$sql .= ' AND ID = ' . intval( $args['entry_id'] );
-			}
-		}
-
-		// Course ID.
-		if ( isset( $args['course_id'] ) ) {
-			if ( is_array( $args['course_id'] ) ) {
-				$ids = implode( ',', array_map( 'intval', $args['course_id'] ) );
-				$sql .= " AND course_id IN ($ids)";
-			} else {
-				$sql .= ' AND course_id = ' . intval( $args['course_id'] );
-			}
-		}
-
-		// User ID.
-		if ( isset( $args['user_id'] ) ) {
-			if ( is_array( $args['user_id'] ) ) {
-				$ids = implode( ',', array_map( 'intval', $args['user_id'] ) );
-				$sql .= " AND user_id IN ($ids)";
-			} else {
-				$sql .= ' AND user_id = ' . intval( $args['user_id'] );
-			}
-		}
-
-		// Payment ID.
-		if ( isset( $args['payment_id'] ) ) {
-			$sql .= ' AND payment_id = ' . intval( $args['payment_id'] );
-		}
-
-		// Entry status.
-		if ( isset( $args['entry_status'] ) ) {
-			$sql .= $wpdb->prepare( ' AND entry_status = %s', $args['entry_status'] );
-		}
-
-		// Entry origin.
-		if ( isset( $args['entry_origin'] ) ) {
-			$sql .= $wpdb->prepare( ' AND entry_origin = %s', $args['entry_origin'] );
-		}
-
-		// With or without pagination?
-		$has_pagination = isset( $args['page'] ) && isset( $args['per_page'] ) && is_numeric( $args['page'] ) && is_numeric( $args['per_page'] );
-		$pagination_sql = '';
-
-		if ( $has_pagination ) {
-			$num_rows = $wpdb->get_var( str_replace( 'SELECT *', 'SELECT count(1)', $sql ) );
-			$pagination_sql .= ' LIMIT ' . ( ( $args['page'] - 1 ) * $args['per_page'] ) . ', ' . $args['per_page'];
-		}
-
-		$entries = $wpdb->get_results( $sql . ' ORDER BY entry_date DESC' . $pagination_sql, $output_type );
-
-		if ( $entries ) {
-			if ( 'OBJECT' == $output_type ) {
-				$entries = array_map( 'edr_get_entry', $entries );
-			}
-		}
-
-		if ( $has_pagination ) {
-			return array(
-				'num_pages' => ceil( $num_rows / $args['per_page'] ),
-				'num_items' => $num_rows,
-				'rows'      => $entries,
-			);
-		}
-
-		return $entries;
+		return Edr_Entries::get_instance()->get_entries( $args, $output_type );
 	}
 
 	/**
-	 * Get entries count grouped by entry status.
-	 *
 	 * @deprecated 1.3.0
-	 * @param array $args
-	 * @return array
 	 */
 	public function get_entries_count( $args = array() ) {
 		global $wpdb;
@@ -257,107 +137,21 @@ class IB_Educator {
 	}
 
 	/**
-	 * Get the student's courses.
-	 *
-	 * @param int $user_id
-	 * @return array
+	 * @deprecated 1.8.0
 	 */
 	public function get_student_courses( $user_id ) {
-		global $wpdb;
-		
-		if ( absint( $user_id ) != $user_id ) {
-			return false;
-		}
-		
-		$ids = array();
+		edr_deprecated_function( 'IB_Educator::get_instance()->get_student_courses', '1.8.0', 'Edr_Courses::get_instance()->get_student_courses' );
 
-		$entries = $this->get_entries( array( 'user_id'  => $user_id ) );
-		
-		if ( ! empty( $entries ) ) {
-			$statuses = array();
-
-			foreach ( $entries as $row ) {
-				$ids[] = $row->course_id;
-
-				if ( isset( $statuses[ $row->entry_status ] ) ) {
-					++$statuses[ $row->entry_status ];
-				} else {
-					$statuses[ $row->entry_status ] = 0;
-				}
-			}
-
-			$query = new WP_Query( array(
-				'post_type'      => 'ib_educator_course',
-				'post_status'    => 'publish',
-				'post__in'       => $ids,
-				'posts_per_page' => -1,
-				'orderby'        => 'post__in',
-				'order'          => 'ASC',
-			) );
-
-			if ( $query->have_posts() ) {
-				$posts = array();
-
-				foreach ( $query->posts as $post ) {
-					$posts[ $post->ID ] = $post;
-				}
-
-				return array(
-					'entries'  => $entries,
-					'courses'  => $posts,
-					'statuses' => $statuses
-				);
-			}
-		}
-
-		return false;
+		return Edr_Courses::get_instance()->get_student_courses( $user_id );
 	}
 
 	/**
-	 * Get courses that are pending payment.
-	 *
-	 * @param int $user_id
-	 * @return false|array of WP_Post objects
+	 * @deprecated 1.8.0
 	 */
 	public function get_pending_courses( $user_id ) {
-		global $wpdb;
-		$ids = array();
-		$payments = $this->get_payments( array(
-			'user_id'        => $user_id,
-			'payment_status' => array( 'pending' ),
-		), OBJECT_K );
+		edr_deprecated_function( 'IB_Educator::get_instance()->get_pending_courses', '1.8.0', 'Edr_Courses::get_instance()->get_pending_courses' );
 
-		if ( ! empty( $payments ) ) {
-			$payment_ids = array();
-
-			foreach ( $payments as $payment ) {
-				$ids[] = $payment->course_id;
-				$payment_ids[ $payment->course_id ] = $payment->ID;
-			}
-
-			$query = new WP_Query( array(
-				'post_type'      => 'ib_educator_course',
-				'post_status'    => 'publish',
-				'posts_per_page' => -1,
-				'post__in'       => $ids,
-				'orderby'        => 'post__in',
-				'order'          => 'ASC',
-			) );
-
-			if ( $query->have_posts() ) {
-				$posts = array();
-
-				foreach ( $query->posts as $post ) {
-					$post->edu_payment_id = $payment_ids[ $post->ID ];
-					$post->edu_payment = $payments[ $post->edu_payment_id ];
-					$posts[ $post->ID ] = $post;
-				}
-
-				return $posts;
-			}
-		}
-
-		return false;
+		return Edr_Courses::get_instance()->get_pending_courses( $user_id );
 	}
 
 	/**
@@ -370,24 +164,12 @@ class IB_Educator {
 	}
 
 	/**
-	 * Get the number of lessons in a course.
-	 *
-	 * @param int $course_id
-	 * @return int
+	 * @deprecated 1.8.0
 	 */
 	public function get_num_lessons( $course_id ) {
-		global $wpdb;
+		edr_deprecated_function( 'IB_Educator::get_instance()->get_num_lessons', '1.8.0', 'Edr_Courses::get_instance()->get_num_lessons' );
 
-		$num_lessons = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(1) FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID
-				WHERE p.post_type='ib_educator_lesson' AND pm.meta_key='_ibedu_course' AND pm.meta_value=%d",
-				$course_id
-			)
-		);
-
-		return $num_lessons;
+		return Edr_Courses::get_instance()->get_num_lessons( $course_id );
 	}
 
 	/**
@@ -427,10 +209,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Get all answers choices for a lesson.
-	 *
-	 * @param int $lesson_id
-	 * @return false|array
+	 * @deprecated 1.6
 	 */
 	public function get_choices( $lesson_id, $sorted = false ) {
 		edr_deprecated_function( 'IB_Educator::get_choices', '1.6', 'Edr_Quizzes::get_choices' );
@@ -439,10 +218,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Get the available choices for a multiple answer question.
-	 *
-	 * @param int $question_id
-	 * @return false|array
+	 * @deprecated 1.6
 	 */
 	public function get_question_choices( $question_id ) {
 		edr_deprecated_function( 'IB_Educator::get_question_choices', '1.6', 'Edr_Quizzes::get_question_choices' );
@@ -451,10 +227,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Add question answer choice to the database.
-	 *
-	 * @param array $data
-	 * @return false|int
+	 * @deprecated 1.6
 	 */
 	public function add_choice( $data ) {
 		edr_deprecated_function( 'IB_Educator::add_choice', '1.6', 'Edr_Quizzes::add_choice' );
@@ -463,10 +236,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Update question answer choice in the database.
-	 *
-	 * @param array $data
-	 * @return false|int
+	 * @deprecated 1.6
 	 */
 	public function update_choice( $choice_id, $data ) {
 		edr_deprecated_function( 'IB_Educator::update_choice', '1.6', 'Edr_Quizzes::update_choice' );
@@ -475,10 +245,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Delete question answer choice from the database.
-	 *
-	 * @param int $choice_id
-	 * @return false|int false on error, number of rows updated on success.
+	 * @deprecated 1.6
 	 */
 	public function delete_choice( $choice_id ) {
 		edr_deprecated_function( 'IB_Educator::delete_choice', '1.6', 'Edr_Quizzes::delete_choice' );
@@ -487,10 +254,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Delete question answer choices from the database.
-	 *
-	 * @param int $question_id
-	 * @return false|int false on error, number of rows updated on success.
+	 * @deprecated 1.6
 	 */
 	public function delete_choices( $question_id ) {
 		edr_deprecated_function( 'IB_Educator::delete_choices', '1.6', 'Edr_Quizzes::delete_choices' );
@@ -499,10 +263,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Add answer to a question in a quiz.
-	 *
-	 * @param array $data
-	 * @return false|int
+	 * @deprecated 1.6
 	 */
 	public function add_student_answer( $data ) {
 		edr_deprecated_function( 'IB_Educator::add_student_answer', '1.6', 'Edr_Quizzes::add_answer' );
@@ -511,11 +272,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Get student's answers for a given lesson.
-	 *
-	 * @param int $lesson_id
-	 * @param int $entry_id
-	 * @return false|array
+	 * @deprecated 1.6
 	 */
 	public function get_student_answers( $lesson_id, $entry_id ) {
 		edr_deprecated_function( 'IB_Educator::get_student_answers', '1.6', 'Edr_Quizzes::get_answers( int $grade_id )' );
@@ -535,10 +292,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Add grade for a quiz.
-	 *
-	 * @param array $data
-	 * @return false|int
+	 * @deprecated 1.6
 	 */
 	public function add_quiz_grade( $data ) {
 		edr_deprecated_function( 'IB_Educator::add_quiz_grade', '1.6', 'Edr_Quizzes::add_grade' );
@@ -547,10 +301,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Update quiz grade.
-	 *
-	 * @param array $data
-	 * @return int
+	 * @deprecated 1.6
 	 */
 	public function update_quiz_grade( $grade_id, $data ) {
 		edr_deprecated_function( 'IB_Educator::update_quiz_grade', '1.6', 'Edr_Quizzes::update_grade' );
@@ -559,11 +310,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Check if the quiz was submitted for a given lesson.
-	 *
-	 * @param int $lesson_id
-	 * @param int $entry_id
-	 * @return boolean
+	 * @deprecated 1.6
 	 */
 	public function is_quiz_submitted( $lesson_id, $entry_id ) {
 		edr_deprecated_function( 'IB_Educator::is_quiz_submitted', '1.6', 'Edr_Quizzes::get_grade( int $lesson_id, int $entry_id )' );
@@ -580,11 +327,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Get student's grade for the given quiz.
-	 *
-	 * @param int $lesson_id
-	 * @param int $entry_id
-	 * @return array
+	 * @deprecated 1.6
 	 */
 	public function get_quiz_grade( $lesson_id, $entry_id ) {
 		edr_deprecated_function( 'IB_Educator::get_quiz_grade', '1.6', 'Edr_Quizzes::get_grade' );
@@ -593,10 +336,7 @@ class IB_Educator {
 	}
 
 	/**
-	 * Get the entries with ungraded quizzes.
-	 *
-	 * @param array $ids
-	 * @return array
+	 * @deprecated 1.6
 	 */
 	public function check_quiz_pending( $ids ) {
 		edr_deprecated_function( 'IB_Educator::check_quiz_pending', '1.6', 'Edr_Quizzes::check_for_pending_quizzes' );
@@ -605,149 +345,46 @@ class IB_Educator {
 	}
 
 	/**
-	 * Get the course prerequisites.
-	 *
-	 * @param int $course_id
-	 * @return array
+	 * @deprecated 1.8.0
 	 */
 	public function get_prerequisites( $course_id ) {
-		$prerequisites = get_post_meta( $course_id, '_ib_educator_prerequisites', true );
+		edr_deprecated_function( 'IB_Educator::get_instance()->get_prerequisites', '1.8.0', 'Edr_Courses::get_instance()->get_course_prerequisites' );
 
-		if ( ! is_array( $prerequisites ) ) {
-			$prerequisites = array();
-		}
-
-		return $prerequisites;
+		return Edr_Courses::get_instance()->get_course_prerequisites( $course_id );
 	}
 
 	/**
-	 * Check if a user has completed the required course prerequisites.
-	 *
-	 * @param int $course_id
-	 * @param int $user_id
-	 * @return bool
+	 * @deprecated 1.8.0
 	 */
 	public function check_prerequisites( $course_id, $user_id ) {
-		$prerequisites = $this->get_prerequisites( $course_id );
+		edr_deprecated_function( 'IB_Educator::get_instance()->check_prerequisites', '1.8.0', 'Edr_Courses::get_instance()->check_course_prerequisites' );
 
-		if ( empty( $prerequisites ) ) {
-			return true;
-		}
-
-		$completed_courses = $this->get_entries( array(
-			'user_id'      => $user_id,
-			'entry_status' => 'complete',
-		) );
-
-		if ( empty( $completed_courses ) ) {
-			// The user has no courses completed.
-			return false;
-		}
-
-		$prerequisites_satisfied = 0;
-
-		foreach ( $completed_courses as $entry ) {
-			if ( in_array( $entry->course_id, $prerequisites ) ) {
-				$prerequisites_satisfied += 1;
-			}
-		}
-
-		return ( $prerequisites_satisfied == count( $prerequisites ) );
+		return Edr_Courses::get_instance()->check_course_prerequisites( $course_id, $user_id );
 	}
 
 	/**
-	 * Setup payment item (e.g. course, membership).
-	 *
-	 * @param IB_Educator_Payment $payment
+	 * @deprecated 1.8.0
 	 */
 	public function setup_payment_item( $payment ) {
-		if ( 'course' == $payment->payment_type ) {
-			// Setup course entry.
-			$entry = $this->get_entry( array( 'payment_id' => $payment->ID ) );
+		edr_deprecated_function( 'IB_Educator::get_instance()->setup_payment_item', '1.8.0', 'Edr_Payments::get_instance()->setup_payment_item' );
 
-			if ( ! $entry ) {
-				$entry = edr_get_entry();
-				$entry->course_id = $payment->course_id;
-				$entry->user_id = $payment->user_id;
-				$entry->payment_id = $payment->ID;
-				$entry->entry_status = 'inprogress';
-				$entry->entry_date = date( 'Y-m-d H:i:s' );
-				$entry->save();
-
-				// Send notification email to the student.
-				$student = get_user_by( 'id', $payment->user_id );
-				$course = get_post( $payment->course_id, OBJECT, 'display' );
-
-				if ( $student && $course ) {
-					edr_send_notification(
-						$student->user_email,
-						'student_registered',
-						array(
-							'course_title' => $course->post_title,
-						),
-						array(
-							'student_name'   => $student->display_name,
-							'course_title'   => $course->post_title,
-							'course_excerpt' => $course->post_excerpt,
-						)
-					);
-				}
-			}
-		} elseif ( 'membership' == $payment->payment_type ) {
-			// Setup membership.
-			$ms = Edr_Memberships::get_instance();
-			$ms->setup_membership( $payment->user_id, $payment->object_id );
-
-			$student = get_user_by( 'id', $payment->user_id );
-			$membership = $ms->get_membership( $payment->object_id );
-
-			if ( $student && $membership ) {
-				$user_membership = $ms->get_user_membership( $student->ID );
-				$membership_meta = $ms->get_membership_meta( $membership->ID );
-				$expiration = ( $user_membership ) ? $user_membership['expiration'] : 0;
-
-				edr_send_notification(
-					$student->user_email,
-					'membership_register',
-					array(),
-					array(
-						'student_name' => $student->display_name,
-						'membership'   => $membership->post_title,
-						'expiration'   => ( $expiration ) ? date_i18n( get_option( 'date_format' ), $expiration ) : __( 'None', 'ibeducator' ),
-						'price'        => $ms->format_price( $membership_meta['price'], $membership_meta['duration'], $membership_meta['period'], false ),
-					)
-				);
-			}
-		}
+		return Edr_Payments::get_instance()->setup_payment_item( $payment );
 	}
 
 	/**
-	 * Get billing data for a user.
-	 *
-	 * @param int $user_id
-	 * @return array
+	 * @deprecated 1.8.0
 	 */
 	public function get_billing_data( $user_id ) {
-		$billing = get_user_meta( $user_id, '_ib_educator_billing', true );
+		edr_deprecated_function( 'IB_Educator::get_instance()->get_billing_data', '1.8.0', 'Edr_Payments::get_instance()->get_billing_data' );
 
-		if ( ! is_array( $billing ) ) {
-			$billing = array(
-				'address'    => '',
-				'address_2'  => '',
-				'city'       => '',
-				'state'      => '',
-				'postcode'   => '',
-				'country'    => '',
-			);
-		}
-
-		return $billing;
+		return Edr_Payments::get_instance()->get_billing_data( $user_id );
 	}
 }
 
 class IBEdu_API {
 	public static function get_instance() {
 		edr_deprecated_function( 'IBEdu_API::get_instance()', '0.9.0', 'IB_Educator::get_instance()' );
+
 		return IB_Educator::get_instance();
 	}
 }

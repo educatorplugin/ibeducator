@@ -313,7 +313,7 @@ class Edr_Admin_EntriesTable extends WP_List_Table {
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 
 		$entries = null;
-		$api = IB_Educator::get_instance();
+		$edr_entries = Edr_Entries::get_instance();
 		$statuses = edr_get_entry_statuses();
 		$args = array(
 			'per_page' => $this->get_items_per_page( 'entries_per_page', 10 ),
@@ -348,7 +348,7 @@ class Edr_Admin_EntriesTable extends WP_List_Table {
 		// Check capabilities.
 		if ( current_user_can( 'manage_educator' ) ) {
 			// Get all entries.
-			$entries = $api->get_entries( $args, 'ARRAY_A' );
+			$entries = $edr_entries->get_entries( $args, 'ARRAY_A' );
 		} elseif ( current_user_can( 'educator_edit_entries' ) ) {
 			// Get the entries for the current lecturer's courses only.
 			$course_ids = Edr_Courses::get_instance()->get_lecturer_courses( get_current_user_id() );
@@ -358,7 +358,7 @@ class Edr_Admin_EntriesTable extends WP_List_Table {
 					$args['course_id'] = $course_ids;
 				}
 
-				$entries = $api->get_entries( $args, 'ARRAY_A' );
+				$entries = $edr_entries->get_entries( $args, 'ARRAY_A' );
 			}
 		}
 

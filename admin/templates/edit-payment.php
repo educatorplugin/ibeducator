@@ -10,7 +10,7 @@ $payment_id = isset( $_GET['payment_id'] ) ? absint( $_GET['payment_id'] ) : 0;
 $payment = edr_get_payment( $payment_id );
 $payment_statuses = edr_get_payment_statuses();
 $types = edr_get_payment_types();
-$api = IB_Educator::get_instance();
+$edr_entries = Edr_Entries::get_instance();
 $student = null;
 $post = null;
 
@@ -119,7 +119,7 @@ $lines = $payment->get_lines();
 									<div class="ib-edu-control">
 										<?php
 											if ( $payment->ID ) {
-												$entry = $api->get_entry( array( 'payment_id' => $payment->ID ) );
+												$entry = $edr_entries->get_entry( array( 'payment_id' => $payment->ID ) );
 											} else {
 												$entry = false;
 											}

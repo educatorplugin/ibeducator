@@ -102,7 +102,7 @@ class Edr_StudentAccount {
 			) );
 
 			// Set values.
-			$values = IB_Educator::get_instance()->get_billing_data( $user->ID );
+			$values = Edr_Payments::get_instance()->get_billing_data( $user->ID );
 
 			if ( empty( $values['country'] ) ) {
 				$values['country'] = edr_get_location( 'country' );

@@ -59,7 +59,7 @@ $tmp = get_posts( array(
 foreach ( $tmp as $course ) {
 	$courses[ $course->ID ] = $course->post_title;
 }
-$prerequisites = IB_Educator::get_instance()->get_prerequisites( $post->ID );
+$prerequisites = Edr_Courses::get_instance()->get_course_prerequisites( $post->ID );
 $form->set_value( '_ib_educator_prerequisite', array_pop( $prerequisites ) );
 $form->add( array(
 	'type'    => 'select',
